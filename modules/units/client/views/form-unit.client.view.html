@@ -1,0 +1,70 @@
+<section >
+ <!--   <md-subheader> -->
+    <div layout="row"  class="page-header" style="margin-top: 5px">
+      <h3 flex>
+        <b style="font-color:'black'">Create Unit in {{vm.unitType.name}}</b>
+      </h3>
+      <md-icon ng-click="vm.goBackToList()" md-svg-src="/modules/core/client/img/svg/ic_arrow_back_black_24px.svg" aria-lable="back">
+        <md-tooltip md-direction="down">
+          <strong><font size="2"> {{vm.createShortcut.back}} </font></strong>  &nbsp; Back to list
+        </md-tooltip>
+      </md-icon>
+    </div>
+ <!--  </md-subheader>
+ -->
+  <div>
+    <form name="vm.unitForm" ng-submit="vm.createUnit(vm.unitForm.$valid);">
+      <div layout="row" layout-wrap layout-xs="column">
+        <md-input-container flex>
+          <label>Unit Name</label>
+          <input id="unitNameField" name="unitName" autofocus="autofocus" ng-model="vm.unitName" capitalizefirstletter required>
+          <div ng-messages="vm.unitForm.unitName.$error"  multiple md-auto-hide="true" ng-if="vm.unitForm.unitName.$touched || vm.unitForm.unitName.$dirty">
+            <div ng-message="required" ng-style="{color: vm.unitForm.unitName.$touched ? 'Red' : 'Blue' }">
+              This is a required Field
+            </div>
+          </div>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Symbol</label>
+          <input name="symbol" ng-model="vm.symbol" required>
+          <div ng-messages="vm.unitForm.symbol.$error"  multiple md-auto-hide="true" ng-if="vm.unitForm.symbol.$touched || vm.unitForm.symbol.$dirty">
+            <div ng-message="required" ng-style="{color: vm.unitForm.symbol.$touched ? 'Red' : 'Blue' }">
+              This is a required Field
+            </div>
+          </div>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Multiplier With BaseUnit</label>
+          <input name="multiplierWithBaseUnit" type="number" ng-model="vm.multiplierWithBaseUnit" ng-change="vm.verifyMultiplier();" required>
+          <div ng-messages="vm.unitForm.multiplierWithBaseUnit.$error"  multiple md-auto-hide="true" ng-if="vm.unitForm.multiplierWithBaseUnit.$touched || vm.unitForm.multiplierWithBaseUnit.$dirty">
+            <div ng-message="required" ng-style="{color: vm.unitForm.multiplierWithBaseUnit.$touched ? 'Red' : 'Blue' }">
+              This is a required Field
+            </div>
+          </div>
+          <span data-ng-if="vm.multiplierError" style="color: Red;">you cant't set Multiplier with BaseUnit as 1</span>
+        </md-input-container>
+      </div>
+      <div layout="row" flex>
+        <md-input-container flex>
+          <label>Note</label>
+          <textarea name="note" ng-model="vm.note"></textarea>
+        </md-input-container>
+      </div>
+      <div layout="row">
+        <span flex></span>
+        <md-button ng-disabled="vm.disabledSave" data-ng-click="vm.saveAndBack(vm.unitForm.$valid)" class="md-raised md-primary">
+          Save And Back
+          <md-tooltip md-direction="top">
+            <strong><font size="2"> {{vm.createShortcut.saveAndBack}} </font></strong> &nbsp; Click To Create and back to list
+          </md-tooltip>
+        </md-button>
+        <md-button ng-disabled="vm.disabledSave" type="submit" class="md-raised md-primary">
+          Save
+          <md-tooltip md-direction="top">
+            <strong><font size="2"> {{vm.createShortcut.save}} </font></strong> &nbsp;  Click To Create Unit
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,317 @@
+<section data-ng-controller="SerialsController" data-ng-init="find()" >
+	<div data-ng-controller="ProductsController" data-ng-init="find()" >
+		<!-- div data-ng-controller="SuppliersController" data-ng-init="find()" -->
+			<div class="page-header">
+				<h1>Serials</h1>
+			</div>
+			<div class="animate-show" data-ng-if="!pageVisible" data-ng-include="'modules/core/client/views/invalidusererrorscreen.client.view.html'">
+			</div>
+			<div class="col-md-12 col-xs-12 col-sm-12" data-ng-controller = "ComponentsController" data-ng-init="find()" data-ng-if="pageVisible">
+				<uib-tabset>
+				<!-- *************************Tab section for all games search****************************** -->
+					<uib-tab heading="All Games" select="pageChangedProdForAll(searchTextProd.text)">
+							<!-- curPageProduct.currentPage = 1; -->
+						<div class = "col-md-12 col-xs-12 col-sm-12">
+							<!-- *********************************Pagination******************************** -->
+							<ul uib-pagination total-items="totalItemsAllProduct" ng-model="curPageProductAll.currentPageAll" max-size="maxSizeForAllProd" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPagesAll" ng-change="pageChangedProdForAll(searchTextProd.text)"></ul>
+							<!-- *********************************Paginatio******************************* -->
+
+							<!-- **********************************SearchBox*******************************-->
+							<div class=" pull-right"><!-- Search : -->
+              <md-input-container class="md-block" flex-gt-sm>
+								<input type="text" data-ng-model="searchTextProd.text" data-ng-change="curPageProductAll.currentPageAll = 1; pageChangedProdForAll(searchTextProd.text)" placeholder = "Search Games">
+              </md-input-container>
+							</div>
+							<!-- *************************************SearchBox*************************** -->
+						</div>
+						<div class = "col-md-12 col-xs-12 col-sm-12">
+							<div data-ng-if="(products | filter:{active:true}).length === 0" class="alert alert-warning text-center">
+								No Product created for this Game Type yet since there are no Games created, please create a Game by navigating to the <a href="/#!/games">Games</a> page
+							</div>
+						</div>
+						<div class = "col-md-12 col-xs-12 col-sm-12">
+							<!-- *********** Division Start for ng-repeat ***************** -->
+							<div class = "list-group" >
+								<!-- <div data-ng-repeat="product in allProductsOnPage" class = "list-group-item panel panel-info col-md-12 col-xs-12 col-sm-12"> -->
+                <md-card data-ng-repeat="product in allProductsOnPage" >
+									<div data-ng-click="clickProduct(product); pageChangedSerial(product._id, searchTextSerial.text); focusSerial()" class="panel-heading" style="background: #80d8ff">
+										<div>
+											<h3 class = "list-group-item-heading"><small>Game Name: </small>{{product.productNumber}}</h3>
+											<!-- <h4 class = "list-group-item-heading"><small>Product Number: </small>{{product.productNumber}}</h4> -->
+										</div>
+									</div>
+									<section class="animate-show" data-ng-if="product._id===activeProduct" data-ng-include="'modules/serials/client/views/serialsInProduct.client.view.html'">
+									</section>
+								</md-card>
+							</div>
+						</div>
+						<div data-ng-if="!((products | filter:{active:true}).length === 0)" class = "col-md-12 col-xs-12 col-sm-12">
+							<div data-ng-if="(allProductsOnPage.length === 0)" class="alert alert-warning text-center">
+								No Match for your the search.
+							</div>
+						</div>
+						<div class = "col-md-12 col-xs-12 col-sm-12">
+							<!-- ********************************Pagination****************************** -->
+							<ul uib-pagination
+                total-items="totalItemsAllProduct"
+                ng-model="curPageProductAll.currentPageAll"
+                max-size="maxSizeForAllProd"
+                class="pagination-sm"
+                boundary-links="true"
+                rotate="false"
+                num-pages="numPagesAll"
+                ng-change="pageChangedProdForAll(searchTextProd.text)">
+              </ul>
+							<pre>showing <b>{{totalItemsAllProduct===0 ? 0 :indexStartProdAll+1}}-{{indexEndProdAll}}</b> of <b>{{totalItemsAllProduct.count}}</b> Games</pre>
+							<!-- *********************************Pagination****************************** -->
+						</div>
+					</uib-tab>
+
+
+					<uib-tab data-ng-repeat="component in components" heading="{{component.componentTypeName}}" select="clickComponent(component); curPageProduct.currentPage = 1; pageChangedProd(component, searchTextProd.text); serDateInit()">
+						<!-- ***********Add Serials Division Start***************** -->
+					<div class="col-md-12 col-xs-12 col-sm-12">
+						<h2>{{activeComponentName}}</h2>
+						<div class="panel-body col-md-12 col-xs-12 col-sm-12">
+							<span class="pull-left col-md-1 col-xs-1 col-sm-1">
+								<button title="Click to add serials!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addSerialbuttonclicked(); CreateSpecvalueString()"></button>
+							</span>
+							<span class="pull-left col-md-12 col-xs-11 col-sm-12" data-ng-if="addSerialclicked">
+								<form name="serialForm" data-ng-submit="createSerial(clearActiveProduct())" class="form-inline animate-show">
+									<fieldset>
+										<div layout="row" layout-xs="column">
+										<div class = "form-group col-md-4 col-xs-12 col-sm-4">
+
+											<!-- <label  for="productName">Game Name : </label> --><!-- {{product.productNumber}} -->
+											<!-- <select class="form-control" type="text" id="productNumber" name="productNumber"  placeholder="Select Product Name"  data-ng-model="ser.selectedProduct" data-ng-focus="focusSerial()" data-ng-init>
+												<option title="{{ product.specvalueString}}" data-ng-repeat="product in products|filter:{active:true, component:component._id}" value="{{product._id}}">{{product.productNumber}}</option>
+											</select> -->
+						                    <md-autocomplete
+							                    ng-disabled="isDisabled"
+							                    md-no-cache="serialGame.noCache"
+							                    md-selected-item="serialGame.selectedItem"
+							                    md-search-text-change=""
+							                    md-search-text="serialGame.searchText"
+							                    md-selected-item-change="selectedItemChange(item);"
+							                    md-items="item in querySerialGame(serialGame.searchText)"
+							                    md-item-text="item.productNumber"
+							                    md-min-length="0"
+							                    md-floating-label="Select Game">
+						                        <md-item-template>
+						                          <span md-highlight-text="serialGame.searchText" md-highlight-flags="^i">{{item.productNumber}}</span>
+						                        </md-item-template>
+						                    </md-autocomplete>
+										</div >
+										<div class = "form-group col-md-4 col-xs-12 col-sm-4">
+											<!-- <label  for="supplierName">Supplier Name : </label> -->
+											<!-- <select class="form-control" type="text" id="supplierName" name="supplierName"  placeholder="Select Supplier Name"  data-ng-model="ser.selectedSupplier" data-ng-focus="focusSerial()">
+												<option title="Contact Name : {{supplier.contactName}}
+											Designation : {{supplier.designation}}
+											Telephone :{{supplier.telephone}}
+											Mobile : {{supplier.mobile}}
+											Email : {{supplier.email}}
+											Address : {{supplier.address}}" data-ng-repeat="supplier in suppliers" value="{{supplier._id}}">{{supplier.companyName}}</option>
+											</select> -->
+						                    <md-autocomplete
+							                    ng-disabled="isDisabled"
+							                    md-no-cache="serialSupplier.noCache"
+							                    md-selected-item="serialSupplier.selectedItem"
+							                    md-search-text-change=""
+							                    md-search-text="serialSupplier.searchText"
+							                    md-selected-item-change="selectedItemChange(item);"
+							                    md-items="item in querySerialSupplier(serialSupplier.searchText)"
+							                    md-item-text="item.companyName"
+							                    md-min-length="0"
+							                    md-floating-label="Supplier Name">
+							                    <md-item-template>
+							                        <span md-highlight-text="serialGame.searchText" md-highlight-flags="^i">{{item.companyName}}</span>
+							                    </md-item-template>
+						                    </md-autocomplete>
+										</div>
+										<!-- <div class = "form-group col-md-4 col-xs-12 col-sm-4">
+											<label  for="price">Price : </label>
+											<div class="input-group">
+												<div class="input-group-addon">{{currencySymbol}} </div>
+												<input type="number" id="price" name="price" class="form-control" placeholder="Price" data-ng-model="ser.price" data-ng-focus="focusSerial()" min="0" step="0.01">
+											</div>
+										</div> -->
+										 	<div flex layout="row">
+
+									          <md-input-container class="md-block" flex>
+									            <label>Price</label>
+									            <input type="Number" name="Price" id="price" ng-model="ser.price" data-ng-focus="focusSerial()" min="0"  step="0.01">
+
+									          </md-input-container>
+									          <h3>{{currencySymbol}}</h3>
+								        	</div>
+										</div>
+										<div layout="row" layout-xs="column">
+										<div class = "form-group col-md-4 col-xs-12 col-sm-4">
+											<label for="dateOfPurchase">Date of Purchase : </label><!-- {{ser.dateOfPurchase}} -->
+											<!-- <input type="date"  class="form-control" name="dateOfPurchase" data-ng-model = "ser.dateOfPurchase" data-ng-change="updateWarrantyExpiry()"> -->
+											<br>
+                                    <md-datepicker ng-model="ser.dateOfPurchase" data-ng-change="updateWarrantyExpiry()" name="dateOfPurchase"></md-datepicker>
+											<!--div class="input-group">
+												<input type="text" class="form-control" datepicker-popup="{{format}}" data-ng-model="ser.dateOfPurchased" is-open="opened" min-date="'2000-06-22'" max-date="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" id="dateOfPurchased" name="dateOfPurchased">
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+													</span>
+											</div-->
+										</div>
+										<div class = "form-group col-md-4 col-xs-12 col-sm-4">
+											<label  for="warrantyPeriod">Warranty Period:</label><!-- {{ser.warrantyPeriod}} -->
+											<!-- <input type="number" id="warrantyPeriod" name="warrantyPeriod" class="form-control" data-ng-model="ser.warrantyPeriod" data-ng-focus="focusSerial()" style="width:90px;"  min="0" step="1" data-ng-change="updateWarrantyExpiry()"> -->
+                      <md-input-container class="md-block" flex-gt-sm style="margin-top:-5px; ">
+                        <input type="number" id="warrantyPeriod" name="warrantyPeriod" ng-model="ser.warrantyPeriod" data-ng-focus="focusSerial()" min="0" step="1" data-ng-change="updateWarrantyExpiry()" >
+                        <span>Months</span>
+                      </md-input-container>
+											<!-- style="width:90px;" -->
+										</div>
+										<div  class = "form-group col-md-4 col-xs-12 col-sm-4">
+											<label for="dateOfWarrantyExpiry">Warranty Expiry : </label><!-- {{ser.dateOfWarrantyExpiry}} -->
+											<!-- <input type="date" id="dateOfWarrantyExpiry" name="dateOfWarrantyExpiry" class="form-control" data-ng-model="ser.dateOfWarrantyExpiry" placeholder="Warranty Expiry" data-ng-focus="focusSerial()" data-ng-change="updateWarrantyPeriod()"> --><br>
+                      <md-datepicker id="dateOfWarrantyExpiry" name="dateOfWarrantyExpiry" data-ng-focus="focusSerial()" ng-model="ser.dateOfWarrantyExpiry" data-ng-change="updateWarrantyPeriod()"></md-datepicker>
+										</div>
+									</div>
+										<!-- <div class = "form-group col-md-4 col-xs-12 col-sm-4">
+											<label  for="price">Price : </label>
+											<div class="input-group">
+												<div class="input-group-addon">{{currencySymbol}} </div>
+												<input type="number" id="price" name="price" class="form-control" placeholder="Price" data-ng-model="ser.price" data-ng-focus="focusSerial()" min="0" step="0.01">
+											</div>
+										</div> -->
+									<div layout="row" layout-xs="column">
+										<div class = "form-group col-md-6 col-xs-12 col-sm-4">
+											<!-- <label  for="Select Acquisition Type">Select Acquisition Type</label> -->
+											<!-- <select class="form-control" type="text" id="acquisitionType" name="acquisitionType"  placeholder="Select Acquisition Type" data-ng-model="ser.acquisitionType" data-ng-focus="focusSerial()">
+												<option title="" value="Purchased">Purchased</option>
+												<option title="" value="Borrowed">Borrowed</option>
+											</select> -->
+										<md-input-container class="md-block" flex flex-gt-sm>
+       										 <label>Select Acquisition Type</label>
+					                      <md-select name="favoriteColor"  id="acquisitionType" name="acquisitionType"  placeholder="Select Acquisition Type" ng-model="ser.acquisitionType" data-ng-focus="focusSerial()" >
+					                        <md-option value="Purchased">Purchased</md-option>
+					                        <md-option value="Borrowed">Borrowed</md-option>
+					                      </md-select>
+					                  </md-input-container>
+										</div>
+										<div class = " col-md-6 col-xs-12 col-sm-4">
+											<!-- <label  for="locationWarehouse">Location in Warehouse : </label> -->
+                      <md-input-container class="md-block" flex flex-gt-sm>
+												<input type="text" id="locationWarehouse" name="locationWarehouse"  placeholder="Location in Warehouse" ng-model="ser.locationWarehouse" data-ng-focus="focusSerial()" required>
+												<div ng-messages="serialForm.locationWarehouse.$error"  multiple md-auto-hide="true" ng-if="serialForm.locationWarehouse.$touched || serialForm.locationWarehouse.$dirty ">
+				                  <div ng-message="required" ng-style="{color: serialForm.locationWarehouse.$touched ? 'Red' : 'Blue' }">
+				                		This is a required Field
+				                  </div>
+				                </div>
+                      </md-input-container>
+										</div>
+									</div>
+										<div class = "col-md-6 col-xs-12 col-sm-4">
+											<!-- <label  for="serialNumber">Serial No : </label> -->
+                      <md-input-container class="md-block" flex-gt-sm>
+												<input type="text" id="serialNumber" name="serialNumber" placeholder="Please Scan Serial Number" ng-model="ser.serialNumber" data-ng-focus="focusSerial()" required>
+												<div ng-messages="serialForm.serialNumber.$error"  multiple md-auto-hide="true" ng-if="serialForm.serialNumber.$touched || serialForm.serialNumber.$dirty ">
+				                  <div ng-message="required" ng-style="{color: serialForm.serialNumber.$touched ? 'Red' : 'Blue' }">
+				                		This is a required Field
+				                  </div>
+				                </div>
+                      </md-input-container>
+										</div>
+										<div class = "col-md-6 col-xs-12 col-sm-4">
+											<!-- <label  for="manufacturerSerialNumber">Manufacturer Serial No : </label> -->
+                      <md-input-container class="md-block" flex-gt-sm>
+											<span><input type="text" id="manufacturerSerialNumber" name="manufacturerSerialNumber"  placeholder="Manufacturer serial No" ng-model="ser.manufacturerSerialNumber" data-ng-focus="focusSerial()"></span>
+                      </md-input-container>
+										</div>
+
+										<div class = "form-group col-md-12 col-xs-12 col-sm-4">
+											<!-- <label for="description">Description :</label> -->
+											<md-input-container class="md-block" flex-gt-sm>
+											<textarea name="description" id="description" name="description"  placeholder="Description" ng-model="ser.description" data-ng-focus="focusSerial()" ></textarea>
+										</md-input-container>
+										</div>
+										<div class="col-md-12 col-xs-12 col-sm-12">
+											<p data-ng-show="savedSerialSuccessfully" class="text-center text-success">
+												<strong>Serial Saved Successfully</strong>
+											</p>
+											<p data-ng-show="errorSerial" class="text-center text-danger">
+												<strong data-ng-bind="errorSerial"></strong>
+											</p>
+											<p data-ng-show="errorSerialActivity" class="text-center text-danger">
+												<strong data-ng-bind="errorSerialActivity"></strong>
+											</p>
+										</div>
+										<div class = "form-group pull-right col-md-12 col-xs-12 col-sm-12">
+											<button type="submit" class="btn btn-large btn-primary pull-right">Save</button>
+										</div>
+									</fieldset>
+								</form>
+							</span>
+						</div>
+					</div>
+					<div class = "col-md-12 col-xs-12 col-sm-12">
+						<!--***********************************Pagination**************************** -->
+						<ul uib-pagination
+              total-items="totalItemsAllProduct"
+              ng-model="curPageProductAll.currentPageAll"
+              max-size="maxSizeForAllProd"
+              class="pagination-sm"
+              boundary-links="true"
+              rotate="false"
+              num-pages="numPagesAll"
+              ng-change="pageChangedProdForAll(searchTextProd.text)">
+            </ul>
+						<!-- *******************************Pagination ******************************** -->
+
+						<!-- *************************************SearchBox ******************************-->
+						<div class=" pull-right"><!-- Search : -->
+            <md-input-container class="md-block" flex-gt-sm>
+							<input type="text" data-ng-model="searchTextProd.text" data-ng-change="curPageProduct.currentPage = 1; pageChangedProd(component,searchTextProd.text)" placeholder = "Search Games"></input>
+            </md-input-container>
+						</div>
+						<!-- ************************************SearchBox********************************* -->
+					</div>
+					<div class = "col-md-12 col-xs-12 col-sm-12">
+						<div data-ng-if="(products | filter:{active:true, component:component._id}).length === 0" class="alert alert-warning text-center">
+							No serials created for this Game Type yet since there are no Games created, please create a Game by navigating to the <a href="/#!/games">Games</a> page
+						</div>
+					</div>
+					<div class = "col-md-12 col-xs-12 col-sm-12">
+						<!-- *********** Division Start for ng-repeat ***************** -->
+						<div class = "list-group">
+							<div data-ng-repeat="product in productsOnPage" class = "list-group-item panel panel-info col-md-12 col-xs-12 col-sm-12">
+								<div data-ng-click="clickProduct(product); pageChangedSerial(product._id, searchTextSerial.text); focusSerial()" class="panel-heading">
+									<div>
+										<h3 class = "list-group-item-heading"><small>Game Name: </small>{{product.productNumber}}</h3>
+										<!-- <h4 class = "list-group-item-heading"><small>Product Number: </small>{{product.productNumber}}</h4> -->
+									</div>
+								</div>
+								<section class="animate-show" data-ng-if="product._id===activeProduct" data-ng-include="'modules/serials/client/views/serialsInProduct.client.view.html'">
+								</section>
+							</div>
+						</div>
+					</div>
+					<div data-ng-if="!((products | filter:{active:true, component:component._id}).length === 0)" class = "col-md-12 col-xs-12 col-sm-12">
+						<div data-ng-if="productsOnPage.length === 0" class="alert alert-warning text-center">
+								No Match for your the search.
+						</div>
+					</div>
+					<div class = "col-md-12 col-xs-12 col-sm-12">
+						<!-- ************************************Pagination*************************** -->
+						<ul uib-pagination total-items="totalItemsProduct" ng-model="curPageProduct.currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedProd(component,searchTextProd.text)"></ul>
+						<pre>showing <b>{{totalItemsProduct===0 ? 0 :indexStartProd+1}}-{{indexEndProd}}</b> of <b>{{totalItemsProduct.count}}</b> Games</pre>
+						<!-- **************************************Pagination************************** -->
+					</div>
+					</uib-tab>
+				</uib-tabset>
+
+				<div class = "col-md-12 col-xs-12 col-sm-12">
+					<div data-ng-if="components.length === 0" class="alert alert-warning text-center">
+						No Games Types created yet, please create a <a href="/#!/gametypes">Game Type</a> first
+					</div>
+				</div>
+			</div>
+		<!-- /div -->
+	</div>
+</section>

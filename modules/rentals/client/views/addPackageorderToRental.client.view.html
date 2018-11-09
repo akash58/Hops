@@ -1,0 +1,159 @@
+<!-- <section> -->
+<md-dialog aria-label="view assignment details" class="fullscreen-dialog" ng-init="initialize()" flex="80%">
+  <!-- <form ng-cloak> -->
+    <md-toolbar>
+      <div class="md-toolbar-tools" ng-class="{ 'redcolor' : assignment.calculatedStatus.overDue ,'lightOrange' : assignment.calculatedStatus.daysLeft , 'lightGreen' : assignment.calculatedStatus.beforeDate }">
+        <h2>Add Package</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancelPackageOrder()" aria-label="cancel">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="column" layout-fill>
+          <div layout="row" layout-xs="column" layout-align="center center">
+              <md-autocomplete
+                md-selected-item="selectedPackage"
+                md-search-text-change="rent.expectedTime = getExpectedtimeforPackage(rent.package)"
+                md-search-text="packageSearchText"
+                md-selected-item-change="selectedPackageChange(item)"
+                md-items="item in searchTextChange(packageSearchText)"
+                md-item-text="item.packageName"
+                md-min-length="0"
+                md-floating-label="Package For Order"
+                md-menu-class="autocomplete-custom-template">
+                <md-item-template>
+                  <div md-highlight-text="packageSearchText" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.packageName}}" popover-trigger="mouseenter"> {{item.packageName}}</div>
+                </md-item-template>
+                      <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+                        <div ng-message="required">This is a required Field</div>
+                      </div> -->
+                <md-not-found>
+                  <a ng-click="createPackage(packageSearchText)">Create New Package!</a>
+                  "{{packageSearchText}}" no result found for this.
+                </md-not-found>
+              </md-autocomplete>
+
+              <md-button data-ng-click="addPackageOrder()" class="md-fab md-mini md-primary" aria-label="Favorite">
+                <md-tooltip md-direction="end" flex="90">
+                  Click To Add New Package Order.
+                </md-tooltip>
+                <md-icon md-svg-src="/modules/core/client/img/svg/ic_add_white_24px.svg" aria-lable="Add"></md-icon>
+              </md-button>
+
+          </div><md-divider></md-divider>
+          <div data-ng-if = "packageOrders.length != 0" style="background-color: #e5e5ff">
+            <h4 class="md-title">Ordered Packages</h4>
+            <ul ng-repeat = "packageOrder in packageOrders">
+              <li class="md-subhead" ng-click="selectPackage(packageOrder)">
+                {{packageOrder.packageName}}
+                <span>
+                  <img ng-click="removePackageOrder(packageOrder)" height="25vm" width="25vm" src="/modules/core/client/img/svg/red_green_ok_not_ok_icons.png" aria-lable="remove"/>
+                  <md-tooltip md-direction="end" flex="90">
+                  Click To Remove Package Order.
+                </md-tooltip>
+                </span>
+              </li>
+            </ul>
+          </div><md-divider></md-divider>
+          <div style="background-color: #fff6e5;">
+            <h4 class="md-title" data-ng-if="addedPackageOrders.length !== 0">Already Ordered Packages</h4>
+            <ul ng-repeat = "addedpackageOrder in addedPackageOrders">
+              <li class="md-subhead" ng-click="selectPackage(addedpackageOrder)">
+                {{addedpackageOrder.package.packageName}}
+              </li>
+            </ul>
+          </div>
+          <div class="alert alert-warning" data-ng-if="error">
+            {{error}}
+          </div>
+          <h4 class="alert alert-info" data-ng-if="!packageSelected && addedPackageOrders.length !== 0">Please select any pckage from list to view Details</h4>
+          <h4 class="alert alert-info" data-ng-if="addedPackageOrders.length == 0">There is no Package order added yet</h4>
+          <div data-ng-if="packageSelected" layout="column">
+            <span flex>
+              <md-subheader class="md-primary">Selected Package: {{selectedPackageName}}</md-subheader>
+              <md-subheader class="md-warn">Package Details <span flex></span><span class="pull-right">Ordered on: {{orderedDate | date: "short"}}</span></md-subheader>
+              <div layout="row">
+                <div flex>Rate:</div>
+                <span flex></span>
+                <div flex>{{rentpack.packagePrice}}</div>
+              </div>
+              <div layout="row">
+                <div flex>Category:</div>
+                <span flex></span>
+                <div flex>{{rentpack.category.categoryName}}</div>
+              </div>
+              <div layout="row">
+                <div flex>Hours:</div>
+                <span flex></span>
+                <div flex>{{rentpack.hours | date: "HH:mm"}}</div>
+              </div>
+              <!-- <md-list flex>
+                <md-list-item class="md-3-line" ng-repeat="foodOrder in tempFoodOrders">
+
+                  <div class="md-list-item-text" layout="row" >
+                    <div flex>
+                      <h3>{{foodOrder.food.foodName}}-<label>{{foodOrder.quantity}}</label></h3>
+                      <h4>{{foodOrder.foodType.foodTypeName}}</h4>
+                    </div>
+                    <div flex layout="row" layout-align="end center">
+                      <md-button data-ng-click="deleteTempFoodOder(foodOrder)" class="md-icon-button" aria-labelFavorite">
+                        <md-tooltip md-direction="end" flex="90">
+                          Click To Order Food.
+                        </md-tooltip>
+                        <md-icon md-svg-src="/modules/core/client/img/svg/ic_delete_black_24px.svg" aria-lableAdd"></md-icon>
+                      </md-button>
+                    </div>
+                  </div>
+                  <md-divider class="inset"></md-divider>
+                </md-list-item>
+              </md-list> -->
+            </span>
+            </div>
+              <div data-ng-if="packageFoodType.length > 0">
+                <md-subheader class="md-warn">Foods Included</md-subheader>
+                <table md-table>
+                  <thead md-head>
+                    <tr>
+                      <td flex>
+                        Food Type
+                      </td>
+                      <td flex>
+                        Quantity
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody md-body>
+                    <tr ng-repeat="foodtype in packageFoodType">
+                      <td md-cell>
+                        {{foodtype.foodtype.foodTypeName}}
+                      </td>
+                      <td md-cell>
+                        {{foodtype.quantity}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        <div>
+          {{errorResponse.data}}
+        </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="savePackageOrder()">
+       save order
+      </md-button>
+      <md-button ng-click="cancelPackageOrder()">
+       cancel order
+      </md-button>
+    </md-dialog-actions>
+  <!-- </form> -->
+</md-dialog>
+
+<!-- </section> -->

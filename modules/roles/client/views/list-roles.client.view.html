@@ -1,0 +1,54 @@
+<section class="row" data-ng-controller="RolesListController" data-ng-init="find();">
+  <div class="page-header" id = "pageheader">
+    <h1>Roles</h1>
+  </div>
+<!--
+  <section class="animate-show" ng-if="!rolesPageVisible" ng-include="'modules/core/client/views/invalidusererrorscreen.client.view.html'">
+  </section>
+ -->
+<div class="col-md-12 col-xs-12 col-sm-12">
+  <!-- <div data-ng-if="rolesPageVisible"> -->
+      <div class="col-md-12 col-xs-12 col-sm-12">
+  <div class="row panel-body">
+   <span class="col-md-2 col-xs-1 col-sm-2">
+        <button title="Click to add roles!" class="btn btn-large btn-primary glyphicon glyphicon-plus" ng-click="addRolebuttonclicked()" id ="addRolebuttonclicked"></button>
+      </span>
+      <span class="col-md-10 col-xs-11 col-sm-10" data-ng-show="addRoleclicked" id ="addRoleclicked">
+        <form name="roleForm" data-ng-submit="createRole();" class="form-inline animate-show" autocomplete="off">
+        <fieldset>
+          <span class="form-group col-md-8 col-xs-8 col-sm-8">
+          <label for="roleName">Role Name : </label>
+            <input type="text" id="roleName" name="roleName" class="form-control" ng-model="rol.roleName" placeholder="Role Name" ng-focus="focus(); focusDesc()" required>
+          </span>
+              <span class="form-group col-md-1 col-xs-12 col-sm-1">
+          <button type="submit" class="btn btn-large btn-primary pull-right">Save</button>
+          </span>
+          <span class="col-md-3 col-xs-12 col-sm-3">
+            <p ng-show="savedSuccessfully" class="text-center text-success">
+              <strong id="savedSuccessfully">Role Successfully</strong>
+            </p>
+            <p ng-show="error" class="text-center text-danger">
+            <strong ng-bind="error"></strong>
+            </p>
+          </span>
+        </fieldset>
+          </form>
+        </span>
+      </div>
+    </div>
+       <div class="col-md-12 col-xs-12 col-sm-12">
+          <div class="list-group" >
+            <div data-ng-repeat="role in roles" class = "panel panel-default list-group-item">
+              <div class="panel-heading" >
+                <h4 class="list-group-item-heading" ng-bind="role.roleName"></h4>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-12 col-xs-12 col-sm-12">
+        <div data-ng-if="!roles.length" class="alert alert-warning text-center">
+          No Roles yet, please create a roles by clicking the blue icon above
+        </div>
+     </div>
+   </div>
+ </section>

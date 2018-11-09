@@ -1,0 +1,319 @@
+<section data-ng-controller="ComponentsController" data-ng-init="find()" >
+	<div data-ng-controller="SpecDescsController" data-ng-init="find()">
+		<!-- <div layout="row" class="page-header" id="pageheader">
+			<h1>Game Types</h1>
+		</div> -->
+
+
+
+<div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Game Types</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Game Types</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="search" data-ng-submit="curPageCategory.currentPage = 1; pageChangedComp(searchTextComp.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextComp.text=''; pageChangedBaseUnit(searchTextComp.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextComp.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+
+		<!-- <div class="animate-show" data-ng-if="!componentPageVisible" data-ng-include="'modules/core/views/invalidusererrorscreen.client.view.html'">
+		</div> -->
+	<!-- 		<div layout="row" layout-xs="column" flex > -->
+		<div layout="row">
+			<!-- <button id= "clickToAddComponents" title="Click to add components!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addComponentbuttonclicked(); focusDesc()"></button>-->
+			<md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addComponentbuttonclicked()" id="clickToAddComponents">
+                <md-tooltip md-direction="down">
+                 Click to add Purchase Orders!
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+    	    </md-button>
+	 	</div>
+		<div data-ng-show="addComponentclicked" flex>
+			<form name="vm.componentForm" layout="row" data-ng-submit="createComponent()">
+				<div layout="row" flex>
+					<!-- <label for="componentTypeName">GameType:</label>
+					<input type="text" id="componentTypeName" name="componentTypeName" class="form-control" data-ng-model="comp.componentTypeName" placeholder="Game Type Name" data-ng-focus="focus(); focusDesc()" required> -->
+					   <md-input-container class="md-block" flex>
+       					   <input type="text"  name="componentTypeName" placeholder="Game Type Name" ng-model="comp.componentTypeName" ng-focus="focus(); focusDesc()" required flex>
+       					   <!-- Set pristine not working -jigar -->
+       					   	<!-- <div ng-messages="componentForm.componentTypeName.$error"  multiple md-auto-hide="true" ng-if="componentForm.componentTypeName.$touched || componentForm.componentTypeName.$dirty">
+				                <div ng-message="required" ng-style="{color: componentForm.componentTypeName.$touched ? 'Red' : 'Blue' }">
+				                	This is a required Field
+				                </div>
+				            </div> -->
+				               <div ng-messages="vm.componentForm.componentTypeName.$error" ng-if="vm.componentForm.componentTypeName.$touched || vm.componentForm.componentTypeName.$dirty">
+                                  <div ng-message="required">This is a required Field</div>
+                              </div>
+      					</md-input-container>
+					<!-- <div layout="row"> -->
+					<!-- <button type="submit" id="submit" class="btn btn-large btn-primary pull-left">Save</button> -->
+						<md-button class="md-fab md-mini md-primary pull-right" type="submit" >
+							<md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add">
+							</md-icon>
+  								<md-tooltip md-direction="down" flex="50">
+    							Save Category
+  								</md-tooltip>
+						</md-button>
+				    <!-- </div> -->
+				</div>
+				<!-- <div layout="row">
+					<p data-ng-show="savedSuccessfully" class="text-center text-success">
+						<strong>Game Saved Successfully</strong>
+					</p>
+					<p data-ng-show="error" class="text-center text-danger">
+						<strong data-ng-bind="error"></strong>
+					</p>
+				</div> -->
+			</form>
+		</div>
+		<!-- 	</div> -->
+		<div layout="row" flex>
+	        <!-- <form name="search" data-ng-submit="curPageCategory.currentPage = 1; pageChangedCategory(searchTextCategory.text)" flex >
+		        <div layout="row"  layout-align="center center"> -->
+	        		<!-- <md-input-container >
+	          		    <label>&nbsp;</label>
+	         			<input data-ng-model="searchTextCategory.text" data-ng-change="curPageComponent.currentPage = 1; pageChangedComp(searchTextComp.text)" placeholder="Search">
+	        		</md-input-container> -->
+		            <!-- <md-button type="submit" class="md-fab md-mini md-primary pull-left">
+			           <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+		               <md-tooltip md-direction="down" flex="60">
+		               Search
+		               </md-tooltip>
+		           </md-button> -->
+		           <!--  <div layout="row" >
+						<md-input-container layout-align="center center">
+						 <input type="text" data-ng-model="searchTextComp.text" data-ng-change="curPageComponent.currentPage = 1; pageChangedComp(searchTextComp.text)" placeholder = "Search Games" >
+						</md-input-container>
+						 <md-button type="submit" class="md-fab md-mini md-primary pull-left">
+	      					<md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+	      				  <md-tooltip md-direction="down" >
+	        				Search
+	      				  </md-tooltip>
+	    				</md-button>
+				    </div> -->
+	            </div>
+	            <ul uib-pagination total-items="totalItemsComponent.items" ng-model="curPageComponent.currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedComp(searchTextComp.text)"></ul>
+	        </form>
+        </div>
+		<div layout="column" >
+		    <md-card data-ng-repeat="component in componentsOnPage" >
+
+						<!-- <span class = "pull-right" data-ng-show="component._id == activeComponent">
+							<a id= "editComponentButtonClicked-{{$index}}"class="btn btn-primary" data-ng-click="editComponentButtonClicked(component)" ng-focus="focusDesc(); focus();">
+								<i class="glyphicon glyphicon-pencil"></i>
+							</a>
+						</span> -->
+						<!-- <div layout="row"  layout-align="end">
+						 <div data-ng-if = "component._id == activeComponent" layout="end">
+	              <md-button ng-click="editComponentButtonClicked(component)" class="md-fab md-mini md-primary">
+	                <md-tooltip md-direction="down">
+	                  Click To Edit
+	                </md-tooltip>
+	                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+	              </md-button>
+	            </div>
+	            </div> -->
+	            <md-card-content style="background: #b3ffe6; border: none; outline: none;" data-ng-click="clickComponent(component); focusDesc()">
+            	    <div layout="row" layout-sm="row" layout-xs="column"  data-ng-if="!vm.editing || vm.activeSupplierId != supplier._id"  id="clickComponent-{{$index}}"  flex>
+	        			<h4 >Gametype Name : {{component.componentTypeName}}</h4>
+	        			<span flex></span>
+	        			<div layout="row" data-ng-if="!vm.editing" layout-align="end" >
+		            		<div data-ng-if = "component._id == activeComponent">
+			              		<md-button ng-click="editComponentButtonClicked(component, $index); $event.stopPropagation();" class="md-fab md-mini md-primary">
+			               			<md-tooltip md-direction="down">
+			                  	    Click To Edit
+			                		</md-tooltip>
+			                		<md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+			              		</md-button>
+		            		</div>
+		             	</div>
+            	    </div>
+				</md-card-content>
+				<div data-ng-if="component.editingComponentName" layout-margin>
+					<form name="secondForm" data-ng-submit="update(component)">
+						<div layout="row" layout-xs="column"   flex>
+							<md-input-container flex>
+								<input name="gameTypeName" data-ng-model="comp.updateCompName" placeholder="Gametype Name" data-ng-focus = "focusCompUpd();focusDesc(); focus();" required>
+
+						      <div ng-messages="secondForm.gameTypeName.$error" ng-if="secondForm.gameTypeName.$touched || secondForm.gameTypeName.$dirty">
+                                  <div ng-message="required">This is a required Field</div>
+                              </div>
+                              </md-input-container>
+							<!-- <span flex></span> -->
+							<!-- <button type="submit" id= "update-{{$index}}" class= "btn btn-large btn-primary">Update</button> -->
+	            	        <div layout="row" >
+	            				<md-button type="submit" id= "update-{{$index}}" class="pull-right md-fab md-mini md-primary">
+             						<md-tooltip md-direction="down">
+                						Update Customer
+             						</md-tooltip>
+	              					<md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+	           	 				</md-button>
+		           	 	        <md-button ng-click="clickComponent(component); focusDesc()" class=" md-fab md-mini md-primary pull-right">
+				              	    <md-tooltip md-direction="down">
+				                		Click To Cancel
+				              		</md-tooltip>
+				              		<md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+			            		</md-button>
+		           	 		</div>
+           	 		    </div>
+					</form>
+  	            </div>
+							<!-- <div data-ng-show="!component.editingComponentName">
+								<h4 class="list-group-item-heading" data-ng-bind="component.componentTypeName"></h4>
+							</div> -->
+								<!-- <div data-ng-show="component.editingComponentName"> -->
+								<!-- <button class="btn btn-primary" data-ng-focus = "focusCompUpd();focusDesc(); focus();" >  Cancel</button> -->
+								<!-- </div> -->
+				<div class="text-center">
+					<!-- <p data-ng-if="updatedSuccessfullyComponent && component._id == activeComponent" class="text-center text-success">
+						<strong>Game Type Name Updated Successfully</strong>
+					</p> -->
+					<p data-ng-if="error && component._id == activeComponent" class="text-center text-danger">
+						<strong data-ng-bind="error"></strong>
+					</p>
+				</div>
+				<div id="activeComponent" class="list-group-item" data-ng-if="component._id == activeComponent" >
+								<!-- <div flex> -->
+					<div layout="row">
+						<!-- <span class="col-md-2 col-xs-2 col-sm-2" > -->
+						<!-- <button id="clickToAddSpecificationDescription" title="Click to add specification description!" class="btn btn-primary glyphicon glyphicon-plus"  data-ng-click="addSpecDescClickedDescButtonClicked()" ng-focus="focusDesc(); focus();focusCompUpd();"></button> -->
+						<md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addSpecDescButtonClicked()" id="clickToAddComponents">
+	                		<md-tooltip md-direction="down">
+	                 			Click to add Specification!
+	                		</md-tooltip>
+	                		<md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+    					</md-button>
+        			</div>
+				    <!-- </span> -->
+					<div id="addSpecDescClicked" data-ng-show="addSpecDescClicked" flex>
+						<form name="specificationDescriptionForm" data-ng-submit="createSpecdesc(component)" class="form-inline animate-show" autocomplete="off">
+							<div layout="row" layout-xs="column" flex >
+							<!-- <label for="specificationDescription">Specification Description : </label>
+							<input type="text" id="specificationDescription" name="specificationDescription" class="form-control" data-ng-model="specd.specificationDescription" placeholder="Specification Description" ng-focus="focusDesc(); focus();focusCompUpd();">
+							<button id="createSpecdesc" name ="createSpecdesc" type="submit" class="btn btn-primary">Save</button> -->
+								<md-input-container flex="90" flex-xs="100">
+              						<input type="text" name="specificationDescription" placeholder="Specification Description" ng-model="specd.specificationDescription" ng-focus="focusDesc(); focus();focusCompUpd();">
+              						<!--  <div ng-messages="vm.specificationDescriptionForm.specificationDescription.$error" ng-if="vm.specificationDescriptionForm.specificationDescription.$touched || vm.specificationDescriptionForm.specificationDescription.$dirty">
+                                  <div ng-message="required">This is a required Field</div>
+                              </div> -->
+
+								</md-input-container>
+
+									<md-button class="md-fab md-mini md-primary pull-right"  type="submit" >
+										<md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+											<md-tooltip md-direction="down" flex="50">
+											Save Category
+											</md-tooltip>
+									</md-button>
+							</div>
+							<div layout="row" form-group">
+								<p id="savedSuccessfullyDesc" data-ng-show="savedSuccessfullyDesc" class="text-center text-success">
+									<strong>Specification Description Saved Successfully</strong>
+								</p>
+								<p data-ng-show="errorDesc" class="text-center text-danger">
+									<strong data-ng-bind="errorDesc"></strong>
+								</p>
+						   </div>
+						</form>
+				    </div>
+					<div layout="row" data-ng-repeat="specdesc in specdescs| filter : {component :{_id : component._id}}">
+						<div data-ng-if="!specdesc.editButtonClicked">
+							<!-- <button type="button" class="btn-success glyphicon glyphicon-pencil" id="activespecs" data-ng-click="activespecs(specdesc)"></button> -->
+							<md-button id="activespecs" data-ng-click="activespecs(specdesc)" class="md-fab md-mini md-primary">
+			                	<md-tooltip md-direction="down">
+			                  	Click To Edit
+			                	</md-tooltip>
+                	            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+              	            </md-button>
+							<font size="4"><b>{{specdesc.specificationDescription}}</b></font>
+						</div>
+						<div layout="row" data-ng-if="specdesc.editButtonClicked" flex>
+							<form layout="row" data-ng-submit="updateSpecDesc(specdesc)" flex>
+								<div layout="row" layout-xs="column" data-ng-show = "specdesc.editButtonClicked" flex>
+								<!-- <input data-ng-model="specdesc.specificationDescription" ng-focus="focusDesc(); focus();focusCompUpd();"> -->
+								    <div layout="row" layout-xs="column" flex>
+										<md-input-container flex>
+	      					                <input type="text" name="specificationDescription" placeholder="Specification Description" ng-model="specdesc.specificationDescription" ng-focus="focusDesc(); focus();focusCompUpd();" required>
+									        <!-- <button type="submit" id="updateSpecDesc"class= "btn btn-large btn-primary" ng-focus="focusDesc(); focus();focusCompUpd();">Update</button> -->
+								        </md-input-container>
+								    </div>
+								    <div layout="row"   data-ng-show = "specdesc.editButtonClicked" >
+								<!-- <button class="btn btn-primary" data-ng-click= "cancleSpec(specdesc)" ng-focus="focusDesc(); focus();focusCompUpd();">Cancel</button> -->
+										<md-button type="submit" id= "updateSpecDesc" class="pull-right md-fab md-mini md-primary">
+		             						<md-tooltip md-direction="down">
+		                						Update Customer
+		             						</md-tooltip>
+		              					    <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+			           	 				</md-button>
+										<md-button ng-click="cancleSpec(specdesc)" class=" md-fab md-mini md-primary">
+			              					<md-tooltip md-direction="down">
+			                					Click To Cancel
+			              					</md-tooltip>
+	      					                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+	    					            </md-button>
+    					            </div>
+    					        </div>
+    					    </form>
+					    </div>
+					</div>
+					<div ng-init = "focusDesc();">
+						<p data-ng-show="updatedSuccessfullySpecdesc" class="text-center text-success" >
+							<strong>Specification Description Updated Successfully</strong>
+						</p>
+						<p data-ng-show="errorUpdateSpecdesc" class="text-center text-danger">
+							<strong data-ng-bind="errorUpdateSpecdesc"></strong>
+						</p>
+					</div>
+			    </div>
+			</md-card>
+
+	    </div>
+	    <div layout="row" flex>
+			<div data-ng-if="!components.length===0" class="alert alert-warning text-center" flex>
+				No Game Types yet, please create a Game Type by clicking the blue icon above
+			</div>
+			<div data-ng-if="components.length && (componentsWithSearchText.length===0)" class="alert alert-warning text-center" flex>
+					Your search did not match any documents.
+			</div>
+		</div>
+		<div layout="row" flex>
+										<!--Pagination-->
+				<!-- <ul uib-pagination total-items="totalItemsComponent.items" ng-model="curPageComponent.currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedComp(searchTextComp.text)"></ul> -->
+
+				<!-- <ul uib-pagination total-items="totalItemsComponent.items" ng-model="curPageComponent.currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedComp(searchTextComp.text)"></ul> -->
+			<ul uib-pagination total-items="totalItemsComponent.items" ng-model="curPageComponent.currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedComp(searchTextComp.text)"></ul>
+		</div>
+			<!-- <pre>showing <b>{{totalItemsComponent.items===0 ? 0 : indexStart+1}}-{{indexEnd}}</b> of <b>{{componentsWithSearchText.length}} Game Types </b></pre> -->
+		<pre>showing <b>{{totalItemsComponent.items===0 ? 0 :indexStart+1}}-{{indexEnd}}</b> of <b>{{componentsWithSearchText.length}}</b> Games</pre>
+	</div>
+</section>

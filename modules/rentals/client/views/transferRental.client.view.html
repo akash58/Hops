@@ -1,0 +1,64 @@
+<!-- <section> -->
+<md-dialog aria-label="transfer rental" class="fullscreen-dialog" ng-init="initialize()">
+  <!-- <form ng-cloak> -->
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Transfer Rental</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel($event)" aria-label="cancel">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="row" layout-fill>
+          <div flex layout="row" layout-align="center center">
+            <md-input-container>
+              <label>Tables</label>
+              <md-select ng-model="rentTransfer.table">
+                <md-option ng-repeat="table in tables | filter: { tablecouldNotTransfer: true }" ng-value="table._id">
+                  {{table.tableNumber}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+          <div flex layout="row" layout-align="center center">
+            <md-input-container>
+              <label>Attendent</label>
+              <md-select ng-model="rentTransfer.attendant" md-on-open="loadUsers()">
+                <!-- <md-option><em>None</em></md-option> -->
+                <md-option ng-repeat="user in users" ng-value="user._id">
+                  {{user.username}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+          <div flex layout="row" layout-align="center center" data-ng-if="!foodOnly">
+            <md-input-container>
+              <label>Serial</label>
+              <md-select ng-model="ctrl.userState">
+                <md-option><em>None</em></md-option>
+                <md-option ng-repeat="state in ctrl.states" ng-value="state.abbrev" ng-disabled="$index === 1">
+                  {{state.abbrev}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+        </div>
+        <div>
+          {{errorResponse.data}}
+        </div>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="alertTableExchange($event)">
+       Transfer Rental
+      </md-button>
+    </md-dialog-actions>
+  <!-- </form> -->
+</md-dialog>
+
+<!-- </section> -->

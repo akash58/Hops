@@ -1,0 +1,86 @@
+<section>
+  <div class="page-header">
+    <h1>Attendant</h1>
+  </div>
+  <div class="padding">
+    <form name="vm.form.attendantForm" data-ng-hide = "vm.showProgress" class="form-horizontal" ng-submit="vm.createAttendant(vm.form.attendantForm.$valid)" >
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="text" name="vm.form.attendantForm.firstName" placeholder="Enter firstName" ng-model="vm.firstName" ng-focus="focusAttendant()" required>
+            <div ng-messages="vm.form.firstName.attendantForm.$error"  multiple md-auto-hide="true" ng-if="vm.form.firstName.attendantForm.$touched || vm.form.firstName.attendantForm.$dirty">
+              <div ng-messages="required" ng-style="{color: vm.form.firstName.attendantForm.$touched ? 'Eed' : 'Blue' }">
+                  This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="text" name="vm.form.attendantForm.lastName" placeholder="Enter lastName" ng-model="vm.lastName" ng-focus="focusAttendant()" required>
+            <div ng-messages="vm.form.lastName.attendantForm.$error"  multiple md-auto-hide="true" ng-if="vm.form.lastName.attendantForm.$touched || vm.form.lastName.attendantForm.$dirty">
+              <div ng-messages="required" ng-style="{color: vm.form.lastName.attendantForm.$touched ? 'Eed' : 'Blue' }">
+                  This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+        </div>
+      </div>
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column" flex>
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="text" name="vm.form.attendantForm.username" placeholder="Enter username" ng-model="vm.username" ng-focus="focusAttendant()" required>
+            <div ng-messages="vm.form.username.attendantForm.$error"  multiple md-auto-hide="true" ng-if="vm.form.username.attendantForm.$touched || vm.form.username.attendantForm.$dirty">
+              <div ng-messages="required" ng-style="{color: vm.form.username.attendantForm.$touched ? 'Eed' : 'Blue' }">
+                  This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+        </div>
+       <!--  <div flex>
+         <md-input-container class="md-block" flex-gt-sm>
+           <label>Password {{passwordErrors}}</label>
+           <input type="password" id="password" name="vm.form.attendantForm.password" ng-model="vm.password" popover="{{popoverMsg}}" popover-trigger="focus" password-validator required>
+           <div ng-messages="vm.attendantForm.password.$error" role="alert">
+             <uib-progressbar value="requirementsProgress" type="{{requirementsColor}}"><span style="color:white; white-space:nowrap;">{{requirementsProgress}}%</span></uib-progressbar>
+             <p ng-message="required">Password is required.</p>
+             <div ng-repeat="passwordError in passwordErrors">
+               <p ng-show="vm.form.attendantForm.password.$error.requirements">{{passwordError}}</p>
+
+             </div>
+           </div>
+         </md-input-container>
+       </div> -->
+       <div class="form-group" layout="row" flex show-errors flex-gt-sm>
+          <div layout="column" flex>
+            <md-input-container flex>
+              <label>Password</label>
+              <input type="password" id="password" name="password" ng-model="vm.password" popover="{{popoverMsg}}" popover-trigger="focus" password-validator required>
+              <div ng-messages="vm.form.attendantForm.password.$error" role="alert">
+                <p ng-message="required">Password is required.</p>
+                <div ng-repeat="passwordError in passwordErrors">
+                  <p ng-show="vm.form.attendantForm.password.$error.requirements">{{passwordError}}</p>
+                </div>
+              </div>
+            </md-input-container>
+            <div flex class="form-group" ng-show="!vm.form.attendantForm.password.$error.required">
+              <label>Password Requirements</label>
+              <uib-progressbar value="requirementsProgress" type="{{requirementsColor}}"><span style="color:white; white-space:nowrap;">{{requirementsProgress}}%</span></uib-progressbar>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div flex="90">
+        <md-button class="md-fab md-mini md-primary pull-right" type="submit">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+          <md-tooltip md-direction="down" flex="50">
+            Save Attendant
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div>
+  <div layout="row" layout-align="center end" ng-show="vm.showProgress" style="margin-top: 220px; margin-bottom: 220px;">
+    <md-progress-circular md-mode="indeterminate"  md-diameter="70"></md-progress-circular>
+  </div>
+</section>

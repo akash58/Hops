@@ -1,0 +1,179 @@
+<section>
+ <!--  <md-subheader> -->
+    <div layout="row" layout-align="space-between center" class="page-header"  style="margin-top: 5px">
+      <span hide-xs flex="60">
+        <h3><b style="font-color:'black'">Unit Type</b></h3>
+      </span>
+      <span hide-gt-xs ng-if="!vm.showSearch" flex>
+        <h3><b style="font-color:'black'">Unit Type</b></h3>
+      </span>
+      <span flex layout="row" layout-align="end center" class="paddingForSearch" ng-hide="vm.showSearch">
+        <md-button class="md-icon-button" ng-click="vm.openSearch()">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -25px; "></md-icon>
+          <md-tooltip md-direction="down">
+            <strong><font size="2"> {{vm.listShortcut.search}} </font></strong> &nbsp; Open Search
+          </md-tooltip>
+        </md-button>
+      </span>
+      <span flex ng-show="vm.showSearch" style=" margin-bottom: -15px; ">
+        <form name="search" data-ng-submit="vm.curPageUnitType.page = 1; vm.paginationForUnitType(vm.searchUnitType)">
+          <span layout="row" layout-align="space-between center">
+            <!-- <md-button class="md-icon-button" ng-click="vm.showSearch = !vm.showSearch; vm.searchUnitType=''; vm.paginationForUnitType(vm.searchUnitType);">
+              <md-icon md-svg-src="/modules/core/client/img/svg/ic_close_black_24px.svg" ></md-icon>
+              <md-tooltip md-direction="down">
+                <strong><font size="2"> {{vm.listShortcut.cancelSearch}} </font></strong> &nbsp; Close Search
+              </md-tooltip>
+            </md-button> -->
+            <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+              <label>&nbsp;</label>
+              <input id="search" ng-model="vm.searchUnitType" ng-model-options="{ debounce: vm.SearchDelayConstant }" ng-change="vm.curPageUnitType.page = 1; vm.paginationForUnitType(vm.searchUnitType)" placeholder="Search">
+            </md-input-container>
+            <md-button class="md-icon-button" ng-click="vm.showSearch = !vm.showSearch; vm.searchUnitType=''; vm.paginationForUnitType(vm.searchUnitType);">
+              <md-icon md-svg-src="/modules/core/client/img/svg/ic_close_black_24px.svg" style="margin-top: 5px;"></md-icon>
+              <md-tooltip md-direction="down">
+                <strong><font size="2"> {{vm.listShortcut.cancelSearch}} </font></strong> &nbsp; Close Search
+              </md-tooltip>
+            </md-button>
+            <!-- <md-button type="submit" class="md-icon-button">
+              <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style="margin-top: 5px;"></md-icon>
+              <md-tooltip md-direction="down" flex="60">
+                Search
+              </md-tooltip>
+            </md-button> -->
+          </span>
+        </form>
+      </span>
+    </div>
+<!--   </md-subheader> -->
+  <div class="float-button">
+    <md-button data-ng-click="vm.goToAddNewUnitType()" class="md-fab md-mini md-primary md-fab-bottom-right" aria-label="Favorite">
+      <md-tooltip md-direction="top" flex="90">
+        <strong><font size="2"> {{vm.listShortcut.goToCreate}} </font></strong> &nbsp;  Click To Add New Unit Type. &nbsp;&nbsp;
+      </md-tooltip>
+      <md-icon md-svg-src="/modules/core/client/img/svg/ic_add_white_24px.svg" aria-lable="Add"></md-icon>
+    </md-button>
+  </div>
+  <!-- <md-content class="md-padding"> -->
+    <form name="vm.form.unitTypeListForm" class="form-horizontal" novalidate>
+      <md-card ng-repeat="unitType in vm.unitTypesOnPage" data-ng-if="unitType.active === true">
+        <md-card-content layout="row" layout-align="start center" data-ng-click="vm.goToUnitList(unitType); $event.stopPropagation();" style="background: #b3ffe6;">
+          <h3  data-ng-if="vm.unitTypeEditer" md-highlight-text="vm.searchUnitType" md-highlight-flags="i">{{unitType.name}}</h3>
+          <md-input-container data-ng-click="$event.stopPropagation();" data-ng-if="!vm.unitTypeEditer && unitType.active === true" flex>
+            <label>Unit Type Name</label>
+            <input name="name" ng-model="unitType.name" capitalizefirstletter required>
+            <div ng-messages="vm.form.unitTypeListForm.name.$error"  multiple md-auto-hide="true" ng-if="vm.form.unitTypeListForm.name.$touched || vm.form.unitTypeListForm.name.$dirty">
+              <div ng-message="required" ng-style="{color: vm.form.unitTypeListForm.name.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+          <span flex></span>
+          <md-button data-ng-if="vm.activeUnitType._id != unitType._id" data-ng-click="vm.unitTypeClicked(unitType, $index); $event.stopPropagation();" class="md-fab md-mini md-primary pull-right" aria-label="list">
+          <md-tooltip md-direction="top" flex="90">
+            Click To show Unit Type Detail.
+          </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_expand_more_white_36px.svg" aria-lable="list"></md-icon>
+        </md-button>
+        <md-button data-ng-if="vm.activeUnitType._id === unitType._id" data-ng-click="vm.unitTypeClicked(unitType, $index); $event.stopPropagation();" class="md-fab md-mini md-primary pull-right" aria-label="list">
+          <md-tooltip md-direction="top" flex="90">
+            <strong><font size="2"> {{vm.listShortcut.back}} </font></strong> &nbsp;  Click To Hide Unit Type Detail.
+          </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_expand_less_white_36px.svg" aria-lable="list"></md-icon>
+        </md-button>
+        </md-card-content>
+        <md-card-content layout="column" data-ng-if="vm.activeUnitType._id === unitType._id" flex>
+          <div layout="row">
+            <span flex></span>
+            <md-icon data-ng-if="vm.unitTypeEditer" class="pull-right" md-svg-icon="/modules/core/client/img/svg/ic_mode_edit_black_24px.svg" ng-click="vm.editUnitType();">
+              <md-tooltip md-direction="top" flex="110">
+                <strong>
+                  <font size="2"> {{vm.listShortcut.edit}} </font>
+                </strong> &nbsp; Click to edit
+              </md-tooltip>
+            </md-icon>
+            <md-icon data-ng-if="!vm.unitTypeEditer" class="pull-right" md-svg-icon="/modules/core/client/img/svg/ic_update_black_24px.svg" ng-click="vm.updateUnitType(unitType, $index);">
+              <md-tooltip md-direction="top" flex="110">
+                 <strong>
+                  <font size="2"> {{vm.listShortcut.update}} </font>
+                </strong> &nbsp; Click to update
+              </md-tooltip>
+            </md-icon>&nbsp;&nbsp;
+            <md-icon data-ng-if="!vm.unitTypeEditer" class="pull-right" md-svg-icon="/modules/core/client/img/svg/ic_close_black_24px.svg" ng-click="vm.cancelUnitType($index);">
+              <md-tooltip md-direction="top" flex="110">
+                <strong>
+                  <font size="2"> {{vm.listShortcut.cancelEdit}} </font>
+                </strong> &nbsp; Click to cancle edit
+              </md-tooltip>
+            </md-icon>
+          </div>
+          <fieldset ng-disabled="vm.unitTypeEditer">
+            <div layout="row" layout-xs="column">
+              <md-autocomplete flex required
+                 ng-disabled="true"
+                md-input-name="baseUnitName"
+                md-min-length="0"
+                md-selected-item="vm.selectedUnit"
+                md-search-text="vm.searchUnit"
+                md-items="item in vm.querySearchUnit(vm.searchUnit)"
+                md-item-text="item.name"
+                md-floating-label="Base Unit"
+                placeholder="Base Unit">
+                <md-item-template>
+                  <span md-highlight-text="vm.searchUnit">{{item.name}}</span>
+                </md-item-template>
+                <md-not-found>
+                  No Unit matching "{{vm.searchUnit}}" were found.
+                  <a ng-click="vm.createNewUnit(vm.searchUnit, $event)">Create a new one!</a>
+                </md-not-found>
+                <!-- <div ng-messages="baseUnitName.$error" ng-if="baseUnitName.$touched">
+                  <div ng-message="required">You <b>must</b> have a Category Unit Selected First.</div>
+                </div> -->
+                <div ng-messages="vm.form.unitTypeListForm.baseUnitName.$error"  multiple md-auto-hide="true" ng-if="vm.form.unitTypeListForm.baseUnitName.$touched || vm.form.unitTypeListForm.baseUnitName.$dirty">
+                  <div ng-message="required" ng-style="{color: vm.form.unitTypeListForm.baseUnitName.$touched ? 'Red' : 'Blue' }">
+                    This is a required Field
+                  </div>
+                </div>
+              </md-autocomplete>
+              <md-input-container flex>
+                <label>Base Unit Symbol</label>
+                <input name="symbol" ng-model="vm.selectedUnit.symbol" ng-disabled="true" required>
+                <div ng-messages="vm.form.unitTypeListForm.symbol.$error"  multiple md-auto-hide="true" ng-if="vm.form.unitTypeListForm.symbol.$touched || vm.form.unitTypeListForm.symbol.$dirty">
+                  <div ng-message="required" ng-style="{color: vm.form.unitTypeListForm.symbol.$touched ? 'Red' : 'Blue' }">
+                    This is a required Field
+                  </div>
+                </div>
+              </md-input-container>
+            </div>
+            <div layout="row">
+              <md-input-container flex>
+                <label>Note</label>
+                <textarea name="note" ng-model="unitType.note"></textarea>
+              </md-input-container>
+            </div>
+          </fieldset>
+       <!--  </md-card-content> -->
+      </md-card>
+    </form>
+    <div data-ng-if="vm.totalItemsUnitType.count==0" >
+      <div data-ng-if="!vm.searchUnitType" class="alert alert-warning text-center" >
+         No Unit Type enter yet, please enter a Unit Type by clicking the blue icon below.
+      </div>
+      <div>
+        <div data-ng-if="vm.searchUnitType.length > 0 " class="alert alert-warning text-center">
+          <h5>Search Not Match Any Document.</h5>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="alert alert-warning" data-ng-if="vm.unitTypes.length === 0">There is no Unit Type created yet!</div> -->
+  </md-content>
+  <ul uib-pagination total-items="vm.totalItemsUnitType.count"
+    ng-model="vm.curPageUnitType.page"
+    max-size="vm.maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="vm.paginationForUnitType(vm.searchUnitType)">
+  </ul>
+  <pre>showing <b>{{vm.totalItemsUnitType.count===0 ? 0 :vm.indexStartUnitType+1}}-{{vm.indexEndUnitType}}</b> of <b>{{vm.totalItemsUnitType.count}}</b> UnitTypes</pre>
+</section>

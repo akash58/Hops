@@ -1,0 +1,223 @@
+<section>
+  <div class="page-header">
+    <h1>Memberships</h1>
+  </div>
+  <div layout-align="center center">
+    <form name="vm.membershipForm" onsubmit="clearForm(this)" ng-submit="vm.createMembership()">
+      <div layout="row" layout-xs="column" flex>
+         <md-input-container flex>  
+          <h4><label>Bill Number</label></h4>
+          <input type="Number" name="billNumber" ng-model="vm.billNumber" ng-disabled="true">
+         </md-input-container>
+      <div layout="row" flex>
+       <md-input-container class="block" flex>
+          <h4><label>Payment Towards Membership</label></h4>
+          <input type="number" name="payment" ng-model="vm.payment" min="0" required>
+           <div ng-messages="vm.membershipForm.customerId.$error" ng-if="vm.membershipForm.payment.$touched || vm.membershipForm.payment.$dirty">
+              <div ng-message="required">This is a required Field</div>
+           </div>
+            </md-input-container>
+            <h3>{{vm.currencySymbol}}</h3>
+        </div>
+      </div>
+      <div layout="row" layout-xs="column" flex>
+        <md-input-container flex>
+          <label>Customer Id</label>
+          <input type="Number" name="customerId" ng-model="vm.customerId" ng-change=" getCustomerNameforCustomerId(vm.customerId)" min="0" required>
+        </md-input-container>
+
+        <md-autocomplete flex required 
+          md-input-name="customerName"
+          md-selected-item="vm.customerName"
+          md-search-text-change="vm.searchTextChanged(vm.searchCustomerName)"
+          md-search-text="vm.searchCustomerName"
+          md-selected-item-change="vm.selectedCustomer(item);"
+          md-items="item in vm.querySearchForCustomer(vm.searchCustomerName)"
+          md-item-text="item.customerName"
+          md-min-length="0"
+          md-floating-label="Customer Name"
+          md-menu-class="autocomplete-custom-template">
+           <div ng-messages="vm.membershipForm.customerName.$error" ng-if="vm.membershipForm.customerName.$touched || vm.membershipForm.customerName.$dirty">
+             <div ng-message="required">This is a required Field</div>
+           </div>
+             <md-item-template>
+               <div md-highlight-text="vm.searchCustomerName" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.customerName}}"> {{item.customerName}}</div>
+             </md-item-template>
+               <md-not-found>
+                  <a ng-click="vm.createCustomer(vm.searchCustomerName)">Create New Customer!</a>
+              "{{vm.searchCustomerName}}" no result found for this.
+                </md-not-found>
+        </md-autocomplete>
+
+          <!-- md-input-container flex>
+          <label>Customer Name</label>
+
+             <input type="text" ng-change="vm.createCustomer()" name="customerName" ng-model="vm.customerId" required><div>{{item.customerName}}</div>
+               <div ng-messages="vm.membershipForm.membershipPeriod.$error" ng-if="vm.membershipForm.membershipPeriod.$touched || vm.membershipForm.membershipPeriod.$dirty">
+               <div ng-message="required">This is a required Field</div>
+          </div>
+        </md-input-container>
+ -->
+      </div>
+      <div layout="row" layout-xs="column" layout-sm="column" layout-padding flex>
+        <md-input-container flex>
+          <label>Membership Period in Month</label>
+             <input type="Number" ng-change="vm.countMonthPeriod(vm.membershipPeriod)" name="membershipPeriod" ng-model="vm.membershipPeriod" min="0" required>
+               <div ng-messages="vm.membershipForm.membershipPeriod.$error" ng-if="vm.membershipForm.membershipPeriod.$touched || vm.membershipForm.membershipPeriod.$dirty">
+               <div ng-message="required">This is a required Field</div>
+          </div>
+        </md-input-container>
+        <md-input-container flex>
+          <h4><label>Membership Start Date: </label></h4>
+            <md-datepicker name="startDate" ng-model="vm.membershipStartDate" md-max-date="" md-placeholder="Start Date" required md-open-on-focus>
+            </md-datepicker>
+              <div ng-messages="vm.membershipForm.startDate.$error" ng-if="vm.membershipForm.startDate.$touched || vm.membershipForm.startDate.$dirty">
+             <div ng-message="required">This is a required Field</div>
+           </div>
+          </md-input-container>  
+        <md-input-container flex>
+          <h4><label>Membership Expiry Date: </label></h4>
+          <md-datepicker name="expiryDate" ng-model="vm.membershipExpiryDate" md-min-date="vm.membershipStartDate" md-placeholder="Expiry Date" required md-open-on-focus>
+          </md-datepicker>
+           <div ng-messages="vm.membershipForm.expiryDate.$error" ng-if="vm.membershipForm.expiryDate.$touched || vm.membershipForm.expiryDate.$dirty">
+           <div ng-message="required">This is a required Field</div>
+        </div>
+        </md-input-container> 
+      </div>
+      <div layout="row">
+        <md-input-container flex required>
+          <label>Description</label>
+          <input type="text" name="description" ng-model="vm.description">
+        </md-input-container>
+      </div>
+      <span flex></span>
+      <div layout="row" layout-align="end end"> 
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+            <md-tooltip md-direction="down">
+              Click To Save Membership
+            </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div><hr>
+  <form name="secondForm">
+    <md-card md-whiteframe="4" ng-repeat="membership in vm.memberships" data-ng-if="membership.active">
+      <md-card-content style="background: #b3ffe6;" data-ng-click="vm.membershipClicked(membership);" >
+        <div layout-xs="column" layout="row">
+          <div layout="row" layout-xs="column" flex>
+            <div layout="row" flex>
+              <h4>Bill Number: {{membership.billNumber}}</h4>
+            </div>
+           <div layout="row" data-ng-if="!vm.membershipEditer" flex>
+          <h4>Customer Name: {{membership.customer.customerName}}</h4>
+        </div>
+      </div>
+        <div layout="row" layout-align="end end" data-ng-if="vm.activeMembership === membership._id && !vm.membershipEditer">
+          <md-button class="md-fab md-mini md-primary pull-right" ng-click="vm.editMembership(membership); $event.stopPropagation();">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_mode_edit_white_24px.svg"></md-icon >
+            <md-tooltip md-direction="down">
+              Click To Edit Membership
+            </md-tooltip>
+          </md-button>
+          <md-button ng-click="vm.deleteMembership(membership); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            <md-tooltip md-direction="down">
+              Click To Delete Membership
+            </md-tooltip>
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+          </md-button>
+        </div>
+        <div data-ng-if="vm.activeMembership === membership._id && vm.membershipEditer">
+          <md-button class="md-fab md-mini md-primary pull-right" ng-click="vm.canselEditMembership(membership); $event.stopPropagation();">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon><md-tooltip md-direction="down">
+              Click To cancel Edit
+            </md-tooltip>
+          </md-button>
+          <md-button class="md-fab md-mini md-primary pull-right" ng-click="vm.updateMembership(membership); $event.stopPropagation();" >
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+            <md-tooltip md-direction="down">
+              Click To Update Membership
+            </md-tooltip>
+          </md-button>
+         </div>
+       </div>
+      </md-card-content>
+      <md-card-content  data-ng-if="vm.activeMembership === membership._id">
+        <div layout="row" layout-xs="column" flex>
+          <md-input-container flex>
+            <h4><label>Customer Id</label></h4>
+            <input type="Number" name="editCustomerId" ng-disabled="!vm.membershipEditer" ng-model="vm.edit.customerId" min="0" required>
+              <div ng-messages="secondForm.editCustomerId.$error">
+                <div ng-message="required">This is a required Field</div>
+             </div>  
+          </md-input-container>
+          <div layout="row" flex>
+            <md-input-container class="block" flex>
+              <h4><label>Payment Towards Membership</label></h4>
+               <input type="number" name="editPayment" ng-model="vm.edit.payment" ng-disabled="!vm.membershipEditer" min="0" required>
+                 <div ng-messages="secondForm.editPayment.$error">
+                   <div ng-message="required">This is a required Field</div>
+                </div>
+            </md-input-container>
+            <h3>{{vm.currencySymbol}}</h3>
+          </div> &nbsp;&nbsp;&nbsp;&nbsp;
+          <div data-ng-if="vm.membershipEditer" flex><h4>
+            <md-autocomplete flex required
+              md-input-name="editCustomerName"
+              md-selected-item="vm.edit.customerName"
+              md-search-text-change="vm.searchTextChangedOnEdit(vm.searchEditCustomerName)"
+              md-search-text="vm.searchEditCustomerName"
+              md-selected-item-change="vm.selectedCustomerOnEdit(item)"
+              md-items="item in vm.querySearchForCustomer(vm.searchEditCustomerName)"
+              md-item-text="item.customerName"
+              md-min-length="0"
+              md-floating-label="Customer Name"
+              md-menu-class="autocomplete-custom-template">
+              <div ng-messages="secondForm.editCustomerName.$error">
+              <div ng-message="required">This is a required Field</div>
+          </div>
+              <md-item-template>
+                <div md-highlight-text="vm.searchEditCustomerName" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.customerName}}">{{item.customerName}}</div>
+              </md-item-template>
+              <md-not-found>
+                <a ng-click="createCustomer(vm.searchEditCustomerName)">Create New Customer!</a>
+                  "{{vm.searchEditCustomerName}}" no result found for this.
+              </md-not-found>
+            </md-autocomplete></h4>
+          </div>
+        </div>
+        <div layout-xs="column" layout-sm="column" layout="row">
+          <md-input-container flex>
+            <h4><label>Membership Period in Month</label></h4>
+            <input type="Number" ng-change="vm.countMonthPeriodOnEdit(vm.edit.membershipPeriod, membership)" name="editMembershipPeriod" ng-model="vm.edit.membershipPeriod" ng-disabled="!vm.membershipEditer" min="0" required>
+                <div ng-messages="secondForm.editMembershipPeriod.$error">
+              <div ng-message="required">This is a required Field</div>
+          </div>
+          </md-input-container>
+          <md-input-container flex>
+            <h4><label>Membership Start Date: </label></h4>
+            <md-datepicker name="editStartDate" ng-model="vm.edit.membershipStartDate" md-max-date="" md-placeholder="Start Date" ng-disabled="!vm.membershipEditer" required md-open-on-focus>
+            </md-datepicker>  
+                  <div ng-messages="secondForm.editStartDate.$error">
+              <div ng-message="required">This is a required Field</div>
+          </div>
+          </md-input-container>          
+          <md-input-container flex>
+            <h4><label>Membership Expiry Date: </label></h4>
+            <md-datepicker name="editExpiryDate" ng-model="vm.edit.membershipExpiryDate" md-min-date="vm.edit.membershipStartDate" ng-disabled="!vm.membershipEditer" md-placeholder="Expiry Date" required md-open-on-focus>
+            </md-datepicker>
+            <div ng-messages="secondForm.editExpiryDate.$error">
+               <div ng-message="required">This is a required Field</div>
+            </div>
+          </md-input-container>
+        </div>
+        <div layout="row" flex>
+          <md-input-container flex>
+            <h4><label>Description</label></h4>
+            <input type="text" name="editDescription" ng-disabled="!vm.membershipEditer" ng-model="vm.edit.description">
+          </md-input-container>
+        </div>
+      </md-card-content>
+    </md-card>
+    </form>
+</section>

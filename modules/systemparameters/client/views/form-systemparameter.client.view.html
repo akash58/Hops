@@ -1,0 +1,217 @@
+<section ng-cloak data-ng-init="initialize()">
+ <!--  <div class="page-header">
+    <h1>System Parameter</h1>
+  </div> -->
+  <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>System Parameter</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>System Parameter</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="searchFoodComponentForm" data-ng-submit="curPageSysParam.page = 1; pageChangedSysParam(searchTextSysParam.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextSysParam.txt=''; pageChangedSysParam(searchTextSysParam.txt);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextSysParam.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+ <!--  <div layout="row" layout-align="center center">
+    <form name="search" data-ng-submit="curPageSysParam.page = 1; pageChangedSysParam(searchTextSysParam.text)">
+      <div layout="row" >
+        <md-input-container >
+          <label>&nbsp;</label>
+          <input ng-model="searchTextSysParam.text" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+          <md-tooltip md-direction="down" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div> -->
+  <!-- <div class="col-md-12 col-xs-12 col-sm-12">
+    <form name="search" data-ng-submit="curPageSysParam.page = 1; pageChangedSysParam(searchTextSysParam.text)" class="form-inline animate-show" autocomplete="off" data-ng-focus="focusSysParam()">
+      <div class=" pull-right panel panel-body">
+        Search: <input type="text" data-ng-model="searchTextSysParam.text"  placeholder= " Search System Parameters">
+        <button  class= "btn btn-primary btn-sm glyphicon glyphicon-search" type="submit">
+        </button>
+      </div>
+    </form>
+  </div> -->
+  <div class="padding">
+    <form name="sysparameterForm" class="form-horizontal" ng-submit="createSysParam()">
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+              <input autofocus type="text" name="sysParamName" placeholder="System Parameter" ng-model="sysp.sysParamName" ng-focus="focusSysParam()" required>
+                <div ng-messages="sysparameterForm.sysParamName.$error" ng-if="sysparameterForm.sysParamName.$touched || sysparameterForm.sysParamName.$dirty">
+                  <div ng-message="required">This is a required Field</div>
+                </div>
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+              <input type="text" name="description" placeholder="Description" ng-model="sysp.description" ng-focus="focusSysParam()" required>
+                <div ng-messages="sysparameterForm.description.$error" ng-if="sysparameterForm.description.$touched || sysparameterForm.description.$dirty">
+                  <div ng-message="required">This is a required Field</div>
+                </div>
+          </md-input-container>
+        </div>
+      </div>
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+              <input type="text" name="dvalue" placeholder="Default Value" ng-model="sysp.defaultValue" ng-focus="focusSysParam()" required>
+                <div ng-messages="sysparameterForm.dvalue.$error" ng-if="sysparameterForm.dvalue.$touched || sysparameterForm.dvalue.$dirty">
+                  <div ng-message="required">This is a required Field</div>
+                </div>
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-input-container class = "md-block">
+            <input type="text" name="value" placeholder="Value" ng-model="sysp.value" ng-focus="focusSysParam()" required>
+              <div ng-messages="sysparameterForm.value.$error" ng-if="sysparameterForm.value.$touched || sysparameterForm.value.$dirty">
+                <div ng-message="required">This is a required Field</div>
+              </div>
+          </md-input-container>
+        </div>
+        <!-- <textarea type="text" name="Address" placeholder="Address" required>
+        </textarea> -->
+      </div>
+      <div flex="90">
+        <md-button class="md-fab md-mini md-primary pull-right" type="submit">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+          <md-tooltip md-direction="down" flex="50">
+            Save Systemparameter
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div>
+<div  flex>
+    <!-- <table class="table table-responsive">
+      <thead>
+        <tr>
+          <th>System Parameter<th>
+          <th>Description<th>
+          <th>Default Value<th>
+          <th>Value<th>
+          <th>Update<th>
+        </tr>
+      </thead>
+      <tr data-ng-repeat="sysParam in sysParamsOnPage">
+        <td data-ng-bind="sysParam.systemParameterName"><td>
+        <td data-ng-bind="sysParam.description"><td>
+        <td data-ng-bind="sysParam.defaultValue"><td>
+        <td><input data-ng-model="sysParam.value" data-ng-focus="focusUpdateSysParam(sysParam); focusSysParam()">
+        <td>
+        <td>
+          <md-button class="md-fab md-mini md-primary md-fab" data-ng-click="updateSysParam(sysParam)" id="update-{{$index}}" aria-lable="updateSysParameter">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+            <md-tooltip md-direction="end" flex="60">
+              Update SystemParameter
+              </md-tooltip>
+            </md-button>
+            <div class="text-center text-success" data-ng-show="sysParam.updateSysParamSuccessful" id="updateSysParamSuccessful">System Parameter updated successfully</div>
+            <div class="text-center text-danger" data-ng-show="sysParam.errorUpdateSysParam" data-ng-bind="sysParam.errorUpdateSysParam"></div>
+          <td>
+        </tr>
+      </table> -->
+
+      <!--made changes on responsive table -->
+
+      <table class="table maintable">
+        <thead>
+          <tr>
+            <th scope="col">System Parameter</th>
+            <th scope="col">Description</th>
+            <th scope="col">Default Value</th>
+            <th scope="col">Value</th>
+            <th scope="col">Update</th>
+          </tr>
+        </thead>
+          <tr data-ng-repeat="sysParam in sysParamsOnPage">
+            <td data-label="System Parameter" data-ng-bind="sysParam.systemParameterName"></td>
+            <td data-label="Description" data-ng-bind="sysParam.description"></td>
+            <td data-label="Default Value" data-ng-bind="sysParam.defaultValue"></td>
+            <td data-label="Value"><input data-ng-model="sysParam.value" data-ng-focus="focusUpdateSysParam(sysParam); focusSysParam()"></td>
+            <td data-label="Update"> <md-button class="md-fab md-mini md-primary md-fab" data-ng-click="updateSysParam(sysParam)" id="update-{{$index}}" aria-lable="updateSysParameter">
+              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+              <md-tooltip md-direction="end" flex="60">
+              Update System Parameter
+              </md-tooltip>
+              </md-button>
+              <div class="text-center text-success" data-ng-show="sysParam.updateSysParamSuccessful" id="updateSysParamSuccessful">System Parameter updated successfully</div>
+              <div class="text-center text-danger" data-ng-show="sysParam.errorUpdateSysParam" data-ng-bind="sysParam.errorUpdateSysParam"></div>
+            </td>
+          </tr>
+      </table>
+    </div>
+    <!-- <div layout="row" layout-align="end center">
+      <md-button type="button" class="md-raised" ng-click="resetSysParams()">
+        Reset all to defult value
+      </md-button>
+    </div> -->
+
+    <div class="float-button">
+      <md-button data-ng-click="resetSysParams()" class="md-fab md-mini md-primary md-fab-bottom-right" aria-label="Favorite">
+        <md-tooltip md-direction="end" flex="90">
+          Reset all to defult value
+        </md-tooltip>
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_restore_white_24px.svg" aria-lable="Add"></md-icon>
+      </md-button>
+    </div>
+    <div class="col-md-12 col-xs-12 col-sm-12">
+      <div class="col-md-12 col-xs-12 col-sm-12" data-ng-if="systemparameters.length!==0">
+        <div data-ng-if="(totalItemsSysParam.count===0)" class="alert alert-warning text-center">
+          Your search did not match any documents.
+        </div>
+      </div>
+    </div>
+    <ul uib-pagination total-items="totalItemsSysParam.count"
+        ng-model="curPageSysParam.page"
+        max-size="maxSize"
+        class="pagination-sm"
+        boundary-links="true"
+        rotate="false"
+        num-pages="numPages"
+        ng-change="pageChangedSysParam(searchTextSysParam.text)">
+      </ul>
+    <pagination total-items="totalItemsSysParam.count" ng-model="curPageSysParam.page" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedSysParam(searchTextSysParam.text)"></pagination>
+
+        <pre>showing <b>{{totalItemsSysParam.count===0 ? 0 :indexStartSysParam+1}}-{{indexEndSysParam}}</b> of <b>{{totalItemsSysParam.count}}</b> System Parameters</pre>
+    <!-- <div class="col-md-12 col-xs-12 col-sm-12">
+      <pagination total-items="totalItemsSysParam.count" ng-model="curPageSysParam.page" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChangedSysParam(searchTextSysParam.text)">
+      </pagination>
+      <pre>showing <b>{{totalItemsSysParam.count===0 ? 0 :indexStartSysParam+1}}-{{indexEndSysParam}}</b> of<b>{{totalItemsSysParam.count}}</b> System Parameters
+      </pre>
+  </div> -->
+</section>

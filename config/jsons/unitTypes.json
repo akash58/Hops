@@ -1,0 +1,35 @@
+[{
+    "active" : true,
+    "baseUnitSymbol" : "gms",
+    "baseUnitName" : "Grams",
+    "name" : "Wieght",
+    "units" : [{
+      "multiplierWithBaseUnit" : 1000,
+      "symbol" : "kg",
+      "name" : "Kilogram"
+    },{
+      "multiplierWithBaseUnit" : 453.592,
+      "symbol" : "lbs",
+      "name" : "Pound"
+    }]
+},{
+    "active" : true,
+    "baseUnitSymbol" : "ml",
+    "baseUnitName" : "milli-litres",
+    "name" : "Volume",
+    "units" : [{
+      "multiplierWithBaseUnit" : 1000,
+      "symbol" : "L",
+      "name" : "Liter"
+    }]
+},{
+    "active" : true,
+    "baseUnitSymbol" : "Unit(s)",
+    "baseUnitName" : "Unit(s)",
+    "name" : "Unit(s)",
+    "units" : [{
+      "multiplierWithBaseUnit" : 12,
+      "symbol" : "dz",
+      "name" : "Dozen"
+    }]
+}]

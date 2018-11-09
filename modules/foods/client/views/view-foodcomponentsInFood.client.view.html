@@ -1,0 +1,104 @@
+<md-dialog ng-init="foodComponentsController(food)">
+  <md-toolbar md-scroll-shrink>
+    <div class="md-toolbar-tools">
+      <h2>{{dailogHeader}}</h2>
+      <span flex></span>
+        <md-button class="md-icon-button" ng-click="close()">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_close_white_24px.svg" aria-label="Close dialog"></md-icon>
+        </md-button>
+    </div>
+  </md-toolbar>
+  <div class="md-dialog-content">
+    <div layout="row">
+      <div flex>
+        <md-input-container>
+          <input name="editFoodName" ng-model="foodInDailog.foodName" placeholder="Food Name" required ng-disabled="dailogEditer">
+        </md-input-container>
+      </div>
+      <div flex>
+        <md-input-container>
+          <input name="editPrice" ng-model="foodInDailog.price" placeholder="Food Price" required ng-disabled="dailogEditer">
+        </md-input-container>
+      </div>
+      <hr>
+    </div>
+    <div>
+      <h4>Components In {{dailogHeader}}</h4><hr>
+      <form name="foodComponentForm" ng-submit="addFoodComponentInFood()" layout="column">
+        <div layout="row">
+          <md-autocomplete flex required
+            md-input-name="componentName"
+            ng-disabled="isDisabledassignmenttype"
+            md-selected-item="selectedComponent"
+            md-search-text-change=""
+            md-search-text="searchComponent"
+            md-selected-item-change="selectedItemChangeFoodComponent(item)"
+            md-items="item in querySearch(searchComponent)"
+            md-item-text="item.foodComponentName"
+            md-min-length="0"
+            md-floating-label="Component Name"
+            md-menu-class="autocomplete-custom-template">
+            <md-item-template>
+              <div md-highlight-text="searchComponent" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.foodComponentName}}" popover-trigger="mouseenter"> {{item.foodComponentName}}</div>
+            </md-item-template>
+                  <!-- <div ng-messages="foodComponentForm.componentName.$error" ng-if="foodComponentForm.componentName.$touched">
+                    <div ng-message="required">This is a required Field</div>
+                  </div> -->
+            <md-not-found>
+              <a ng-click="createComponent(searchComponent)">Create New Food Component!</a>
+            "{{searchComponent}}" no result found for this.
+            </md-not-found>
+          </md-autocomplete>
+          <md-input-container class="md-icon-float md-block">
+            <input name="foodComponentUnit" type="Number" ng-model="foodComponentUnit" placeholder="Unit" required min=1>
+            <md-icon class="material-icons">{{baseUnit}}</md-icon>
+                <!-- <div ng-messages="foodComponentForm.foodComponentUnit.$error"  multiple md-auto-hide="true" ng-if="foodComponentForm.foodComponentUnit.$touched || foodComponentForm.foodComponentUnit.$dirty">
+                  <div ng-message="required" ng-style="{color: foodComponentForm.foodComponentUnit.$touched ? 'Red' : 'Blue' }">
+                  This is a required Field
+                </div>
+              </div> -->
+          </md-input-container>
+        </div>
+        <div layout="row">
+          <span flex></span>
+          <div layout-wrap layout-align="end center">
+            <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+              <md-tooltip md-direction="down">
+                Click To Add Component
+              </md-tooltip>
+              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+            </md-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div ng-repeat="foodComponent in foodInDailog.foodComponentsInFood">
+      <ul style="list-style-type:none">
+        <li layout="row"><div ng-click="removeComponentFromFood(foodComponent);">&#x2718;</div> {{foodComponent.foodcomponent.foodComponentName}} {{foodComponent.quantity}}{{foodComponent.foodcomponent.baseUnit.baseUnit}}</li>
+      </ul>
+    </div>
+  </div>
+  <!-- <md-dialog-actions layout="row" color="red">
+    <md-button ng-click="editDailogData();" class="pull-right md-fab md-mini md-primary" data-ng-if="dailogEditer">
+      <md-tooltip md-direction="down">
+        Click To Edit
+      </md-tooltip>
+      <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+    </md-button>
+
+    <md-button ng-click="dialoupdatefood(food)" class="pull-right md-fab md-mini md-primary" data-ng-if="!dailogEditer">
+      <md-tooltip md-direction="down">
+        Click To Update
+      </md-tooltip>
+      <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+    </md-button>
+    <md-button ng-click="unEditDailogData();" class="pull-right md-fab md-mini md-primary" data-ng-if="!dailogEditer">
+      <md-tooltip md-direction="down">
+        Click To Cancel Edit
+      </md-tooltip>
+      <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+    </md-button>
+  </md-dialog-actions> -->
+</md-dialog>

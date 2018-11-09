@@ -1,0 +1,227 @@
+<section data-ng-init="initialize()">
+  <!-- <div class="page-header">
+    <h1>Category</h1>
+  </div> -->
+ <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Category</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Category</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="searchCategoryForm" data-ng-submit="curPageCategory.currentPage = 1; pageChangedCategory(searchTextCategory.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextCategory.text=''; pageChangedCategory(searchTextCategory.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextCategory.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+
+  <div class="padding">
+    <form name="categoryForm" class="form-horizontal" ng-submit="createCategory()">
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+              <input autofocus type="text" name="categoryName" placeholder="Category Name" ng-model="cat.categoryName" ng-focus="focusCategory()" required>
+                <div ng-messages="categoryForm.categoryName.$error"  multiple md-auto-hide="true" ng-if="categoryForm.categoryName.$touched || categoryForm.categoryName.$dirty ">
+                  <div ng-message="required" ng-style="{color: categoryForm.categoryName.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                  </div>
+                </div>
+          </md-input-container>
+        </div>
+        <!-- <div layout="row" layout-sm="row" layout-xs="row" flex> -->
+        <div flex>
+          <md-input-container class = "md-block" flex-gt-sm>
+            <input type="number"  name="ratePerHourWeekday" placeholder="Weekday rate Per Hour" min="0" ng-model="cat.ratePerHourWeekday" ng-focus="focusCategory()" required>
+              <div ng-messages="categoryForm.ratePerHourWeekday.$error"  multiple md-auto-hide="true" ng-if="categoryForm.ratePerHourWeekday.$touched || categoryForm.ratePerHourWeekday.$dirty ">
+                <div ng-message="required" ng-style="{color: categoryForm.ratePerHourWeekday.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                </div>
+              </div>
+            <md-icon md-svg-src="/modules/core/client/img/svg/currency-inr.svg" aria-lable="Add"></md-icon>
+          </md-input-container>
+        </div>
+        <!-- <div layout="row" >
+          <h3>{{vm.currencySymbol}}</h3>
+        </div> -->
+      <!-- </div> -->
+      <!-- </div> -->
+      <!-- <div layout="row" layout-wrap layout-sm="row" layout-xs="column"> -->
+        <!-- <div layout="row" layout-wrap layout-sm="row" layout-xs="row" flex> -->
+        <div flex>
+          <md-input-container class = "md-block" flex-gt-sm>
+            <input type="number" name="ratePerHourWeekendHoliday" placeholder="Weekend/Holiday Rate Per Hour"  min="0" ng-model="cat.ratePerHourWeekendHoliday" ng-focus="focusCategory()" required>
+              <div ng-messages="categoryForm.ratePerHourWeekendHoliday.$error"  multiple md-auto-hide="true" ng-if="categoryForm.ratePerHourWeekendHoliday.$touched || categoryForm.ratePerHourWeekendHoliday.$dirty ">
+                <div ng-message="required" ng-style="{color: categoryForm.ratePerHourWeekendHoliday.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                </div>
+              </div>
+            <md-icon md-svg-src="/modules/core/client/img/svg/currency-inr.svg" aria-lable="Add"></md-icon>
+          </md-input-container>
+        </div>
+      </div>
+      <div >
+        <md-button class="md-fab md-mini md-primary pull-right"  type="submit">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+          <md-tooltip md-direction="down" flex="50">
+            Save Category
+          </md-tooltip>
+        </md-button>
+      </div>
+     </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- <div layout="row" layout-align="center center">
+    <form name="search" data-ng-submit="curPageCategory.currentPage = 1; pageChangedCategory(searchTextCategory.text)">
+      <div layout="row" >
+        <md-input-container >
+          <label>&nbsp;</label>
+          <input ng-model="searchTextCategory.text" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-left">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+          <md-tooltip md-direction="down" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div>
+ -->
+  <md-card  data-ng-repeat="category in categoriesOnPage" data-ng-if="category.active" md-whiteframe="4" >
+    <div class="md-padding" style="background: #b3ffe6;" layout="row"  data-ng-click="vm.clickCategory(category);"  >
+      <div data-ng-if="!vm.editing || vm.activeCategoryId != category._id" style="overflow: hidden;">
+          <h4>Category Name : {{category.categoryName}}</h4>
+      </div>
+      <div data-ng-if="vm.editing && vm.activeCategoryId == category._id" ng-click="$event.stopPropagation();" style="overflow: hidden;" >
+        <h3>Category Name : {{vm.edit.categoryName}}
+          <!-- <md-input-container flex>
+
+            <input name="categoryName" ng-model="vm.edit.categoryName" placeholder="Category Name" required>
+          </md-input-container> -->
+        </h3>
+      </div>
+      <span flex></span>
+      <div layout="row" data-ng-if="!vm.editing">
+        <div data-ng-if = "vm.activeCategoryId == category._id">
+          <md-button ng-click="!vm.editCategory(category); $event.stopPropagation();" class="md-fab md-mini md-primary">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+            <md-tooltip md-direction="down">
+              Click To Edit
+            </md-tooltip>
+          </md-button>
+
+        </div>
+        <div data-ng-if = "vm.activeCategoryId == category._id">
+          <md-button ng-click="vm.deleteCategory(category); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            <md-tooltip md-direction="down">
+              Click To Delete
+            </md-tooltip>
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+          </md-button>
+        </div>
+      </div>
+      <div layout="row" data-ng-if="vm.editing">
+        <div data-ng-if = "vm.activeCategoryId === category._id">
+          <md-button ng-click="vm.updateCategory(category); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            <md-tooltip md-direction="down">
+              Update Category
+            </md-tooltip>
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+          </md-button>
+        </div>
+        <div data-ng-if = "vm.activeCategoryId === category._id">
+          <md-button ng-click="vm.cancelEditCategory(category); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            <md-tooltip md-direction="down">
+              Click To Cancel
+            </md-tooltip>
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+          </md-button>
+        </div>
+      </div>
+    </div>
+    <md-card-content data-ng-if="vm.activeCategoryId === category._id">
+      <form name="categoryUpdateForm" data-ng-submit="updateCategory(category)" class="form-inline animate-show">
+        <div layout="row" layout-wrap layout-sm="column" layout-xs="column" flex>
+          <!-- <div layout="row" flex> -->
+            <md-input-container flex>
+            <!-- <label>Category Name</label> -->
+            <input name="categoryName" ng-model="vm.edit.categoryName" placeholder="Category Name" ng-disabled="!vm.editing" required>
+              <div ng-messages="categoryUpdateForm.categoryName.$error"  >
+                <div ng-message="required" >
+                This is a required Field
+                </div>
+              </div>
+          </md-input-container>
+          <div layout="row" layout-wrap layout-sm="column" layout-xs="row" flex>
+            <md-input-container class="md-block" flex flex-gt-sm>
+              <input type="number" name="editRatePerHourWeekday" placeholder="Rate Per Hour Weekday" min="0" ng-model="vm.edit.ratePerHourWeekday" ng-focus="focusOnUpdateCategory()" ng-disabled="!vm.editing" required>
+                <div ng-messages="categoryUpdateForm.editRatePerHourWeekday.$error"  >
+                  <div ng-message="required" >
+                This is a required Field
+                  </div>
+                </div>
+              <md-icon md-svg-src="/modules/core/client/img/svg/currency-inr.svg" aria-lable="Add"></md-icon>
+            </md-input-container>
+
+          <!-- </div> -->
+          <!-- <div layout="row" flex> -->
+          </div>
+           <div layout="row" layout-wrap layout-sm="column" layout-xs="row" flex>
+            <md-input-container class="md-block" flex flex-gt-sm>
+              <input type="number" name="editRatePerHourWeekendHoliday" placeholder="Rate Per Hour Weekend Holiday" min="0" ng-model="vm.edit.ratePerHourWeekendHoliday" ng-focus="focusOnUpdateCategory()" ng-disabled="!vm.editing" required>
+                <div ng-messages="categoryUpdateForm.editRatePerHourWeekendHoliday.$error"  >
+                  <div ng-message="required" >
+                This is a required Field
+                  </div>
+                </div>
+              <md-icon md-svg-src="/modules/core/client/img/svg/currency-inr.svg" aria-lable="Add"></md-icon>
+            </md-input-container>
+
+          <!-- </div> -->
+        </div>
+        </div>
+      </form>
+    </md-card-content>
+  </md-card>
+
+  <ul uib-pagination total-items="totalItemsCategory.count"
+    ng-model="curPageCategory.page"
+    max-size="maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="pageChangedCategory(searchTextCategory.text)">
+  </ul>
+  <pre>showing <b>{{totalItemsCategory.count===0 ? 0 :indexStartCategory+1}}-{{indexEndCategory}}</b> of <b>{{totalItemsCategory.count}}</b> Categories</pre>
+</section>

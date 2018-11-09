@@ -1,0 +1,255 @@
+<section data-ng-controller="FoodExpirysController" data-ng-init="initialize()" > 
+ <!--  <div class="page-header">
+    <h1>Food Expiries </h1>
+  </div> -->
+  
+  <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Food Expiries</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Food Expiries</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="search" data-ng-submit="curPageFoodExpiry.currentPage = 1; pageChangedFoodExpiry(searchTextPay.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextPay.text=''; pageChangedFoodExpiry(searchTextPay.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextPay.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+
+  <div>
+    <div  layout="row" layout-xs="column" layout-sm="row">
+      <div layout="row" layout-xs="column" layout-sm="row">
+        <!-- <button title="Click to add Food Expiry!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addFoodExpiryButtonClicked()"></button> -->
+        <md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addFoodExpiryButtonClicked()">
+          <md-tooltip md-direction="down">
+           Click to add Food Expiry!
+          </md-tooltip>
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+        </md-button>
+      </div>  
+        <div layout="row"  flex layout-xs="column"  layout-margin layout-sm="column" data-ng-if="addFoodExpiryClicked"  md-padding>
+          <div layout="row" flex layout-xs="column">
+            <form name="foodTypeForm" flex ng-submit="createFoodExpiry($event)" class="form-inline animate-show" autocomplete="off">
+              <div layout="row" layout-xs="column" layout-sm="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <input type="number" id="FoodExpiryNo" name="FoodExpiryNo" data-ng-model="fooExp.foodExpiryNo" placeholder="Enter Food Expiry No" data-ng-focus="" disabled>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                   <input type="date"  name="foodExpiryDate" data-ng-model = "fooExp.foodExpiryDate" data-ng-change=""  min="{{fooExp.foodExpiryDate}}" max="{{fooExp.foodExpiryDate}}">
+                </md-input-container>
+              </div>
+              <div flex>
+                   <md-input-container class="md-block" flex-gt-sm>
+                    <textarea name="description" data-ng-model="fooExp.description" id="description"  cols="30" rows="1" placeholder="Description"  data-ng-focus=""></textarea>
+                   </md-input-container>       
+              </div>
+              <div layout="row"  layoout-wrap layout-xs="column" layout-sm="row">
+                <div flex>   
+                  <md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addFoodComponentsButtonClicked()">
+                    <md-tooltip md-direction="down">
+                    Click to add Food Components!
+                    </md-tooltip>
+                    <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+                  </md-button>
+                  <div  layout="column" flex  layout-xs="column" layout-sm="column" data-ng-show="addFoodComponentsClicked">
+                    <div>
+                      <div  flex layout="row" layout-xs="column" layout-sm="row">
+                        <div flex>
+                          <md-autocomplete 
+                            md-no-cache="foodComponentToBeAdded.noCache"
+                            md-selected-item="foodComponent.selectedItem"
+                            md-search-text-change="searchTextChange(searchTexts)"
+                            md-search-text="searchTexts"
+                            md-selected-item-change="selectedItemChange(item);getBaseUnitValue(item);"
+                            md-items="item in queryFoodComponent(searchTexts)"
+                            md-item-text="item.foodComponentName"
+                            md-min-length="0"
+                            md-floating-label="Select FoodComponent">
+                            <md-item-template>
+                              <span md-highlight-text="searchTexts" md-highlight-flags="^i">{{item.foodComponentName}}
+                              </span>
+                            </md-item-template>
+                            <md-not-found>
+                              No Type matching "{{searchTexts}}" were found.
+                                <a ng-click="createFoodComponent(foodComponentToBeAdded.searchFoodComponents, $event)">Create a new one!</a>
+                            </md-not-found>
+                          </md-autocomplete>
+                        </div>
+                        <div layout="row" class="md-block" flex-gt-sm>
+                          <md-input-container flex>
+                            <input type="number" id="quantity" name="quantity" data-ng-model="expFoodCom.quantity" placeholder="Enter Quantity" data-ng-focus="" min="0" step="1" value="1">
+                              <!-- <h3 style="margin: 0; padding: 0;">{{expFoodCom.baseunit}}</h3> -->
+                          </md-input-container>
+                          <md-input-container>
+                            <md-select ng-model="selectedUnitId" ng-change="unitChanged(selectedUnitId)">
+                              <md-option ng-value="unit._id" ng-repeat="unit in unitsInCurrentUnitType">{{unit.symbol}}</md-option>
+                            </md-select>
+                          </md-input-container>
+                        </div>
+                      </div>  
+                       <div flex>
+                        <md-input-container class="md-block" flex-gt-sm>
+                          <textarea name="description" data-ng-model="expFoodCom.description" id="description"  cols="30" rows="1" placeholder="Description" data-ng-focus=""></textarea>
+                        </md-input-container>       
+                       </div>
+                        
+                        <div layout-align="end end" class="pull right"  layout="row">
+                          <md-button ng-click="addInTempFoodComponents()" class="md-raised md-primary pull right">Add</md-button>
+                        </div> 
+                    </div>
+                  </div>  
+                  <div data-ng-if="tempFoodComponentsAdded.length">
+                    <div layout="row" layout-wrap>
+                      <table class="table maintable">
+                        <thead>
+                          <tr>
+                            <th scope="col">Food Component Name</th>
+                            <th scope="col">Expiry Quantity</th>
+                            <th scope="col">Description</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tr data-ng-repeat="foodComponentAdded in tempFoodComponentsAdded">
+                          <td data-label="Food Component">{{foodComponentAdded.foodcomponentname}}</td>
+                          <td data-label="Quantity">{{foodComponentAdded.quantity}} {{foodComponentAdded.baseunit}}</td>
+                          <td data-label="Description">{{foodComponentAdded.description}}</td>
+                          <td data-label="">
+                            <button type="button" class="btn-danger glyphicon glyphicon-remove" data-ng-click=" deletedTempFoodComponent(foodComponentAdded)"></button>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div layout-align="end end" class=" pull right"  layout="row">
+                    <md-button class="md-fab md-mini md-primary pull-right"  type="submit">
+                      <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+                      <md-tooltip md-direction="down" flex="50">
+                         Save Food Expiry
+                      </md-tooltip>
+                    </md-button>
+                  </div>
+                  <div class="col-md-12 col-xs-12 col-sm-12 form-group">
+                    <p data-ng-show="savedFoodExpirySuccessfully" class="text-center text-success">
+                      <strong>Food Expiry Saved Successfully</strong></p>
+                    <p data-ng-show="errorFoodExpiry" class="text-center text-danger">
+                      <strong data-ng-bind="errorFoodExpiry"></strong></p>
+                  </div>
+                </div>
+              </div>    
+            </form>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div layout="row" layout-wrap layout-xs="column" flex>
+    <form name="search" data-ng-submit="curPageFoodExpiry.page = 1; pageChangedFoodExpiry(searchTextFoodExpiry.text)" class="form-inline animate-show" autocomplete="off" flex>
+      <ul flex  uib-pagination total-items="totalItemsFoodExpiry.count" 
+        ng-model="curPageFoodExpiry.page" 
+        max-size="maxSize" 
+        class="pagination-sm" 
+        boundary-links="true" 
+        rotate="false" 
+        num-pages="numPages" 
+        ng-change="pageChangedFoodExpiry(searchTextFoodExpiry.text)">
+      </ul>
+    
+       <!--  <div layout="row" class="pull-right" flex layout-align="start start">
+          <md-input-container >
+            <label>&nbsp;</label>
+            <input  type="text" data-ng-model="searchTextFoodExpiry.text" placeholder = "Search Food Types" >
+          </md-input-container> -->
+         <!--  Search: <input  type="text" 
+                data-ng-model="searchTextFoodExpiry.text" 
+                placeholder = "Search Food Types" ></input> -->
+                <!-- data-ng-change="curPageFoodExpiry.page = 1; pageChangedFoodExpiry(searchTextFoodExpiry.text)" -->
+               <!--  <button type="submit" class= "btn btn-primary btn-sm glyphicon glyphicon-search"></button> -->
+          <!-- <md-button type="submit" class="md-fab md-mini md-primary pull-right">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+                <md-tooltip md-direction="down" flex="60">
+                  Search
+                </md-tooltip>
+          </md-button>      
+        </div> -->
+    </form>
+  </div> 
+    <!-- <div layout="row" layout-wrap layout-xs="column">
+      <div class = "list-group"> -->
+  <md-card  flex class="row" data-ng-repeat="foodexpiry in foodExpirysOnPage" md-whiteframe="4">
+    <md-card-content style="background: #b3ffe6;" data-ng-click="clickFoodExpiry(foodexpiry)">
+      <label for="purchaseOrderNumber">Food Expiry Number: <font size="3"><strong>{{foodexpiry.foodExpiryNumber}}</strong> </font></label>
+    </md-card-content>
+    <md-card-content class="panel-body col-md-12 col-xs-12 col-sm-12" data-ng-if="foodexpiry.foodExpiryNumber == activeFoodExpiry">
+      <div layout="row" layout-xs="column" flex>
+        <div flex><label for="Date">Date :  {{stringifyDate(foodexpiry.foodExpiryDate)}}</label></div>
+      </div>
+      <div flex>
+        <label for="description">Description :  {{foodexpiry.description}}</label>
+      </div>
+      <div class="column">
+      <h3 class="md-padding">Food Component in the Purchase Order:</h3>
+        <table class="maintable poTable  row">
+          <thead>
+            <tr>
+              <th scope="col">Food Component Name</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Description</th>
+            </tr>
+          </thead>
+          <tr data-ng-repeat="foodComponentRelated in foodExpiryInventoryActivityInFoodExpirys">
+            <td data-label="food component">{{foodComponentRelated.inventoryActivity.foodcomponent.foodComponentName}}</td>
+            <td data-label="Quantity">{{foodComponentRelated.inventoryActivity.addedOrRemovedStock}} {{foodComponentRelated.inventoryActivity.foodcomponent.baseUnit.baseUnitSymbol}}</td>
+            <td  data-label="Description">{{foodComponentRelated.inventoryActivity.description}}</td>
+          </tr>
+        </table>
+      </div>
+    </md-card-content>
+  </md-card>
+  <!--  </div>
+  </div>  -->
+
+  <div layout="row" data-ng-if="foodexpiries.length !== 0" flex>
+    <div data-ng-if="(totalItemsFoodExpiry.count === 0)" class="alert alert-warning text-center" flex>
+      Your search did not match any documents.
+    </div>
+  </div>
+  <div layout="column">
+     <ul flex  uib-pagination total-items="totalItemsFoodExpiry.count" 
+        ng-model="curPageFoodExpiry.page" 
+        max-size="maxSize" 
+        class="pagination-sm" 
+        boundary-links="true" 
+        rotate="false" 
+        num-pages="numPages" 
+        ng-change="pageChangedFoodExpiry(searchTextFoodExpiry.text)">
+    </ul>
+  
+    <pre>showing <b>{{totalItemsFoodExpiry.count===0 ? 0 :indexStartFoodExpiry+1}}-{{indexEndFoodExpiry}}</b> of <b>{{totalItemsFoodExpiry.count}} Food Expirys </b></pre>
+  </div> 
+</section>

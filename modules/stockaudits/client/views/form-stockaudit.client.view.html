@@ -1,0 +1,327 @@
+<section data-ng-init="initialize()" >
+  <!-- <div class="page-header">
+    <h1>{{vm.stockaudit._id ? 'Edit Stockaudit' : 'New Stockaudit'}}</h1>
+  </div> -->
+  <!-- <div class="page-header">
+		<h1>Stock Audit </h1>
+	</div> -->
+	<div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Stock Audit</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Stock Audit</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="search" data-ng-submit="curPageStockAudit.currentPage = 1; pageChangedStockAudit(searchTextStockAudit.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextStockAudit.text=''; pageChangedStockAudit(searchTextStockAudit.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextStockAudit.text" type="number" placeholder="Search in number">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+
+	<div layout="row" layoout-wrap layout-xs="column" layout-sm="row">
+		<md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addStockAuditButtonClicked()" id="addStockAuditButtonClicked">
+          <md-tooltip md-direction="down">
+           Click to add Stock Audit!
+          </md-tooltip>
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+        </md-button>
+        <div layout="column" flex layout-xs="column"  layout-margin layout-sm="column" data-ng-show="addStockAuditClicked"  md-padding>
+        	<form name="foodTypeForm" flex data-ng-submit="addInTempFoodComponents()" class="form-inline animate-show" autocomplete="off">
+        		<div layout="row" flex layout-xs="column" layout-sm="row">
+        			<md-input-container class="md-block" flex-gt-sm flex>
+			            <input type="number" id="StockAuditNo" name="StockAuditNo" ng-model="stckaud.stockAuditNo" data-ng-focus="focusStockAudit()" disabled>
+			        </md-input-container>
+			        <md-input-container class="md-block" flex-gt-sm flex>
+			           <input type="date"  name="purchaseDate" data-ng-model = "stckaud.auditDate" data-ng-change="" min="{{stckaud.purchaseDate}}" max="{{stckaud.purchaseDate}}">
+			        </md-input-container>
+        		</div>
+        		<div flex>
+            	    <md-input-container class="md-block" flex-gt-sm>
+               	 		<textarea name="description" data-ng-model="stckaud.description" id="description"  cols="30" rows="1" placeholder="Description" data-ng-focus="focusStockAudit()"></textarea>
+            		</md-input-container>
+                </div>
+
+        	</form>
+        	 <div layout="row"  layoout-wrap layout-xs="column" layout-sm="row">
+                <div flex>
+	                <md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addFoodComponentsButtonClicked()" id="addFoodComponentsButtonClicked">
+		              <md-tooltip md-direction="down">
+		                Click to add Food Components!
+		              </md-tooltip>
+		              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+		            </md-button>
+
+		            <div layout="column" flex  layout-xs="column" layout-sm="column" data-ng-show="addFoodComponentsClicked">
+		            	<form name="foodTypeForm" data-ng-submit="addInTempFoodComponents()" class="form-inline animate-show" autocomplete="off">
+                    <div  flex layout="row" layout-xs="column" layout-sm="row">
+                      <div flex>
+                      <!-- <md-autocomplete
+                						md-no-cache="foodComponentToBeAdded.noCache"
+                						md-selected-item="foodComponentToBeAdded.foodComponentSelectedItem"
+                						md-search-text="stckfoodcom.foodcomponent"
+                						md-items="item in queryFoodComponent(foodComponentToBeAdded.foodComponentSearchText)"
+                						md-item-text="item.foodComponentName"
+                						md-min-length="0"
+                						data-ng-focus=""
+                						md-floating-label="Select Food Component">
+                  						<md-item-template>
+                    						<span md-highlight-text="foodComponentToBeAdded.foodComponentSearchText" md-highlight-flags="^i">{{item.foodComponentName}}</span>
+                  						</md-item-template>
+                  						<md-not-found>
+                    						No states matching "{{foodComponentToBeAdded.foodComponentSearchText}}" were found.
+                    						<!-- <a ng-click="ctrl.newState(ctrl.customerSearchText)">Create a new one!</a> -->
+                  						<!-- </md-not-found>
+              						</md-autocomplete> -->
+
+                        <md-autocomplete required
+              						md-no-cache="foodComponentToBeAdded.noCache"
+                          ng-disabled="isDisabledassignmenttype"
+                          md-selected-item="vm.foodComponentName"
+                          md-selected-item-change= "getBaseUnitValue(item)"
+                          md-search-text="vm.searchFoodComponent"
+                          md-items="item in vm.querySearchForFoodComponent(vm.searchFoodComponent)"
+                          md-item-text="item.foodComponentName"
+                          md-min-length="0"
+                          md-floating-label="Food Component"
+                          md-menu-class="autocomplete-custom-template">
+                          <md-item-template>
+                            <div md-highlight-text="vm.searchFoodComponent" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.foodComponentName}}" popover-trigger="mouseenter"> {{item.foodComponentName}}</div>
+                          </md-item-template>
+                          <md-not-found>
+                            No Type matching "{{vm.searchFoodComponent}}" were found. <a ng-click="createFoodComponent(foodComponentToBeAdded.searchFoodComponents, $event)">Create a new one!</a>
+                          </md-not-found>
+                        </md-autocomplete>
+                      </div>
+                      <div layout="row" class="md-block" flex-gt-sm>
+                        <md-input-container flex>
+                          <input type="number" id="quantity" name="quantity" data-ng-model="stckfoodcom.physicalStock" placeholder="Enter Quantity" data-ng-focus="" min="0" step="1" value="1">
+                            <!-- <h3 style="margin: 0; padding: 0;">{{expFoodCom.baseunit}}</h3> -->
+                        </md-input-container>
+                        <md-input-container>
+                          <md-select ng-model="selectedUnitId" ng-change="unitChanged(selectedUnitId)">
+                            <md-option ng-value="unit._id" ng-repeat="unit in unitsInCurrentUnitType">{{unit.symbol}}</md-option>
+                          </md-select>
+                        </md-input-container>
+                      </div>
+						   		 <!-- <input type="number" id="quantity" name="quantity" data-ng-model="stckfoodcom.physicalStock" placeholder="Enter Quantity"  min = "0" data-ng-focus="focusStockAudit()" required><div layout="row"><h3 style="margin: 0; padding: 0;">{{stckfoodcom.baseunit}}</h3></div> -->
+						       	<!-- <input type="number" step="any" name="rate" ng-model="project.rate"  ng-pattern="/^1234$/"/><strong id="baseunit">  {{foodcom.baseunit}}</strong> -->
+			            <!-- <md-input-container flex class="md-block" flex-gt-sm>
+							    <div ng-messages="projectForm.description.$error">
+							    <div ng-message="required">This is required.</div>
+							    <div ng-message="md-maxlength">The description must be less than 30 characters long.</div>
+							    </div>
+                  </md-input-container> -->
+								<!-- <div layout="row" flex>
+			            	   <div layout-align="end end"><h3>{{currencySymbol}}</h3> </div>
+								<md-input-container flex class="md-block" flex-gt-sm><input type="number" id="price" name="price" data-ng-model="foodcom.price" placeholder="Enter Price" data-ng-focus="focusPurchaseOrder()" required step ="0.01" min = "0">
+						        </md-input-container>
+			            	  </div> -->
+                <!--  <strong>{{stckfoodcom.baseunit}}</strong> -->
+                    </div>
+                    <div flex>
+			            	  <md-input-container class="md-block" flex-gt-sm>
+                        <textarea name="description" data-ng-model="stckfoodcom.description" id="description"  cols="30" rows="1" placeholder="Description" data-ng-focus="focusStockAudit()"></textarea>
+			            		</md-input-container>
+			              </div>
+			              <div layout-align="end end" class=" pull right"  layout="row">
+                    <md-button type="submit" class="md-raised md-primary pull right">Add</md-button>
+                    </div>
+		            	</form>
+		            </div>
+
+	       		   </div>
+	          </div>
+	           <div data-ng-if="tempFoodComponentsAdded.length">
+					<table class="table maintable"> <!-- test: {{test}}<hr>test1: {{test1}}<hr>
+					tempFoodComponentsAdded : {{tempFoodComponentsAdded}}  -->
+
+						<thead>
+							<tr>
+								<th scope="col">Food Component Name</th>
+								<th scope="col">Physical Stock</th>
+								<th scope="col">Description</th>
+								<th scope="col"></th>
+								</tr>
+							</thead>
+							<tr data-ng-repeat="foodComponentAdded in tempFoodComponentsAdded">
+								<!-- {{foodComponentAdded}} -->
+								<td  data-label="food component"><label for="foodcomponent">{{foodComponentAdded.foodcomponent.foodComponentName}}</label></td>
+								<td  data-label="Quantity"><label for="Quantity">{{foodComponentAdded.physicalstock}} {{foodComponentAdded.baseunit}}</label></td>
+								<td  data-label="Description"><label for="Description">{{foodComponentAdded.description}}</label></td>
+								<td  data-label=""><button type="button" class="btn-danger glyphicon glyphicon-remove" data-ng-click=" deletedTempFoodComponent(foodComponentAdded)"></button>
+								</td>
+							</tr>
+					</table>
+				</div>
+				<div layout-align="end end" class=" pull right"  layout="row">
+			        <md-button class="md-fab md-mini md-primary pull-right" type="button" onclick="" data-ng-click="createStockAudit()">
+			        	<md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+			        	<md-tooltip md-direction="down" flex="50">
+			           		 Save Customer
+			            </md-tooltip>
+			       </md-button>
+			    </div>
+			    <div class="col-md-12 col-xs-12 col-sm-12 form-group">
+					<p data-ng-show="savedStockAuditSuccessfully" class="text-center text-success">
+						<strong>Stock Audit Saved Successfully</strong></p>
+					<p data-ng-show="errorStockAudit" class="text-center text-danger">
+						<strong data-ng-bind="errorStockAudit"></strong></p>
+				</div>
+				<div>
+					<p data-ng-show="errorSameFoodCompAdded" class="text-center text-danger">
+					<strong data-ng-bind="errorSameFoodCompAdded"></strong></p>
+				</div>
+        </div>
+	</div>
+	<!-- <div layout="row" layout-wrap layout-xs="column" flex>
+		<form name="search" flex data-ng-submit="curPageStockAudit.page = 1; pageChangedStockAudit(searchTextStockAudit.text)" class="form-inline animate-show" autocomplete="off">
+	        <ul flex  uib-pagination total-items="totalItemsStockAudit.count"
+	          ng-model="curPageStockAudit.page"
+	          max-size="maxSize"
+	          class="pagination-sm"
+	          boundary-links="true"
+	          rotate="false"
+	          num-pages="numPages"
+	          ng-change="pageChangedStockAudit(searchTextStockAudit.text)">
+	        </ul>
+	        <div layout="row" class="pull-right" flex layout-align="start start">
+				<md-input-container >
+			        <label>&nbsp;</label>
+			        <input type="text"  ng-model="searchTextStockAudit.text" placeholder="Search Stock-Audit Number">
+			    </md-input-container>
+
+			    <md-button type="submit" class="md-fab md-mini md-primary pull-right">
+			          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+			          <md-tooltip md-direction="down" flex="60">
+			            Search
+			          </md-tooltip>
+			    </md-button>
+			</div>
+		</form>
+	</div> -->
+	<!-- <div class="col-md-12 col-xs-12 col-sm-12">
+		<div class = "list-group">
+			<div data-ng-repeat="stockaudit in stockAuditsOnPage"   class = "panel panel-info list-group-item col-md-12 col-xs-12 col-sm-12">
+				<div class="panel-heading" data-ng-click="clickStockAudit(stockaudit)">
+					<label for="purchaseOrderNumber">Stock Audit Number: <font size="3"><strong>{{stockaudit.stockAuditNumber}}</strong> </font></label>
+				</div>
+				<div class="panel-body col-md-12 col-xs-12 col-sm-12" data-ng-if="stockaudit.stockAuditNumber == activeStockAudit">
+					<div class="col-md-6 col-xs-12 col-sm-6">
+						<label for="Date">Date :  {{stringifyDate(stockaudit.stockAuditDate)}}</label>
+					</div>
+					<div class="col-md-12 col-xs-12 col-sm-12">
+						<label for="description">Description :  {{stockaudit.description}}</label>
+					</div>
+					<div class="col-md-12 col-xs-12 col-sm-12">
+						<h3 Class="panel-heading">Food Component in the Purchase Order:</h3>
+						<table class="table">
+							<thead>
+								<tr>
+										<th>Food Component Name</th>
+										<th>Quantity</th>
+										<th>Description</th>
+									</tr>
+								</thead>
+							<tr data-ng-repeat="foodComponentRelated in stockAuditInventoryActivityInStockAudits">
+									<td><label for="foodcomponent">{{foodComponentRelated.inventoryActivity.foodcomponent.foodComponentName}}</label></td>
+									<td><label for="Quantity">{{foodComponentRelated.inventoryActivity.addedOrRemovedStock}} {{foodComponentRelated.inventoryActivity.foodcomponent.baseUnit.baseUnit}}</label></td>
+									<td><label for="Description">{{foodComponentRelated.inventoryActivity.description}}</label></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> -->
+	<md-card  flex class="row" data-ng-repeat="stockaudit in stockAuditsOnPage"  md-whiteframe="4">
+		<!-- <div class = "list-group"> -->
+		<md-card-content style="background: #b3ffe6;"
+			  data-ng-click="clickStockAudit(stockaudit)">
+			<!-- <label for="purchaseOrderNumber"> --><h4>Stock Audit Number: <strong>{{stockaudit.stockAuditNumber}}</strong> </font></h4></label>
+        </md-card-content> <!-- stockAuditsOnPage: {{stockAuditsOnPage}}  -->
+        <md-card-content data-ng-if="stockaudit.stockAuditNumber == activeStockAudit">
+			<!-- <div class="panel-body col-md-12 col-xs-12 col-sm-12" > -->
+				<div class="md-padding">
+				<div layout="row" layout-xs="column" flex>
+					<div flex> <label for="Date">Date :  {{stringifyDate(stockaudit.stockAuditDate)}}</label></div>
+                </div>
+
+				<div flex>
+					<label for="description">Description :  {{stockaudit.description}}</label>
+                </div>
+                </div>
+				<div layout="column">
+                    <h3  class="md-padding">Food Component in the Purchase Order:</h3>
+					<table class="maintable poTable  row">
+						<thead>
+							<tr>
+								<th scope="col">Food Component Name</th>
+								<th scope="col">Quantity</th>
+								<th scope="col">Description</th>
+
+                            </tr>
+                        </thead>
+						<tr data-ng-repeat="foodComponentRelated in stockAuditInventoryActivityInStockAudits">
+							<td  data-label="food component">
+							{{foodComponentRelated.inventoryActivity.foodcomponent.foodComponentName}}</label></td>
+							<td data-label="Quantity">{{foodComponentRelated.inventoryActivity.addedOrRemovedStock}} {{foodComponentRelated.inventoryActivity.foodcomponent.baseUnit.baseUnitSymbol}}</label></td>
+							<td data-label="Description">{{foodComponentRelated.inventoryActivity.description}}</label></td>
+
+                		</tr>
+                		<!-- <tr data-ng-repeat="foodComponentRelated in stockAuditInventoryActivityInStockAudits">
+							<td><label for="foodcomponent">{{foodComponentRelated.inventoryActivity.foodcomponent.foodComponentName}}</label></td>
+							<td><label for="Quantity">{{foodComponentRelated.inventoryActivity.addedOrRemovedStock}} {{foodComponentRelated.inventoryActivity.foodcomponent.baseUnit.baseUnit}}</label></td>
+							<td><label for="Description">{{foodComponentRelated.inventoryActivity.description}}</label></td>
+						</tr> -->
+              		</table>
+           		</div>
+          <!-- 	</div> -->
+        </md-card-content>
+     <!--  </div> -->
+    </md-card>
+		<div layout="row" data-ng-if="stockaudits.length !== 0">
+			<div data-ng-if="(totalItemsStockAudit.count === 0)" class="alert alert-warning text-center" flex>
+				Your search did not match any documents.
+			</div>
+		</div>
+		<div layout="column">
+	        <ul uib-pagination total-items="totalItemsStockAudit.count"
+	          ng-model="curPageStockAudit.page"
+	          max-size="maxSize"
+	          class="pagination-sm"
+	          boundary-links="true"
+	          rotate="false"
+	          num-pages="numPages"
+	          ng-change="pageChangedStockAudit(searchTextStockAudit.text)">
+	        </ul>
+
+			<pre>showing <b>{{totalItemsStockAudit.count===0 ? 0 :indexStart+1}}-{{indexEnd}}</b> of <b>{{totalItemsStockAudit.count}} Stock Audits </b></pre>
+		</div>
+</section>

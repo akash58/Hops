@@ -1,0 +1,161 @@
+<!-- <section>
+  <div class="page-header">
+    <h1>{{vm.feedback._id ? 'Edit Feedback' : 'New Feedback'}}</h1>
+  </div>
+  <div class="col-md-12">
+    <form name="vm.form.feedbackForm" class="form-horizontal" ng-submit="vm.save(vm.form.feedbackForm.$valid)" novalidate>
+      <fieldset>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Name</label>
+          <input name="name" type="text" ng-model="vm.feedback.name" id="name" class="form-control" placeholder="Name" required>
+          <div ng-messages="vm.form.feedbackForm.name.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Feedback name is required.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">{{vm.feedback._id ? 'Update' : 'Create'}}</button>
+        </div>
+        <div ng-show="vm.error" class="text-danger">
+          <strong ng-bind="vm.error"></strong>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</section> -->
+<section class="row" data-ng-controller="FeedbacksController"  data-ng-init="find()">
+
+  <h3 class="col-md-12 text-center">Welcome to HOPS</h3>
+  
+  <h4 class="col-md-12 text-center">FeedBack Form</h4>
+  <div class=" col-xs-12 col-md-12">
+      <form name="userForm" data-ng-submit="createFeeedbackRecord($event)" class="signin form-inline" novalidate autocomplete="off">
+      <fieldset>
+        <div class="col-md-12 col-xs-12 col-sm-12">
+        <!--  <div class="col-xs-12 col-md-12 form-group panel panel-body"> -->
+            <div class="col-md-12 col-xs-12 col-sm-12">
+              <label for="firstName" class="col-xs-offset-2 col-xs-12 col-md-offset-4 col-md-12"><font size="3" color="red">*</font> How did you hear about us:</label>
+            </div>
+            <div class="col-md-offset-4 col-md-6 col-xs-12 col-sm-6 pull-left">
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRefference" value="Internet" data-ng-model="knownselection.radioValue" />
+                    Internet
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRefference" value="Newspaper" data-ng-model="knownselection.radioValue" />
+                    Newspaper
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRefference" value="Friends" data-ng-model="knownselection.radioValue" />
+                    Friends
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRefference" value="OtherReference" data-ng-model="knownselection.radioValue" />
+                    Other refference
+                </label>
+              </div>
+            </div>
+          <!-- </div> -->
+          <div class="col-xs-12 col-md-12 form-group panel-body">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+              <label for="firstName" class="col-xs-offset-2 col-xs-12 col-md-offset-4 col-md-12"><font size="3" color="red">*</font>Overall Ratings:</label>
+            </div>
+            <div class="col-md-offset-4 col-md-6 col-xs-12 col-sm-6 pull-left">
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRateus" value="excellent" data-ng-model="rateus.radio" data-ng-click="" />
+                    Excellent
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRateus" value="good" data-ng-model="rateus.radio" />
+                    Good
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRateus" value="average" data-ng-model="rateus.radio" />
+                    Average
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forRateus" value="dissatisfied" data-ng-model="rateus.radio" />
+                    Dissatisfied
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 col-xs-12 col-sm-12">
+          <div class="col-xs-12 col-md-12 form-group panel panel-body">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+              <label for="firstName" class="col-xs-offset-2 col-xs-12 col-md-offset-4 col-md-12"><font size="3" color="red">*</font>Quality of Food:</label>
+            </div>
+            <div class="col-md-offset-4 col-md-6 col-xs-12 col-sm-6 pull-left">
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forFood" value="excellent" data-ng-model="ratefood" data-ng-click="" />
+                    Excellent
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forFood" value="good" data-ng-model="ratefood" />
+                    Good
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forFood" value="average" data-ng-model="ratefood" />
+                    Average
+                </label>
+              </div>
+              <div class="col-md-12 col-xs-12 col-sm-12">
+                <label class="radio">
+                  <input type="radio" name="forFood" value="dissatisfied" data-ng-model="ratefood" />
+                    Dissatisfied
+                </label>
+              </div>
+            </div>
+          </div>
+          <!-- <div  class="col-xs-12 col-md-12 form-group panel-bodys">
+            <label for="customerId" class="col-xs-5 col-md-3">customer ID : </label>
+            <input type = "text" id="customerId" name="customerId" class="col-xs-7 col-md-9 form-control" data-ng-model="custSignUp.customerId" placeholder = "customer ID Please Scan Customer ID" data-ng-focus="focusCustomer()" tooltip="Please Scan Customer ID">
+          </div> -->
+          <!-- <div data-ng-show="errorCustomer" class="text-center text-danger panel-body">
+            <strong data-ng-bind="errorCustomer"></strong>
+          </div> -->
+          </div>
+
+            <div class="col-md-offset-4 col-md-6 col-xs-12 col-sm-6 pull-left">  
+                           <div class="col-xs-12 col-md-12 form-group panel panel-body">
+                              <label class= "" for="content">Comments/Suggestions</label>
+                               </div> 
+                               <div class = "col-xs-12 col-md-12" >
+                                <textarea name="content" ng-model="content" id="content" class=" col-xs-12 col-md-12 form-control" cols="30" rows="2" placeholder="Comments"></textarea>
+                              </div>
+                </div>
+ 
+
+
+        <div class="col-md-6 col-xs-6 col-sm-6">
+          <div class="text-center form-group panel-body pull-right">
+            <button type="submit" class="btn btn-large btn-primary" data-ng-disabled="disableSignUpButton">Submit</button>
+          </div>
+        </div>
+        <!-- <div data-ng-show="savedFeedbackSuccessfully" class="text-center text-success panel-body">
+          <strong >Your feedbaack saved successfully</strong>
+        </div> -->
+      </fieldset>
+    </form>
+  </div>
+  
+  
+</section>

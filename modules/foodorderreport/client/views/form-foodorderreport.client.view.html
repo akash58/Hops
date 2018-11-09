@@ -1,0 +1,77 @@
+<section data-ng-init="initialize()">
+  <div class="page-header">
+    <h1>Food Order Report</h1>
+  </div>
+  <!-- <div class="animate-show" data-ng-if="!foodOrderPageVisible" data-ng-include="'modules/core/views/invalidusererrorscreen.client.view.html'">
+  </div> -->
+  <div class="col-md-12 col-xs-12 col-sm-12">
+    <div class="col-md-12 col-xs-12 col-sm-12">
+      <div class="form-inline col-md-12 col-xs-12 col-sm-12">
+        <span class="col-xs-12 col-sm-6 col-md-6">
+
+          <label class="form-group">Report From:</label>
+          <!-- <input class="form-group" type="date" ng-model="dates.startDate" data-ng-change="dateChangeClick()" max="{{dates.maxdate}}" min="2015-01-01"> --> <md-datepicker ng-model="dates.startDate" data-ng-change="dateChangeClick()" max="{{dates.maxdate}}" min="2015-01-01" ></md-datepicker>
+          <label class="form-group">To :</label>
+          <!-- <input class="form-group" type="date" ng-model="dates.endDate" data-ng-change="dateChangeClick()" max="{{dates.maxdate}}" min="{{dates.startDate}}"> -->
+          <md-datepicker ng-model="dates.endDate" data-ng-change="dateChangeClick()" max="{{dates.maxdate}}" min="{{dates.startDate}}" ></md-datepicker>
+           <!-- <button data-ng-click="getFoodRevenueDateWise()">get food</button> -->
+          <button class="btn btn-primary btn-sm glyphicon glyphicon-refresh" ng-click="clickedOnSearchButton()" data-ng-if="dateChange" title="Click to Refresh the Chart Data"></button>
+        </span>
+        <!-- <span class="col-xs-12 col-sm-6 col-md-6 pull-right">
+          <span class="pull-right">
+            <label>Metric:</label>
+            <select class="form-control" type="text" id="chartBasedOn" name="chartBasedOn"  placeholder="Report By" data-ng-model="type.value" data-ng-change="chartsValue()">
+              <option value="detailRevenue">Detail Revenue</option>
+              <option value="noOfCustomer">No of Customers</option>
+              <option value="totalRevenue">Total Revenue</option>
+            </select>
+          </span>
+        </span> -->
+      </div>
+      <div class="panel-body col-md-12 col-xs-12 col-sm-12">
+        <div class = "list-group col-md-12 col-xs-12 col-sm-12">
+          <div data-ng-repeat="foodorderReport in foodorderReports.foodTypeObjArray"  class = "list-group-item panel panel-info col-md-12 col-xs-12 col-sm-12">
+            <div class="panel-heading col-md-12 col-xs-12 col-sm-12" data-ng-click="getFood(foodorderReport)">
+              <span class="col-md-12 col-xs-12 col-sm-12">
+                <label class="col-md-4">Food Type:{{foodorderReport.foodTypeName}}</label>
+                <label class="col-md-4">Quantity Order:{{foodorderReport.orderItemInfoodTypes}}</label>
+                <label class="col-md-4">Total Revenue:{{foodorderReport.totalRevenue}}</label>
+              </span>
+            </div>
+            <div class = "panel-body col-md-12 col-xs-12 col-sm-12" data-ng-if="activeFoodOrderType == foodorderReport._id">
+              <div data-ng-repeat="food in foods">
+                <span class="col-md-12 col-xs-12 col-sm-12">
+                  <label class="col-md-4">Food:{{food._id.foodName}}</label>
+                  <label class="col-md-4">Quantity Order:{{food.value.quantity}}</label>
+                  <label class="col-md-4">Revenue:{{food.revenueByFood}}</label>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+          <!-- <div data-ng-repeat="foodorderReport in foodorderReports.foodTypeObjArray"  class = "panel panel-default list-group-item">
+            <div class="panel-heading col-md-12 col-xs-12 col-sm-12" data-ng-click="getFood(foodorderReport)">
+              <span class="col-md-12 col-xs-12 col-sm-12">
+                <label>Food Type:{{foodorderReport.foodTypeName}}</label>
+                <label>Quantity Order:{{foodorderReport.orderItemInfoodTypes}}</label>
+                <label>Revenue:{{foodorderReport.totalRevenue}}</label>
+              </span>
+            </div>
+            <div class="panel-body col-md-12 col-xs-12 col-sm-12" data-ng-repeat="food in foods" data-ng-if="activeFoodOrderType == foodorderReport._id">
+              <span class="col-md-12 col-xs-12 col-sm-12">
+                <label>Food:{{food._id.foodName}}</label>
+                <label>Quantity Order:{{food.value.quantity}}</label>
+                <label>Revenue:{{food.revenueByFood}}</label>
+              </span>
+            </div>
+          </div>
+         -->
+      </div>
+      <div class="col-md-12 col-xs-12 col-sm-12" data-ng-if="(foodorderReports.foodTypeObjArray.length===0)">
+        <div data-ng-if="(foodorderReports.food.length===0)" class="alert alert-warning text-center">
+          No Food order within selected Date range.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,190 @@
+<section>
+  <div class="page-header" id="pageheader">
+  <span hide-xs flex="60">
+      <h3><b>Tables</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Tables</b></h3>
+    </span>
+</div>
+  <div>
+    <form name="tableForm" ng-submit="vm.createTable()" layout="column">
+      <div layout="row" layout-xs="column" layout-sm="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+          <label>Table Number</label>
+          <input type="Number" ng-model="vm.tableNumber" min="0" required>
+            <div ng-messages="tableForm.tableNumber.$error" ng-if="tableForm.tableNumber.$touched || tableForm.tableNumber.$dirty">
+              <div ng-message="required">This is a required Field</div>
+            </div>
+        </md-input-container>
+        </div>
+        <div flex>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Table For</label>
+          <input name="tableSize" type="Number" ng-model="vm.tableSize" min="0" required>
+            <div ng-messages="tableForm.tableSize.$error" ng-if="tableForm.tableSize.$touched || tableForm.tableSize.$dirty">
+              <div ng-message="required">This is a required Field</div>
+            </div>
+        </md-input-container>
+        </div>
+      </div>
+
+      <div layout="row" layout-xs="column">
+          <md-autocomplete flex=""
+          md-input-name="currentAttendant"
+          md-selected-item="vm.currentAttendant"
+          md-search-text-change=""
+          md-search-text="vm.searchAttendant"
+          md-selected-item-change="vm.selectedAttendentChange(item)"
+          md-items="item in vm.querySearchForAttendent(vm.searchAttendant)"
+          md-item-text="item.displayName"
+          md-min-length="0"
+          md-floating-label="Default Attendent"
+          md-menu-class="autocomplete-custom-template" required>
+            <div ng-messages="tableForm.currentAttendant.$error" ng-if="tableForm.currentAttendant.$touched || tableForm.currentAttendant.$dirty">
+              <div ng-message="required">This is a required Field</div>
+            </div>
+          <md-item-template>
+
+            <div md-highlight-text="vm.searchAttendant" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.displayName}}" popover-trigger="mouseenter"> {{item.displayName}}</div>
+            <div>
+            <md-checkbox  aria-label="Checkbox No Ink" ng-model="vm.foodOnly" class="md-primary">
+            Food Only
+          </md-checkbox>
+          </div>
+          </md-item-template>
+                      <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+                        <div ng-message="required">This is a required Field</div>
+                      </div> -->
+          <md-not-found>
+            <a ng-click="createBaseUnit(vm.searchAttendant)">Create New Food Component!</a>
+            "{{vm.searchAttendant}}" no result found for this.
+          </md-not-found>
+
+        </md-autocomplete>
+        <div  flex layout="row"  layout-align="end">
+          <div flex>
+            <md-checkbox aria-label="Checkbox No Ink" ng-model="vm.foodOnly" class="md-primary">
+              Food Only
+            </md-checkbox>
+          </div>
+
+          <div flex layout="row" layout-align="end">
+            <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+              <md-tooltip md-direction="down">
+                Click To Create new Table
+              </md-tooltip>
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+          </md-button>
+          </div>
+        </div>
+         </div>
+
+        <!-- <div flex>
+
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+            <md-tooltip md-direction="down">
+              Click To Create new Table
+            </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+        </md-button>
+      </div> -->
+      </div>
+      <!-- <div layout="row">
+        <span flex></span>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+            <md-tooltip md-direction="down">
+              Click To Create new Table
+            </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+        </md-button>
+      </div> -->
+    </form>
+  </div><hr>
+  <form name="editTableform">
+    <md-card class="row" ng-repeat="table in vm.tables" data-ng-if="table.active" md-whiteframe="4"">
+      <md-card-content style="background:#b3ffe6;" ng-click="vm.tableCardClicked(table);">
+        <div layout="row" flex>
+        <div flex>
+
+            <h4 data-ng-if="!vm.tableEditer || vm.activeTable != table._id">Table Number :  {{table.tableNumber}}</h4>
+            <h4 data-ng-if="vm.tableEditer && vm.activeTable == table._id"  ng-click="$event.stopPropagation();">
+
+              Table Number : {{vm.edit.tableNumber}}
+
+            </h4>
+         </div>
+         <!--  <span flex></span> -->
+          <div layout="row" layout-xs="column" class="pull-right" >
+          <md-button class="md-fab md-mini md-primary pull-right" ng-click="vm.editTable(table); $event.stopPropagation();" data-ng-if="!vm.tableEditer && vm.activeTable === table._id">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_mode_edit_white_24px.svg"><md-tooltip>Click To Edit Table Number</md-tooltip></md-icon>
+          </md-button>
+          <md-button class="md-fab md-mini md-primary pull-right" ng-click="vm.deleteTable(table); $event.stopPropagation();" data-ng-if="!vm.tableEditer && vm.activeTable === table._id">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"><md-tooltip>Click To Remove Table</md-tooltip></md-icon>
+          </md-button>
+          <md-button class="md-fab md-mini md-primary pull-right" data-ng-if="vm.tableEditer && vm.activeTable == table._id" ng-click="vm.updateTable(table); $event.stopPropagation();">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"><md-tooltip>Click To Update Table For</md-tooltip></md-icon>
+          </md-button>
+          <md-button class="md-fab md-mini md-primary pull-right" data-ng-if="vm.tableEditer && vm.activeTable == table._id" ng-click="vm.canselTableEdit(table); $event.stopPropagation();">
+            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"><md-tooltip>Click To cancel Edit</md-tooltip></md-icon>
+          </md-button>
+          </div>
+        </div>
+      </md-card-content>
+      <md-card-content data-ng-if="vm.activeTable === table._id" layout="column">
+      <div layout="row" layout-xs="column">
+          <md-input-container flex>
+               <label>Table Number</label>
+                <input name="EditedTableNumber" ng-model="vm.edit.tableNumber"  ng-disabled="!vm.tableEditer" required>
+                  <div ng-messages="editTableform.EditedTableNumber.$error" >
+                    <div ng-message="required">This is a required Field</div>
+                  </div>
+          </md-input-container>
+          <md-input-container flex>
+              <label>Table For</label>
+              <input name="EditedBaseUnit" ng-model="vm.edit.tableSize" ng-disabled="!vm.tableEditer" required>
+                <div ng-messages="editTableform.EditedBaseUnit.$error" >
+                  <div ng-message="required">This is a required Field</div>
+                </div>
+          </md-input-container>
+        </div>
+        <div layout="row" layout-xs="column">
+          <md-autocomplete flex required
+            md-input-name="editedcurrentAttendant"
+            ng-disabled="!vm.tableEditer"
+            md-selected-item="vm.edit.currentAttendant"
+            md-search-text-change=""
+            md-search-text="vm.searchAttendantInEdit"
+            md-selected-item-change="vm.selectedAttendentChangeOnEdit(item)"
+            md-items="item in vm.querySearchForAttendent(vm.searchAttendant)"
+            md-item-text="item.displayName"
+            md-min-length="0"
+            md-floating-label="Default Attendent"
+            md-menu-class="autocomplete-custom-template" >
+              <div ng-messages="editTableform.editedcurrentAttendant.$error" >
+                <div ng-message="required">This is a required Field</div>
+              </div>
+            <md-item-template>
+              <div md-highlight-text="vm.searchAttendant" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.displayName}}" popover-trigger="mouseenter"> {{item.displayName}}</div>
+            </md-item-template>
+                        <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+                          <div ng-message="required">This is a required Field</div>
+                        </div> -->
+            <md-not-found>
+              <a ng-click="createBaseUnit(vm.searchAttendant)">Create New Food Component!</a>
+              "{{vm.searchAttendant}}" no result found for this.
+            </md-not-found>
+          </md-autocomplete>
+          <div flex>
+           <md-checkbox flex aria-label="Checkbox No Ink"  ng-model="vm.edit.foodOnly" class="md-primary" ng-disabled="!vm.tableEditer">
+           Food Only
+            </md-checkbox>
+           </div>
+        </div>
+      </md-card-content>
+    </md-card>
+  </form>
+</section>
+
+

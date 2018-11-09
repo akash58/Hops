@@ -1,0 +1,50 @@
+<section>
+  <div class="page-header">
+    <h1>User <span ng-bind="vm.user.username"></span></h1>
+  </div>
+  <div class="col-md-12">
+    <form name="vm.userForm" ng-submit="vm.update(vm.userForm.$valid)" novalidate>
+      <fieldset>
+        <div flex>
+          <md-input-container class="md-block" flex>
+            <input type="text" id="firstName" name="firstName" ng-model="vm.user.firstName" placeholder="First Name" required autofocus />
+              <div ng-messages="vm.userForm.firstName.$error" multiple md-auto-hide="true" ng-if="vm.userForm.firstName.$touched || vm.userForm.firstName.$dirty ">
+                <div ng-message="required" ng-style="{color: vm.userForm.firstName.$touched ? 'Red' : 'Blue' }">First name is required.</div>
+              </div>
+          </md-input-container>
+        </div>
+        <div>
+          <md-input-container class="md-block" flex>
+            <input type="text" id="lastName" name="lastName" ng-model="vm.user.lastName" placeholder="Last Name" required />
+            <div ng-messages="vm.userForm.lastName.$error" multiple md-auto-hide="true" ng-if="vm.userForm.lastName.$touched || vm.userForm.lastName.$dirty ">
+                <div ng-message="required" ng-style="{color: vm.userForm.lastName.$touched ? 'Red' : 'Blue' }">Last name is required.</div>
+              </div>
+          </md-input-container>
+        </div>
+          <md-chips ng-model="vm.roles" md-autocomplete-snap
+          md-transform-chip="vm.transformChip($chip)"
+          md-require-match="true">
+            <md-autocomplete
+              md-selected-item="vm.selectedItem"
+              md-search-text="vm.searchText"
+              md-items="item in vm.queryRoles(vm.searchText)"
+              md-item-text="item.roleName"
+              placeholder="Search for Roles">
+              <span md-highlight-text="vm.searchText">{{item.roleName}}</span>
+            </md-autocomplete>
+            <md-chip-template>
+              <span>
+                <strong>{{$chip.roleName}}</strong>
+              </span>
+            </md-chip-template>
+          </md-chips>
+          <div>
+            <md-button class="md-fab md-mini md-primary pull-right" ng-click="vm.update(vm.userForm.$valid)"$event.stopPropagation();>
+              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+              <md-tooltip>Click To Update</md-tooltip>
+            </md-button>
+          </div>
+      </fieldset>
+    </form>
+  </div>
+</section>

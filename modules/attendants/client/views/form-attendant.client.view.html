@@ -1,0 +1,45 @@
+<section>
+  <div class="page-header"  style="margin-top: 5px" ng-if="!vm.showProgress">
+    <h3><b>Attendant</b></h3>
+  </div>
+  <div class="padding">
+    <form name="vm.attendantForm" class="form-horizontal" ng-if="!vm.showProgress" ng-submit="vm.attendantEmail(vm.attendantForm.$valid)" >
+      <!-- <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="text" name="username" placeholder="Enter username" ng-model="vm.username" ng-focus="focusAttendant()" required>
+            <div ng-messgages="vm.username.attendantForm.$error"  multiple md-auto-hide="true" ng-if="vm.username.attendantForm.$touched || vm.username.attendantForm.$dirty">
+              <div ng-messages="required" ng-style="{color: vm.username.attendantForm.$touched ? 'Eed' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+        </div>
+      </div> -->
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex><!--  Email = {{vm.email}} -->
+          <md-input-container class="md-block">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_email_black_48px.svg" class="md-block"></md-icon>
+            <input type="email" name="email" ng-model="vm.email" placeholder="Email Address" ng-focus="focusAttendant(); focus=true" ng-minlength="4" ng-maxlength="100" ng-pattern="/^.+@.+\..+$/" required>
+            <div ng-messages="vm.form.email.attendantForm.$error"  multiple md-auto-hide="true" ng-if="vm.form.email.attendantForm.$touched || vm.form.email.attendantForm.$dirty">
+              <div ng-messages="required" ng-style="{color: vm.form.email.attendantForm.$touched ? 'Eed' : 'Blue' }">
+                  This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+        </div>
+      </div>
+      <div flex="90">
+        <md-button class="md-fab md-mini md-primary pull-right" type="submit">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+          <md-tooltip md-direction="down" flex="50">
+            Save Attendant
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div>
+  <div layout="row" layout-align="center center" ng-show="vm.showProgress" style="margin-top: 220px; margin-bottom: 220px;">
+    <md-progress-circular md-mode="indeterminate"  md-diameter="70"></md-progress-circular>
+  </div>
+</section>

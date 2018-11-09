@@ -1,0 +1,129 @@
+<!-- <section> -->
+<md-dialog aria-label="view assignment details" class="fullscreen-dialog" ng-init="initialize()">
+  <!-- <form ng-cloak> -->
+    <md-toolbar>
+      <div class="md-toolbar-tools" ng-class="{ 'redcolor' : assignment.calculatedStatus.overDue ,'lightOrange' : assignment.calculatedStatus.daysLeft , 'lightGreen' : assignment.calculatedStatus.beforeDate }">
+        <h2>Add Food</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="alertCancel($event)" aria-label="call">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar><!-- foodT : {{foodComponentInFoods._id}}<hr> --><!-- foodOrder : {{foodOrdered}} -->
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="column" layout-fill>
+          <div layout="row" layout-xs="column">
+            <!-- <span layout="row"> -->
+              <md-autocomplete
+                ng-disabled="isDisabled"
+                md-no-cache="foodToBeAdded.noCache"
+                md-selected-item="foodToBeAdded.foodTypeSelectedItem"
+                md-search-text-change="searchTextChange(foodToBeAdded.foodTypeSearchText)"
+                md-search-text="foodToBeAdded.foodTypeSearchText"
+                md-selected-item-change="selectedFoodTypeItemChange(item)"
+                md-items="item in queryFoodType(foodToBeAdded.foodTypeSearchText)"
+                md-item-text="item.foodTypeName"
+                md-min-length="0"
+                data-ng-focus="focusRental()"
+                md-floating-label="Select Food Type">
+                  <md-item-template>
+                    <span md-highlight-text="foodToBeAdded.foodTypeSearchText" md-highlight-flags="^i">{{item.foodTypeName}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No states matching "{{foodToBeAdded.foodTypeSearchText}}" were found.
+                    <!-- <a ng-click="ctrl.newState(ctrl.customerSearchText)">Create a new one!</a> -->
+                  </md-not-found>
+              </md-autocomplete>
+              <md-autocomplete
+                ng-disabled="isDisabled"
+                md-no-cache="foodToBeAdded.noCache"
+                md-selected-item="foodToBeAdded.foodSelectedItem"
+                md-search-text-change="searchTextChange(foodToBeAdded.foodSearchText)"
+                md-search-text="foodToBeAdded.foodSearchText"
+                md-selected-item-change="selectedFoodItemChange(item)"
+                md-items="item in queryFood(foodToBeAdded.foodSearchText)"
+                md-item-text="item.foodName"
+                md-min-length="0"
+                data-ng-focus="focusRental()"
+                md-floating-label="Select Food Name">
+                  <md-item-template>
+                    <span md-highlight-text="foodToBeAdded.foodSearchText" md-highlight-flags="^i">{{item.foodName}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No states matching "{{foodToBeAdded.foodSearchText}}" were found.
+                    <!-- <a ng-click="ctrl.newState(ctrl.customerSearchText)">Create a new one!</a> -->
+                  </md-not-found>
+              </md-autocomplete>
+              <md-input-container>
+                <label>Quantity</label>
+                <input type="number" ng-model="foodToBeAdded.quantity">
+              </md-input-container>
+              <md-button data-ng-click="addFoodOrder($event)" class="md-fab md-mini md-primary" aria-label="Favorite">
+                <md-tooltip md-direction="end" flex="90">
+                  Click To Add New Assignment.
+                </md-tooltip>
+                <md-icon md-svg-src="/modules/core/client/img/svg/ic_add_white_24px.svg" aria-lable="Add"></md-icon>
+              </md-button>
+            <!-- </span> -->
+          </div>
+          <div data-ng-if="error">
+            {{error}}
+          </div>
+          <div layout="column">
+            <span flex>
+              <md-subheader class="md-warn">Added Food</md-subheader>
+              <md-list flex>
+                <md-list-item class="md-3-line" ng-repeat="foodOrder in tempFoodOrders">
+                 <!-- <md-checkbox ng-model="message.selected"></md-checkbox> -->
+                  <div class="md-list-item-text" layout="row" >
+                    <div flex>
+                      <h3>{{foodOrder.food.foodName}} : <label>{{foodOrder.quantity}}</label></h3>
+                      <h4>{{foodOrder.foodType.foodTypeName}}</h4>
+                    </div>
+                    <div flex layout="row" layout-align="end center">
+                      <md-button data-ng-click="deleteTempFoodOder(foodOrder)" class="md-icon-button">
+                        <md-tooltip md-direction="end" flex="90">
+                          Click To Remove Food.
+                        </md-tooltip>
+                        <md-icon md-svg-src="/modules/core/client/img/svg/ic_delete_black_24px.svg" aria-lableAdd"></md-icon>
+                      </md-button>
+                    </div>
+                  </div>
+                  <md-divider class="inset"></md-divider>
+                </md-list-item>
+              </md-list>
+            </span>
+            <span flex>
+              <md-subheader class="md-primary">Order Food</md-subheader>
+              <md-list flex>
+                <md-list-item class="md-3-line" ng-repeat="foodOrder in foodOrdered">
+                  <!-- <md-checkbox ng-model="message.selected"></md-checkbox> -->
+                  <div class="md-list-item-text" layout="row" >
+                    <div flex>
+                      <h3>{{foodOrder.food.foodName}} : <label>{{foodOrder.quantity}}</label></h3>
+                      <h4>{{foodOrder.foodType.foodTypeName}}</h4>
+                    </div>
+                  </div>
+                  <md-divider class="inset"></md-divider>
+                </md-list-item>
+              </md-list>
+            </span>
+          </div>
+        </div>
+        <div>
+          {{errorResponse.data}}
+        </div>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="alertSubmitFoodOrder()">
+       save order
+      </md-button>
+    </md-dialog-actions>
+  <!-- </form> -->
+</md-dialog>
+
+<!-- </section> -->

@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Feedbacks</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="feedback in vm.feedbacks"
+       ui-sref="feedbacks.view({ feedbackId: feedback._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="feedback.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="feedback.user" ng-bind="feedback.user.displayName"></span>
+        <span ng-if="!feedback.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="feedback.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.feedbacks.$resolved && !vm.feedbacks.length">
+    No Feedbacks yet, why don't you <a ui-sref="feedbacks.create">create one</a>?
+  </div>
+</section>

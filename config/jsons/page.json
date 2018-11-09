@@ -1,0 +1,97 @@
+[{
+	"pageName": "Game Types",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Daily Report",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Games",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Serials",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Operations Overview",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Food Operations",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Table Details",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Suppliers",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Customers",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Barcodes",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Roles",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Users Management",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Page Management",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Categories",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Tables",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Payment Modes",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Payments",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Bill Details",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Billarchive Details",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Foods",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Food Components",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Purchase Orders",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Packages",
+	"roles" : ["admin"]
+}, {
+	"pageName": "System Parameters",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Stock Audits",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Food Expirys",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Search Serials",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Memberships",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Feedbacks Report",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Revenue By DOW",
+	"roles" : ["admin"]
+}, {
+	"pageName": "Food Orders",
+	"roles" : ["admin"]
+}, {
+    "pageName" : "Units",
+    "roles" : ["admin"]
+}]

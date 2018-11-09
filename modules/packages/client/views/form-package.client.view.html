@@ -1,0 +1,364 @@
+<section data-ng-init="initialize()">
+  <!-- <div class="page-header">
+    <h1>Packages</h1>
+  </div> -->
+  <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Packages</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Packages</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="searchFoodComponentForm" data-ng-submit="vm.curPagePackage.page = 1; vm.pageChangedPackage(vm.searchTextPackage.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; vm.searchTextPackage.txt=''; vm.pageChangedPackage(vm.searchTextPackage.txt);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="vm.searchTextPackage.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+  <div >
+    <form name="vm.packageForm" class="form-horizontal" ng-submit="vm.createPackage()">
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+          <label>Package Name</label>
+            <input autofocus type="text" name="packageName" ng-model="vm.packageName" required>
+              <div ng-messages="vm.packageForm.packageName.$error" ng-if="vm.packageForm.packageName.$touched || vm.packageForm.packageName.$dirty">
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+            <!-- <div ng-messages="customerForm.customerId.$error"  multiple md-auto-hide="true" ng-if="customerForm.customerId.$touched || customerForm.customerId.$dirty">
+              <div ng-message="required" ng-style="{color: customerForm.customerId.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div> -->
+          </md-input-container>
+        </div>
+        <div flex layout="row">
+          <md-input-container class="md-block" flex>
+            <label>Package Price</label>
+            <input type="Number" name="packagePrice"  ng-model="vm.packagePrice" min="0" required>
+              <div ng-messages="vm.packageForm.packagePrice.$error" ng-if="vm.packageForm.packagePrice.$touched || vm.packageForm.packagePrice.$dirty">
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+           <!--  <md-icon  md-svg-icon="/modules/core/client/img/svg/indian_rupees_icon_16px.svg" class="img-responsive"></md-icon> -->
+            <!-- <div ng-messages="customerForm.customerName.$error"  multiple md-auto-hide="true" ng-if="customerForm.customerName.$touched || customerForm.customerName.$dirty">
+              <div ng-message="required" ng-style="{color: customerForm.customerName.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div> -->
+
+          </md-input-container>
+            <h3>{{vm.currencySymbol}}</h3>
+        </div>
+       <!--  <div flex="4">
+          <h3>{{vm.currencySymbol}}</h3>
+        </div> -->
+      </div>
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>Hours</label>
+            <input type="time" name="hours" ng-model="vm.hours" required>
+              <div ng-messages="vm.packageForm.hours.$error" ng-if="vm.packageForm.hours.$touched || vm.packageForm.hours.$dirty">
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+            <!-- <div ng-messages="customerForm.email.$error"  multiple md-auto-hide="true" ng-if="customerForm.email.$touched || customerForm.email.$dirty">
+              <div ng-message="required" ng-style="{color: customerForm.email.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div> -->
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-autocomplete flex required
+            md-input-name="category"
+            md-selected-item="vm.category"
+            md-search-text-change=""
+            md-search-text="vm.searchCategory"
+            md-selected-item-change="vm.selectedCategoryChanged(item)"
+            md-items="item in vm.querySearchForCategory(vm.searchCategory)"
+            md-item-text="item.categoryName"
+            md-min-length="0"
+            md-floating-label="Category"
+            md-menu-class="autocomplete-custom-template">
+              <div ng-messages="vm.packageForm.category.$error" ng-if="vm.packageForm.category.$touched || vm.packageForm.category.$dirty">
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+            <md-item-template>
+              <div md-highlight-text="vm.searchCategory" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.categoryName}}" popover-trigger="mouseenter"> {{item.categoryName}}</div>
+
+            </md-item-template>
+            <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+            <div ng-message="required">This is a required Field</div>
+            </div> -->
+            <md-not-found>
+              <a ng-click="vm.createCategory(vm.searchCategory)">Create New Category!</a>
+                  "{{vm.searchCategory}}" no result found for this.
+            </md-not-found>
+          </md-autocomplete>
+        </div>
+        <div flex="12">
+          <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+          <md-tooltip md-direction="down">
+            Click To Create Package
+          </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+        </md-button>
+        </div>
+      </div>
+      <!-- <div layout="row">
+        <span flex></span>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+          <md-tooltip md-direction="down">
+            Click To Create Package
+          </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+        </md-button>
+      </div> -->
+    </form>
+  </div>
+  <hr>
+  <!-- <div layout="row" layout-align="center center">
+    <form name="search" data-ng-submit="curPagePackage.page = 1; pageChangedPackage(searchTextPackage.text)">
+      <div layout="row" >
+        <md-input-container >
+          <label>&nbsp;</label>
+          <input ng-model="searchTextPackage.text" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-left">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+          <md-tooltip md-direction="down" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div> -->
+  <form name="vm.editpackageForm" >
+  <md-card ng-repeat="package in vm.packagesOnPage" data-ng-if="package.active" md-whiteframe="4">
+    <md-contain  style="background: #b3ffe6;" data-ng-click="vm.packageClicked(package);">
+        <div layout-padding layout="row" layout-wrap layout-xs="column">
+          <h3 flex data-ng-if="!vm.packageEditer || vm.activePackage != package._id">
+            {{package.packageName}}
+          </h3>
+           <h3 flex data-ng-if="!vm.packageEditer || vm.activePackage != package._id">
+          {{vm.currencySymbol}} {{package.packagePrice}}
+          </h3>
+
+          <h3  flex data-ng-if="vm.packageEditer && vm.activePackage === package._id">
+              <!-- <input type="text" name="editPackageName" ng-click="$event.stopPropagation();" ng-model="vm.edit.packageName" required> -->
+              Package Name : {{vm.edit.packageName}}
+          </h3>
+          <h3 flex  data-ng-if="vm.packageEditer && vm.activePackage === package._id">
+            <!-- <md-icon  md-svg-icon="/modules/core/client/img/svg/indian_rupees_icon_16px.svg" class="img-responsive"></md-icon> -->
+              Package Price : {{vm.currencySymbol}} {{ vm.edit.packagePrice}}
+          </h3>
+
+          <div layout="row" layout-wrap layout-sm="column" layout-xs="row" layout-align="end"  data-ng-if="!vm.packageEditer">
+            <div data-ng-if = "vm.activePackage == package._id">
+              <md-button ng-click="vm.editPackage(package); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+                <md-tooltip md-direction="down">
+                  Click To Edit
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+              </md-button>
+            </div>
+            <div data-ng-if = "vm.activePackage == package._id">
+              <md-button ng-click="vm.deletePackage(package); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+                <md-tooltip md-direction="down">
+                  Click To Delete
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+              </md-button>
+            </div>
+          </div>
+          <div layout="row" layout-wrap layout-xs="row" layout-sm="column" class="pull-right" layout-align="end" data-ng-if="vm.packageEditer">
+            <div data-ng-if = "vm.activePackage == package._id">
+              <md-button ng-click="vm.updatePackage(package); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+                <md-tooltip md-direction="down">
+                  Update FoodType
+               </md-tooltip>
+               <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+             </md-button>
+            </div>
+            <div data-ng-if = "vm.activePackage == package._id">
+              <md-button ng-click="vm.cancelEditPackage(package); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+                <md-tooltip md-direction="down">
+                  Click To Cancel
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+              </md-button>
+            </div>
+          </div>
+        </div>
+    </md-contain>
+    <md-contain class="md-padding" data-ng-if="vm.activePackage == package._id" layout="column">
+      <div layout="row"  layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Package Name</label>
+              <input type="text" name="editPackageName" ng-click="$event.stopPropagation();" ng-disabled="!vm.packageEditer && vm.activePackage == package._id" ng-model="vm.edit.packageName" required>
+                <div ng-messages="vm.editpackageForm.editPackageName.$error" >
+		              <div ng-message="required">This is a required Field</div>
+		            </div>
+            </md-input-container>
+        </div>
+        <div layout="row" flex>
+
+            <!-- <label>Package Price</label>
+ -->             <!-- <md-icon  md-svg-icon="/modules/core/client/img/svg/indian_rupees_icon_16px.svg" class="img-responsive"></md-icon> -->
+            <div layout="row" layout-align="start start">
+              <h3> {{vm.currencySymbol}} </h3>
+            </div>
+              <md-input-container class="md-block" flex-gt-sm ng-disabled="!vm.packageEditer && vm.activePackage == package._id">
+              <input type="Number" placeholder="Package Price" name="editPackageprice" ng-model="vm.edit.packagePrice" min="0" ng-disabled="!vm.packageEditer && vm.activePackage == package._id" required>
+            <!-- </div> -->
+            <div ng-messages="vm.editpackageForm.editPackageprice.$error" >
+		          <div ng-message="required">This is a required Field</div>
+		        </div>
+             </md-input-container>
+        </div>
+      </div>
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <label>Hours</label>
+            <input type="time" name="editPackageHours" ng-model="vm.edit.hours" ng-disabled="!vm.packageEditer && vm.activePackage == package._id" required>
+              <div ng-messages="vm.editpackageForm.editPackageHours.$error" >
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-autocomplete flex required
+            md-input-name="Editcategory"
+            ng-disabled="!vm.packageEditer && vm.activePackage == package._id"
+            md-selected-item="vm.edit.category"
+            md-search-text-change=""
+            md-search-text="vm.searchEditCategory"
+            md-selected-item-change="vm.selectedCategoryChanged(item)"
+            md-items="item in vm.querySearchForCategory(vm.searchEditCategory)"
+            md-item-text="item.categoryName"
+            md-min-length="0"
+            md-floating-label="Category"
+            md-menu-class="autocomplete-custom-template">
+              <div ng-messages="vm.editpackageForm.Editcategory.$error" >
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+            <md-item-template>
+              <div md-highlight-text="vm.searchEditCategory" md-highlight-flags="^i" > {{item.categoryName}}</div>
+
+            </md-item-template>
+              <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+              <div ng-message="required">This is a required Field</div>
+              </div> -->
+            <md-not-found>
+              <a ng-click="vm.createCategory(vm.searchEditCategory)">Create New Category!</a>
+                    "{{vm.searchEditCategory}}" no result found for this.
+            </md-not-found>
+          </md-autocomplete>
+        </div>
+      </div>
+      <div layout="column">
+        <h4><u>Includes</u></h4>
+        <hr>
+        <ul ng-repeat="foodTypeInPackage in vm.foodTypeInPackages" >
+          <li>{{foodTypeInPackage.foodtype.foodTypeName}} {{foodTypeInPackage.quantity}}
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" aria-lable="Add" ng-click="vm.removeFoodtypeFromPackage(foodTypeInPackage)" data-ng-if="vm.packageEditer">
+              <md-tooltip md-direction="right">
+                Remove Food Type
+              </md-tooltip>
+            </md-icon>
+          </li>
+        </ul>
+      </div>
+    <div flex>
+      <md-button ng-click="vm.allowFoodTypeToAdd(package);" ng-disabled="!vm.packageEditer" class="md-fab md-mini md-primary">
+        <md-tooltip md-direction="down">
+          Add Food Type
+        </md-tooltip>
+        <md-icon md-svg-icon="/modules/core/client/img/svg/ic_restaurant_menu_white_24px.svg"></md-icon>
+      </md-button>
+    </div>
+    <div flex>
+      <div data-ng-if="vm.allowedToAddFoodType" layout="row">
+        <md-autocomplete flex required
+          md-input-name="addFoodType"
+          md-selected-item="vm.addFoodTypeInPackage"
+          md-search-text-change=""
+          md-search-text="vm.searchFoodTypeForPackage"
+          md-selected-item-change="vm.selectedFoodTypeForPackage(item)"
+          md-items="item in vm.querySearchForFoodType(vm.searchFoodTypeForPackage)"
+          md-item-text="item.foodTypeName"
+          md-min-length="0"
+          md-floating-label="Add Food Type"
+          md-menu-class="autocomplete-custom-template">
+            <div ng-messages="vm.editpackageForm.addFoodType.$error" >
+		          <div ng-message="required" ng-if="vm.editpackageForm.addFoodType.$touched || vm.editpackageForm.addFoodType.$dirty">This is a required Field</div>
+		        </div>
+          <md-item-template>
+            <div md-highlight-text="vm.searchFoodTypeForPackage" md-highlight-flags="^i" > {{item.foodTypeName}}</div>
+          </md-item-template>
+            <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+            <div ng-message="required">This is a required Field</div>
+            </div> -->
+          <md-not-found>
+            <a ng-click="vm.createFoodType(vm.searchFoodTypeForPackage)">Create New Food Type!</a>
+              "{{vm.searchFoodTypeForPackage}}" no result found for this.
+          </md-not-found>
+        </md-autocomplete>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>quantity</label>
+          <input type="Number" name="addFoodTypeQuantity" ng-model="vm.addFoodTypeQuantity" min="0" required>
+            <div ng-messages="vm.editpackageForm.addFoodTypeQuantity.$error" ng-if="vm.editpackageForm.addFoodTypeQuantity.$touched || vm.editpackageForm.addFoodTypeQuantity.$dirty" >
+		          <div ng-message="required">This is a required Field</div>
+		        </div>
+        </md-input-container>
+        <md-button ng-click="vm.addFoodTypeInPackages(package)" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+          <md-tooltip md-direction="down">
+            Click To Add FoodType
+          </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_add_white_24px.svg" aria-lable="Add"></md-icon>
+        </md-button>
+      </div>
+    </div>
+    </md-contain>
+
+  </md-card>
+  </form>
+  <ul uib-pagination total-items="vm.totalItemsPackage.count"
+    ng-model="vm.curPagePackage.page"
+    max-size="maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="vm.pageChangedPackage(vm.searchTextPackage.text)">
+  </ul>
+  <pre>showing <b>{{totalItemsPackage.count===0 ? 0 :vm.indexStartPackage+1}}-{{vm.indexEndPackage}}</b> of <b>{{vm.totalItemsPackage.count}}</b> Categories</pre>
+</section>

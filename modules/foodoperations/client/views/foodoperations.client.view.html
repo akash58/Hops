@@ -1,0 +1,41 @@
+<section data-ng-controller="foodOperationsController" data-ng-init="find();">
+  <div class="page-header">
+    <h1>Food Operations Overview</h1>
+  </div>
+  <div class="animate-show" data-ng-if="!foodOperationsPageVisible" data-ng-include="'modules/core/views/invalidusererrorscreen.client.view.html'">
+  </div>
+  <div data-ng-if="foodOperationsPageVisible">
+    <div class = "panel panel-info list-group-item col-md-12 col-lg-4" data-ng-repeat="foodorder in foodorders | unique: 'orderTime' | filter :  {status:'Ordered' }" ng-style="{background:'Silver'}">
+      <div  align="center" ><!-- class="panel panel-body" -->
+        <div class="row" ng-style="{background:'Gainsboro '}">
+          <div class="col-md-6 col-xs-6 col-sm-6" >
+            <h4 class = "text-left"><small>Table: </small>{{foodorder.table.tableNumber}}</h4>
+          </div>
+          <div class="col-md-6 col-xs-6 col-sm-6" >
+            <h4 class = "text-left"><small>Attendant: </small>{{foodorder.rental.attendant.displayName}}</h4>
+          </div>
+        </div>
+        <div class="row" ng-style="{background:'Lavender'}">
+          <div class="col-md-12 col-xs-12 col-sm-12 pull-left" >
+            <h4 class="pull-left" ng-style="{background:'AntiqueWhite '}" >Order List:</h4>
+            <span class="pull-left col-md-12 col-xs-12 col-sm-12 list-group-item" ng-repeat="listOfFoodOrder in foodorders | filter :  {orderTime:foodorder.orderTime,status:'Ordered' } " ng-style="{background:'Beige'}">
+              <label  class="pull-left ">
+                <!-- <input type="checkbox" data-ng-model="rental.selected"> --> {{ listOfFoodOrder.food.foodName }}
+              </label>
+              <label  class="pull-right">{{listOfFoodOrder.quantity}}</label>
+            </span>
+          </div>
+        </div>
+        <div class="row" ng-style="{background:'Gainsboro'}">
+          <div class="col-md-12 col-xs-12 col-sm-12 panel-body">
+            <h4 class = "text-left pull-left"><small>Order Time: </small>{{foodorder.orderTime | date :  "shortTime"}}</h4>
+            <button class="btn btn-success pull-right " data-ng-click= "makeFoodOrderServed(foodorder)">Served</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-ng-if="foodordersLength.length == 0" class="alert alert-warning text-center">
+      Hurray.... no more food orders!!
+    </div>
+  </div>
+</section>

@@ -1,0 +1,26 @@
+<section>
+  <div class="page-header">
+    <h1 ng-bind="vm.stockaudit.name"></h1>
+  </div>
+  <div class="pull-right"
+       ng-show="vm.stockaudit.isCurrentUserOwner">
+    <a class="btn btn-primary"
+       ui-sref="stockaudits.edit({ stockauditId: vm.stockaudit._id })">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn btn-primary" ng-click="vm.remove()">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <small>
+    <em class="text-muted">
+      Posted on
+      <span ng-bind="vm.stockaudit.created | date:'mediumDate'"></span>
+      by
+      <span ng-if="vm.stockaudit.user"
+            ng-bind="vm.stockaudit.user.displayName"></span>
+      <span ng-if="!vm.stockaudit.user">Deleted User</span>
+    </em>
+  </small>
+  <p class="lead" ng-bind="vm.stockaudit.content"></p>
+</section>

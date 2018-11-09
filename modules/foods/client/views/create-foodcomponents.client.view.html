@@ -1,0 +1,271 @@
+<section data-ng-init="initialize()">
+	<!-- <div class="page-header">
+		<h1>Food Components</h1>
+	</div> -->
+
+  <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Food Components</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Food Components</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="searchFoodComponentForm" data-ng-submit="curPageFoodComponent.page = 1; pageChangedFoodComponent(searchTextFoodComponent.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextFoodComponent.txt=''; pageChangedFoodComponent(searchTextFoodComponent.txt);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextFoodComponent.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+  <form name="componentForm" ng-submit="vm.createFoodComponent()" layout="column">
+  	<div layout="row" layout-wrap layout-sm="column" layout-xs="column" flex>
+  		<div flex>
+  			<div layout="row" layout-xs="column" flex>
+			  	<md-input-container flex>
+			      <label>Enter Component Name</label>
+			      <input autofocus name="componentName" ng-model="vm.foodComponentName" required>
+		        <div ng-messages="componentForm.componentName.$error"  multiple md-auto-hide="true" ng-if="componentForm.componentName.$touched || componentForm.componentName.$dirty">
+		          <div ng-message="required" ng-style="{color: componentForm.componentName.$touched ? 'Red' : 'Blue' }">
+		            This is a required Field
+		          </div>
+		        </div>
+			    </md-input-container>
+		      <md-autocomplete flex required
+            ng-trim
+    				md-input-name="componentBaseUnit"
+    				ng-disabled="isDisabledassignmenttype"
+    				md-selected-item="vm.selectedComponent"
+    				md-search-text="vm.searchBaseUnit"
+    				md-selected-item-change="vm.selectedComponentChange(item)"
+    				md-items="item in vm.querySearchForBaseUnit(vm.searchBaseUnit)"
+    				md-item-text="item.baseUnitSymbol"
+     				md-min-length="0"
+    				md-floating-label="Component BaseUnit"
+    				md-menu-class="autocomplete-custom-template">
+    				<md-item-template>
+              <md-tooltip>{{item.baseUnitName}}</md-tooltip>
+    				  <div md-highlight-text="vm.searchBaseUnit" md-highlight-flags="^i" required>
+              	{{item.baseUnitSymbol}}
+    				  </div>
+    				</md-item-template>
+	          <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched || componentForm.componentBaseUnit.$dirty">
+	           	<div ng-message="required">This is a required Field</div>
+	          </div>
+		        <md-not-found>
+		          <a ng-click="createBaseUnit(vm.searchBaseUnit)">Create New Base Unit!</a>
+		          	"{{vm.searchBaseUnit}}" no result found for this.
+		        </md-not-found>
+		      </md-autocomplete>
+		    </div>
+		    <div layout="row" layout-xs="column" flex>
+		      <div layout="row" flex>
+			      <md-input-container flex>
+			        <label>Enter Description</label>
+			        <input name="componentDescription" ng-model="vm.description" >
+			      </md-input-container>
+		        <!-- <md-input-container style="min-width: 250px;" flex>
+		            <label>Enter Stock</label>
+		            <input name="componentCurrentStock" type="Number" ng-model="vm.currentStock" required> -->
+		            <!-- <div ng-messages="componentForm.componentCurrentStock.$error"  multiple md-auto-hide="true" ng-if="componentForm.componentCurrentStock.$touched || componentForm.componentCurrentStock.$dirty">
+		                <div ng-message="required" ng-style="{color: componentForm.componentCurrentStock.$touched ? 'Red' : 'Blue' }">
+		                      This is a required Field
+		            	</div>
+		            </div> -->
+		        <!-- </md-input-container> -->
+			    </div>
+		      <div  flex>
+		        <md-checkbox aria-label="Checkbox No Ink" ng-model="vm.consumable" class="md-primary">
+          		Consumable
+        		</md-checkbox>
+	        </div>
+	        <div >
+		    <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="" >
+		    	<md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"  flex="50"></md-icon>
+          <md-tooltip md-direction="down">
+            Click To Create Food Component
+          </md-tooltip>
+	      </md-button>
+      </div>
+		    </div>
+      </div>
+    </div>
+		<!-- <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+      <div flex>
+		    <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="" >
+		    	<md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"  flex="50"></md-icon>
+          <md-tooltip md-direction="down">
+            Click To Create Food Component
+          </md-tooltip>
+	      </md-button>
+      </div>
+    </div> -->
+  </form>
+  <hr>
+ <!--  <div layout="row" layout-align="center center">
+    <form name="search" data-ng-submit="curPageFoodComponent.page = 1; pageChangedFoodComponent(searchTextFoodComponent.text)">
+      <div layout="row" >
+        <md-input-container >
+          <label>&nbsp;</label>
+          <input ng-model="searchTextFoodComponent.text" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-left">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+          <md-tooltip md-direction="down" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div> -->
+  <div>
+   	<form name="editcomponent" >
+	    <md-card md-whiteframe="4" data-ng-if="foodComponent.active" ng-repeat="foodComponent in foodComponents">
+		    <md-card-content style="background: #b3ffe6;" layout="row" data-ng-click="vm.componentClicked(foodComponent);">
+		    	<div layout-wrap data-ng-if="!vm.ComponentEditer || vm.activeComponent != foodComponent._id" style="overflow: hidden;">
+		   			<h4 hide-xs>{{foodComponent.foodComponentName}}</h4>
+		   			<h4 hide-gt-xs>{{foodComponent.foodComponentName}}</h4>
+		   			<label> Current Stock : {{foodComponent.currentStock}}  {{foodComponent.baseUnit.baseUnitSymbol}}</label>
+		   		</div>
+		   		<div data-ng-if="vm.ComponentEditer && vm.activeComponent == foodComponent._id" ng-click="$event.stopPropagation();" style="overflow: hidden;">
+			   		<div  hide-xs><h4 >Component Name : {{vm.edited.componentName}}</h4> </div>
+			   		<div hide-gt-xs ><h4 >Component Name : {{vm.edited.componentName}}</h4> </div>
+		   		</div>
+		   		<span flex></span>
+		   		<div layout="row" data-ng-if="!vm.ComponentEditer" layout-sm="column" layout-xs="column" >
+			   		<div data-ng-if = "vm.activeComponent == foodComponent._id">
+			   			<md-button ng-click="vm.editComponent(foodComponent); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+                <md-tooltip md-direction="down">
+                  Click To Edit
+                </md-tooltip>
+			          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+			        </md-button>
+			   		</div>
+			   		<div data-ng-if = "vm.activeComponent == foodComponent._id">
+			   			<md-button ng-click="vm.deleteComponent(foodComponent); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+               	<md-tooltip md-direction="down">
+                  Click To Delete
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+			        </md-button>
+			   		</div>
+		   		</div>
+		   		<div layout="row" data-ng-if="vm.ComponentEditer" layout-sm="column" layout-xs="column" >
+			   		<div data-ng-if = "vm.activeComponent == foodComponent._id">
+			   			<md-button ng-click="vm.updateComponent(foodComponent); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+	              <md-tooltip md-direction="down">
+	              	Update Component
+	              </md-tooltip>
+	              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+	          	</md-button>
+			   		</div>
+			   		<div data-ng-if = "vm.activeComponent == foodComponent._id">
+			   			<md-button ng-click="vm.cancelEditComponent(foodComponent); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+                <md-tooltip md-direction="down">
+                  Click To Cancel
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+            	</md-button>
+			   		</div>
+		   		</div>
+		    </md-card-content>
+		    <md-card-content md-whiteframe="4" data-ng-if = "vm.activeComponent == foodComponent._id">
+		      <div layout="row" layout-sm="column" layout-xs="column" flex>
+		    		<md-input-container flex>
+		   				<label>Component Name</label>
+			        <input name="editedComponentName" ng-model="vm.edited.componentName" ng-disabled="!vm.ComponentEditer" required>
+			        <div ng-messages="editcomponent.editedComponentName.$error" >
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+		    		</md-input-container>
+		    		<md-autocomplete flex required
+      				md-input-name="componentBaseUnit"
+      				ng-disabled="!vm.ComponentEditer"
+      				md-selected-item="vm.selectedComponent1"
+      				md-search-text-change=""
+      				md-search-text="vm.searchEditBaseUnit"
+      				md-selected-item-change="vm.selectedComponentChange(item)"
+      				md-items="item in vm.querySearchForBaseUnit(vm.searchEditBaseUnit)"
+      				md-item-text="item.baseUnitSymbol"
+     					md-min-length="0"
+      				md-floating-label="Component BaseUnit"
+      				md-menu-class="autocomplete-custom-template">
+      				<md-item-template>
+                <md-tooltip>{{item.baseUnitName}}</md-tooltip>
+                <div md-highlight-text="vm.searchEditBaseUnit" md-highlight-flags="^i" required>
+                  {{item.baseUnitSymbol}}
+                </div>
+              </md-item-template>
+          		<div ng-messages="editcomponent.componentBaseUnit.$error" >
+		            <div ng-message="required">This is a required Field</div>
+		          </div>
+              <!-- <div ng-messages="componentForm.componentBaseUnit.$error" ng-if="componentForm.componentBaseUnit.$touched">
+                <div ng-message="required">This is a required Field</div>
+              </div> -->
+			        <md-not-found>
+			          <a ng-click="createBaseUnit(vm.searchEditBaseUnit)">Create New Base Unit!</a>
+			          "{{vm.searchEditBaseUnit}}" no result found for this.
+			        </md-not-found>
+			    	</md-autocomplete>
+			    </div>
+			    <div layout="row" layout-sm="column" layout-xs="column" flex >
+		        <md-input-container flex>
+              <md-tooltip>You may use the stock audit feature to update current stock!</md-tooltip>
+			   			<label>CurrentStock</label>
+				      <input name="editedDescription" ng-model="vm.edited.currentStock" ng-disabled="true" required>
+				      <div ng-messages="editcomponent.editedDescription.$error" >
+			          <div ng-message="required">This is a required Field</div>
+			        </div>
+		      	</md-input-container>
+		    		<md-input-container flex>
+		   				<label>Description</label>
+			        <input name="editedDescription" ng-model="vm.edited.description" ng-disabled="!vm.ComponentEditer" required>
+			        <div ng-messages="editcomponent.editedDescription.$error" >
+		          	<div ng-message="required">This is a required Field</div>
+		          </div>
+		      	</md-input-container>
+		        <div flex>
+			        <md-checkbox aria-label="Checkbox No Ink" ng-model="vm.edited.consumable" class="md-primary" ng-disabled="!vm.ComponentEditer">
+            		Consumable
+          		</md-checkbox>
+		        </div>
+		      </div>
+		    </md-card-content>
+	    </md-card>
+	    </form>
+    </div>
+    <ul uib-pagination total-items="totalItemsFoodComponent.count"
+	    ng-model="curPageFoodComponent.page"
+	    max-size="maxSize"
+	    class="pagination-sm"
+	    boundary-links="true"
+	    rotate="false"
+	    num-pages="numPages"
+	    ng-change="pageChangedFoodComponent(searchTextFoodComponent.text)">
+	  </ul>
+	  <pre>showing <b>{{totalItemsFoodComponent.count===0 ? 0 :indexStartFoodComponent+1}}-{{indexEndFoodComponent}}</b> of <b>{{totalItemsFoodComponent.count}}</b> Food Components</pre>
+</section>

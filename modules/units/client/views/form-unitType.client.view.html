@@ -1,0 +1,69 @@
+<section>
+ <!--  <md-subheader> -->
+    <div layout="row" class="page-header" style="margin-top: 5px">
+      <h3 flex>
+        <b style="font-color:'black'">Create Unit Type</b>
+      </h3>
+      <md-icon ng-click="vm.goBackToList()" md-svg-src="/modules/core/client/img/svg/ic_arrow_back_black_24px.svg" aria-lable="back">
+        <md-tooltip md-direction="down">
+          <strong><font size="2"> {{vm.createShortcut.back}} </font></strong>  &nbsp; Back to list
+        </md-tooltip>
+      </md-icon>
+    </div>
+  <!-- </md-subheader> -->
+  <div>
+    <form name="vm.form.unitTypeForm" class="form-horizontal" ng-submit="vm.saveUnitType(vm.form.unitTypeForm.$valid)">
+      <fieldset>
+        <div  layout="column" layout-xs="column">
+          <md-input-container flex>
+            <label>Unit Type Name</label>
+            <input id="unitTypeNameField" name="unitTypeName" autofocus="autofocus" ng-model="vm.unitTypeName" capitalizefirstletter required>
+            <div ng-messages="vm.form.unitTypeForm.unitTypeName.$error"  multiple md-auto-hide="true" ng-if="vm.form.unitTypeForm.unitTypeName.$touched || vm.form.unitTypeForm.unitTypeName.$dirty">
+              <div ng-message="required" ng-style="{color: vm.form.unitTypeForm.unitTypeName.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+          <md-input-container flex>
+            <label>Base Unit Name</label>
+            <input name="baseUnitName" ng-model="vm.baseUnitName" capitalizefirstletter required>
+            <div ng-messages="vm.form.unitTypeForm.baseUnitName.$error"  multiple md-auto-hide="true" ng-if="vm.form.unitTypeForm.baseUnitName.$touched || vm.form.unitTypeForm.baseUnitName.$dirty">
+              <div ng-message="required" ng-style="{color: vm.form.unitTypeForm.baseUnitName.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+          <md-input-container flex>
+            <label>Base Unit Symbol</label>
+            <input name="baseUnitSymbol" ng-model="vm.baseUnitSymbol" required>
+            <div ng-messages="vm.form.unitTypeForm.baseUnitSymbol.$error"  multiple md-auto-hide="true" ng-if="vm.form.unitTypeForm.baseUnitSymbol.$touched || vm.form.unitTypeForm.baseUnitSymbol.$dirty">
+              <div ng-message="required" ng-style="{color: vm.form.unitTypeForm.baseUnitSymbol.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+              </div>
+            </div>
+          </md-input-container>
+          <md-input-container flex>
+            <label>Note</label>
+            <textarea name="note" ng-model="vm.note"></textarea>
+          </md-input-container>
+          <div layout="row">
+        <span flex></span>
+        <md-button ng-disabled="vm.disableSave" data-ng-click="vm.saveAndBack(vm.form.unitTypeForm.$valid)" class="md-raised md-primary">
+          Save And Back
+          <md-tooltip md-direction="top">
+            <strong><font size="2"> {{vm.createShortcut.saveAndBack}} </font></strong> &nbsp; Click To Create and back to list
+          </md-tooltip>
+        </md-button>
+        <md-button ng-disabled="vm.disableSave" type="submit" class="md-raised md-primary">
+          Save
+          <md-tooltip md-direction="top">
+            <strong><font size="2"> {{vm.createShortcut.save}} </font></strong> &nbsp;  Click To Create Unit Type
+          </md-tooltip>
+        </md-button>
+      </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+</section>

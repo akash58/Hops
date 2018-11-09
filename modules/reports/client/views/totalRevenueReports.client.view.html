@@ -1,0 +1,222 @@
+<section data-ng-controller="TotalRevenueReportController" data-ng-init="initialize()" >
+	<div class="page-header">
+		<h1>Report</h1>
+	</div><!-- gameRevenue1 : {{gameRevenue1}} <hr> totalOnServiceTax1 : {{totalOnServiceTax1}}<hr> totalOnServiceTax2 : {{totalOnServiceTax2}}<hr> totalOnServiceTax3 : {{totalOnServiceTax3}} -->
+	<!-- <div class="animate-show" data-ng-if="!revenueReportPageVisible" data-ng-include="'modules/core/views/invalidusererrorscreen.client.view.html'">
+	</div> -->
+	<div class="col-md-12 col-xs-12 col-sm-12">
+		<div class="form-inline col-md-12 col-xs-12 col-sm-12">
+			<label class="form-group">Report From:</label>
+			<input class="form-group" type="date" data-ng-model="dates.startDate" data-ng-change="" max="{{dates.maxdate}}" min="2015-01-01">
+			<label class="form-group">To :</label>
+			<input class="form-group" type="date" data-ng-model="dates.endDate" data-ng-change="" max="{{dates.maxdate}}" min="{{dates.startDate}}">
+			<!-- <button data-ng-click="getFoodRevenueDateWise()">get food</button> -->
+			<button class="btn btn-primary btn-sm  glyphicon glyphicon-search" ng-click="getRevenueDateWise()"></button>
+		</div>
+		<div class="panel-body col-md-12 col-xs-12 col-sm-12">
+			<table class="table table-hover ">
+				<thead>
+					<tr>
+						<th style="width:5%;">#</th>
+						<th>Daily Report</th>
+						<th class="text-right">Amount &nbsp; {{currencySymbol}}</th>
+					</tr>
+				</thead>
+				<tr class="success">
+					<td></td>
+					<td>Total revenue for Games</td>
+					<td class="text-right">{{revenueDetailsFromBillRentalArchives.gameRevenue}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="success">
+					<td></td>
+					<td>Total revenue for Food</td>
+					<!-- <td class="text-right">{{revenueDetailsFromBillRentalArchives.foodRevenue}}</td> -->
+					<td class="text-right">{{foodRevenueWithDiscount}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="success">
+					<td></td>
+					<td>Total revenue for Packages</td>
+					<td class="text-right">{{revenueDetailsFromBillRentalArchives.packageRevenue}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="success">
+					<td></td>
+					<td>Total revenue for Memberships</td>
+					<td class="text-right">{{totalMembershipRevenue.billPrice}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="active">
+					<td><button class="btn-success glyphicon glyphicon-plus-sign" data-ng-click="serviceTaxClicked()" data-ng-if="!showServiceTaxDetails"></button>
+						<button class="btn-success glyphicon glyphicon-minus-sign" data-ng-click="serviceTaxClicked()" data-ng-if="showServiceTaxDetails"></button></td>
+					<td>Total Service Tax collected</td>
+					<td class="text-right">{{totalOnServiceTax}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="active" data-ng-if="showServiceTaxDetails">
+					<td></td>
+					<td>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Service Tax on</th>
+									<th class="text-right">Amount &nbsp; {{currencySymbol}}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td >Service Tax Revenue on Foods</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.serviceTaxOnFood}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Service Tax Revenue on Games</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.serviceTaxOnGame}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Service Tax Revenue on Packages</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.serviceTaxForPackage}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Service Tax Revenue on Membership</td>
+								<td class="text-right">{{totalMembershipRevenue.serviceTaxOnMembership}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+						</table>
+					</td>
+					<td></td>
+				</tr>
+				<tr class="active">
+					<td>
+						<button class="btn-success glyphicon glyphicon-plus-sign" data-ng-click="vatExpandClicked()" data-ng-if="!showVatDetails"></button>
+						<button class="btn-success glyphicon glyphicon-minus-sign" data-ng-click="vatExpandClicked()" data-ng-if="showVatDetails"></button>
+					</td>
+					<td>Total Vat collected</td>
+					<td class="text-right">{{totalOnVat}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="active" data-ng-if="showVatDetails">
+					<td></td>
+					<td>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Vat on</th>
+									<th class="text-right">Amount &nbsp; {{currencySymbol}}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td >Vat Revenue on Foods</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.vatOnFood}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Vat Revenue on Packages</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.vatForPackage}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+						</table>
+					</td>
+					<td></td>
+				</tr>
+				<tr class="active">
+					<td>
+						<button class="btn-success glyphicon glyphicon-plus-sign" data-ng-click="serviceChargeClicked()" data-ng-if="!showServiceChargeDetails"></button>
+						<button class="btn-success glyphicon glyphicon-minus-sign" data-ng-click="serviceChargeClicked()" data-ng-if="showServiceChargeDetails"></button></td>
+					<td>Total Service Charge collected</td>
+					<td class="text-right">{{totalOnServiceCharge}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="active" data-ng-if="showServiceChargeDetails">
+					<td></td>
+					<td>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Service Charge on</th>
+									<th class="text-right">Amount &nbsp; {{currencySymbol}}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td >Service Charge Revenue on Foods</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.serviceChargeOnFood}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Service Charge Revenue on Games</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.serviceChargeOnGame}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Service Charge Revenue on Packages</td>
+								<td class="text-right">{{revenueDetailsFromBillRentalArchives.serviceChargeForPackage}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+						</table>
+					</td>
+					<td></td>
+				</tr>
+				<tr class="active">
+					<td></td>
+					<td>Extra Charge Collected</td>
+					<td class="text-right">{{totalRevenue.extraCharge}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="danger">
+					<td>
+						<button class="btn-success glyphicon glyphicon-plus-sign" data-ng-click="discountSectionClicked()" data-ng-if="!showDiscountSectionDetails"></button>
+						<button class="btn-success glyphicon glyphicon-minus-sign" data-ng-click="discountSectionClicked()" data-ng-if="showDiscountSectionDetails"></button>
+					</td>
+					<td>Total Discounts</td>
+					<td class="text-right">-{{totalOnDiscount}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr data-ng-if="showDiscountSectionDetails">
+					<td></td>
+					<td>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Discounts on</th>
+									<th class="text-right">Amount &nbsp; {{currencySymbol}}</th>
+								</tr>
+							</thead>
+							<tr>
+								<td >Discount on Bill</td>
+								<td class="text-right">-{{totalRevenue.discountInValue}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+							<tr>
+								<td >Discount for Membership on Food</td>
+								<td class="text-right">-{{revenueDetailsFromBillRentalArchives.membershipDiscountOnFood}} &nbsp; {{currencySymbol}}</td>
+							</tr>
+						</table>
+					</td>
+					<td></td>
+				</tr>
+				<!-- <tr class="danger">
+					<td></td>
+					<td>Total Deposit</td>
+					<td class="text-right">-{{revenueDetailsFromBillRentalArchives.deposit}}</td>
+				</tr> -->
+				<tr class="warning">
+					<td></td>
+					<td>Rounding</td>
+					<td class="text-right">{{totalRevenue.rounding}} &nbsp; {{currencySymbol}}</td>
+				</tr>
+				<tr class="info">
+					<td></td>
+					<td><strong>Total Revenue for<font size="3"> ({{revenueDetailsFromBillRentalArchives.noOfBills}})</font> Bills</strong></td>
+					<td class="text-right"><strong><font size="3">{{totalRevenue.billTotal}} &nbsp; {{currencySymbol}}</font></strong></td>
+				</tr>
+			</table>
+		</div>
+		<div class="panel-body col-md-12 col-xs-12 col-sm-12">
+			<div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Payment Type</th>
+							<th class="text-right">Amount &nbsp; {{currencySymbol}}</th>
+						</tr>
+					</thead>
+					<tr data-ng-repeat="paymentType in totalRevenueForPaymentType">
+						<td>{{paymentType._id.paymentType}}</td>
+						<td class="text-right">{{paymentType.value}} &nbsp; {{currencySymbol}}</td>
+					</tr>
+					<tr>
+						<td>Deposit</td>
+						<td class="text-right">{{revenueDetailsFromBillRentalArchives.deposit}} &nbsp; {{currencySymbol}}</td>
+					</tr>
+					<tr>
+						<td><strong><font size="3">Total</font></strong></td>
+						<td class="text-right"><strong><font size="3">{{totalpaymentType}} &nbsp; {{currencySymbol}}</font></strong></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,455 @@
+<section data-ng-init="initialize()" >
+  <!-- <div class="page-header" id="pageheader">
+     <h1>Purchase Orders</h1>
+  </div> -->
+  <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3>
+        <b>Purchase Orders</b>
+      </h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3>
+        <b>Purchase Orders</b>
+      </h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "/>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="search" data-ng-submit="curPagePurchaseOrder.currentPage = 1; pageChangedPurchaseOrder(searchTextPurchaseOrder.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextPurchaseOrder.text=''; pageChangedPurchaseOrder(searchTextPurchaseOrder.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" />
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input type ="number" ng-model="searchTextPurchaseOrder.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"/>
+            <md-tooltip md-direction="bottom" flex="60">
+            Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+  <div layout="row" layoout-wrap layout-xs="column" layout-sm="row">
+    <md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addPurchaseOrderButtonClicked()" id="addPurchaseOrderButtonClicked">
+      <md-tooltip md-direction="down">
+       Click to add Purchase Orders!
+      </md-tooltip>
+      <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"/>
+    </md-button>
+    <div layout="row" flex layout-xs="column"  layout-margin layout-sm="column" data-ng-show="addPurchaseOrderClicked" id="addPurchaseOrderClicked" md-padding>
+      <form name="vm.foodTypeForm" flex  data-ng-submit="" class="form-inline animate-show" autocomplete="off">
+        <div layout="row" layout-xs="column" layout-sm="row">
+          <md-input-container class="md-block" flex-gt-sm>
+            <!-- 	<label>Purchase Order No. :</label> -->
+            <input type="number" id="PurchaseOrderNo" name="PurchaseOrderNo" ng-model="ordpurch.purchaseOrderNo" ng-focus="focusPurchaseOrder()" min="0" placeholder="Purchase Order No. :" disabled>
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="date" id="purchaseDate" name="purchaseDate"  ng-model="ordpurch.purchaseDate"  min="{{ordpurch.purchaseDate}}" max="{{ordpurch.purchaseDate}}"  ng-focus="focusPurchaseOrder()" data-ng-change="">
+          </md-input-container>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="number" id="paymentRefferenceNo"  min = "0" name="paymentRefferenceNo" placeholder="Payment Reference No" ng-model="ordpurch.paymentRefferenceNo" ng-focus="focusPurchaseOrder()">
+              <!-- <div ng-messages="vm.foodTypeForm.paymentRefferenceNo.$error" ng-if="vm.foodTypeForm.paymentRefferenceNo.$touched || vm.foodTypeForm.paymentRefferenceNo.$dirty">
+              <div ng-message="required">This is a required Field</div>
+              </div> -->
+          </md-input-container>
+        </div>
+        <div layout="row"  layout-xs="column" layout-sm="row">
+          <div flex>
+            <md-autocomplete
+  			      md-input-name="selectSupplier"
+              md-no-cache="supplierToBeAdded.noCache"
+              md-selected-item="ordpurch.supplier"
+              md-search-text="supplierToBeAdded.supplierSearchText"
+              md-items="item in querySupplier(supplierToBeAdded.supplierSearchText)"
+              md-item-text="item.companyName"
+              md-min-length="0"
+              data-ng-focus=""
+              md-floating-label="Select Supplier" required>
+              <div ng-messages="vm.foodTypeForm.selectSupplier.$error" ng-if="vm.foodTypeForm.selectSupplier.$touched || vm.foodTypeForm.selectSupplier.$dirty">
+                <div ng-message="required">This is a required Field</div>
+              </div>
+              <md-item-template>
+                <span md-highlight-text="supplierToBeAdded.supplierSearchText" md-highlight-flags="^i">{{item.companyName}}</span>
+              </md-item-template>
+              <md-not-found>
+                No Type matching "{{supplierToBeAdded.supplierSearchText}}" were found.
+                <a ng-click="createSupplier(supplierToBeAdded.supplierSearchText, $event)">Create a new one!</a>
+              </md-not-found>
+            </md-autocomplete>
+          </div>
+          <div layout="row" flex>
+            <div layout-align="end end">
+              <h3>{{currencySymbol}}</h3>
+            </div>
+            <md-input-container flex class="md-block" flex-gt-sm>
+              <!-- <input type="text" id="PurchaseOrderNo" name="PurchaseOrderNo" placeholder="Enter Purchase Order No" ng-model="ordpurch.purchaseOrderNo" ng-focus="focusPurchaseOrder()" min="0" required> -->
+              <!--   <label>Enter Total Amount</label> -->
+              <input  id="totalAmount" name="totalAmount"  data-ng-model="ordpurch.totalAmount" placeholder="Total Amount" data-ng-focus="focusPurchaseOrder()" disabled>
+            </md-input-container>
+          </div>
+        </div>
+        <div flex layout="column">
+          <md-input-container class="md-block" flex-gt-sm>
+            <!-- <input type="text" name="description" placeholder="Description" ng-model="ordpurch.description" ng-focus="focusPurchaseOrder()" min="0" required> -->
+            <textarea  id="description" name="description" data-ng-model="ordpurch.description" placeholder="Description"></textarea>
+          </md-input-container>
+        </div>
+        <div layout="row" flex  layoout-wrap layout-xs="column" layout-sm="row">
+          <div flex>
+            <md-button class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addFoodComponentButtonClicked()" id="addFoodComponentButtonClicked">
+              <md-tooltip md-direction="down">
+                Click to add Food Components!!
+              </md-tooltip>
+              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"/>
+            </md-button>
+            <div layout="column" flex layout-xs="column" layout-sm="column" data-ng-show="addFoodComponentClicked" id="addFoodComponentClicked" md-padding>
+              <div name="foodTypeForm" class="form-inline animate-show" autocomplete="off" flex>
+                <div flex layout="row" layout-xs="column" layout-sm="row">
+                  <div flex>
+                    <md-autocomplete
+                      md-input-name="selectFoodComponent"
+                      md-no-cache="foodComponentToBeAdded.noCache"
+                      md-selected-item="foodcom.foodcomponent"
+                      md-search-text="foodComponentToBeAdded.foodComponentSearchText"
+                      md-selected-item-change= "getBaseUnitValue(item)"
+                      md-items="item in queryFoodComponent(foodComponentToBeAdded.foodComponentSearchText)"
+                      md-item-text="item.foodComponentName"
+                      md-min-length="0"
+                      data-ng-focus=""
+                      md-floating-label="Select Food Component" required>
+                      <div ng-messages="vm.foodTypeForm.selectFoodComponent.$error" ng-if="vm.foodTypeForm.selectFoodComponent.$touched || vm.foodTypeForm.selectFoodComponent.$dirty">
+                        <div ng-message="required">This is a required Field</div>
+                      </div>
+                      <md-item-template>
+                        <span md-highlight-text="foodComponentToBeAdded.foodComponentSearchText" md-highlight-flags="^i">{{item.foodComponentName}}</span>
+                      </md-item-template>
+                      <md-not-found>
+                        No Type matching "{{foodComponentToBeAdded.foodComponentSearchText}}" were found.
+                        <a ng-click="createFoodComponent(foodComponentToBeAdded.foodComponentSearchText, $event)">Create a new one!</a>
+                      </md-not-found>
+                    </md-autocomplete>
+                  </div>
+                  <!-- <div flex> -->
+                  <div layout="row" flex>
+                    <md-input-container flex class="md-block" flex-gt-sm>
+                      <!--  <input md-maxlength="30" required md-no-asterisk name="description" ng-model="ordpurch.supplier"  ng-model="ordpurch.supplier"> -->
+                      <input type="number"  min="1" name="rate" ng-model="foodcom.quantity"  data-ng-focus="focusPurchaseOrder()" placeholder= "Quantity" required>
+                      <!-- <strong id="baseunit">  {{foodcom.baseunit}}</strong> -->
+                      <!--  data-ng-options="supplier._id as supplier.companyName for supplier in suppliers"data-ng-focus="focusPurchaseOrder()" data-ng-change="" -->
+                      <!--   <div ng-messages="projectForm.description.$error">
+                      <div ng-message="required">This is required.</div>
+                      <div ng-message="md-maxlength">The description must be less than 30 characters long.</div>
+                      </div> -->
+                      <div ng-messages="vm.foodTypeForm.rate.$error" ng-if="vm.foodTypeForm.rate.$touched || vm.foodTypeForm.rate.$dirty">
+                        <div ng-message="required">This is a required Field</div>
+                        <div ng-message="md-maxlength">The description must be less than 30 characters long.</div>
+                      </div>
+                    </md-input-container>
+                  </div>
+                  <div layout="row">
+                    <!-- <h3>{{foodcom.foodcomponent.baseUnit.baseUnitSymbol}}</h3> -->
+                    <md-input-container>
+                      <md-select ng-model="selectedUnitId" ng-change="unitChanged(selectedUnitId)">
+                        <md-option ng-value="unit._id" ng-repeat="unit in unitsInCurrentUnitType">{{unit.symbol}}</md-option>
+                      </md-select>
+                    </md-input-container>
+                  </div>
+                  <div layout="row" flex>
+                    <md-input-container flex class="md-block" flex-gt-sm>
+                      <!-- <input type="text" id="PurchaseOrderNo" name="PurchaseOrderNo" placeholder="Enter Purchase Order No" ng-model="ordpurch.purchaseOrderNo" ng-focus="focusPurchaseOrder()" min="0" required> -->
+                      <!--  <label>Price / {{foodcom.baseunit}}:</label> -->
+                      <input type="number" id="price" name="price" data-ng-model="foodcom.price" placeholder="Enter Price" data-ng-focus="focusPurchaseOrder()" step ="0.01" min = "0" required>
+                        <div ng-messages="vm.foodTypeForm.price.$error" ng-if="vm.foodTypeForm.price.$touched || vm.foodTypeForm.price.$dirty">
+                          <div ng-message="required">This is a required Field</div>
+                        </div>
+                    </md-input-container>
+                    <div layout-align="end end">
+                      <h3>{{currencySymbol}}/{{selectedUnit.symbol}}</h3>
+                    </div>
+                  </div>
+                </div>
+                <div layout="row"  flex layout-xs="column" layout-sm="column">
+                  <md-input-container class="md-block" flex-gt-sm>
+                    <!-- <input type="text" name="description" placeholder="Description" ng-model="ordpurch.description" ng-focus="focusPurchaseOrder()" min="0" required> -->
+                    <textarea name="description" data-ng-model="foodcom.description" id="description"  placeholder="Description" data-ng-focus="focusPurchaseOrder"></textarea>
+                  </md-input-container>
+                </div>
+                <div layout-align="end end" class=" pull right"  layout="row">
+                  <md-button type="submit"  data-ng-click="addInTempFoodComponent()" class="md-raised md-primary pull right form-group" id="add"> Add</md-button>
+                </div>
+              </div>
+            </div>
+            <div layout="column" data-ng-if="tempFoodComponentAdded.length">
+              <table class="table maintable">
+                <!-- foodComponentAdded: -->
+                <!-- {{tempFoodComponentAdded}} -->
+                <thead>
+                  <tr>
+                    <th scope="col">Food Component Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">amountt</th>
+                    <th scope="col">Description</th>
+                    <th scope="col"/>
+                  </tr>
+                </thead>
+                <tr data-ng-repeat="foodComponentAdded in tempFoodComponentAdded">
+                  <td data-label="food component">
+                    <label for="foodcomponent">{{foodComponentAdded.foodcomponentname}}</label>
+                  </td>
+                  <td data-label="Quantity">
+                    <label for="Quantity">{{foodComponentAdded.quantity}} {{foodComponentAdded.foodcomponent.baseUnit.baseUnitSymbol}}</label>
+                  </td>
+                  <td data-label="Price">
+                    <label for="Price">{{currencySymbol}} {{foodComponentAdded.price}} / {{foodComponentAdded.unitUsedForPrice.multiplierWithBaseUnit}} {{foodComponentAdded.foodcomponent.baseUnit.baseUnitSymbol}}</label>
+                  </td>
+                  <td data-label="Amount">
+                    <label for="Amount">{{currencySymbol}} {{foodComponentAdded.amount}}</label>
+                  </td>
+                  <td data-label="Description">
+                    <label for="Description">{{foodComponentAdded.description}}</label>
+                  </td>
+                  <td data-label="">
+                    <button type="button" class="btn-danger glyphicon glyphicon-remove" data-ng-click=" recalculateTotalAmount(foodComponentAdded)"/>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div layout-align="end end" class=" pull right"  layout="row">
+              <md-button class="md-fab md-mini md-primary pull-right" type="button" onclick="" data-ng-click="createPurchaseOrder()" id="save">
+                <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"/>
+                <md-tooltip md-direction="down">
+                  Save Customer
+                </md-tooltip>
+              </md-button>
+            </div>
+            <span class="col-md-12 col-xs-12 col-sm-12 form-group">
+              <p data-ng-show="savedPurchaseOrderSuccessfully" class="text-center text-success">
+                <strong id="savedPurchaseOrderSuccessfully">Purchase Order Saved Successfully</strong>
+              </p>
+              <p data-ng-show="errorPurchaseOrder" class="text-center text-danger">
+                <strong data-ng-bind="errorPurchaseOrder"></strong>
+              </p>
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- <div layout="row" layout-wrap layout-xs="column" flex>
+	<form name="search" flex data-ng-submit="curPagePurchaseOrder.page = 1; pageChangedPurchaseOrder(searchTextPurchaseOrder.text)" class="form-inline animate-show" autocomplete="off">
+	      <ul flex uib-pagination total-items="totalItemsPurchaseOrder.count"
+	      ng-model="C.page"
+	      max-size="maxSize"
+	      class="pagination-sm"
+	      boundary-links="true"
+	      rotate="false"
+	      num-pages="numPages"
+	      ng-change="pageChangedPurchaseOrder(searchTextPurchaseOrder.text)">
+	      </ul>
+		  <div layout="row" class="pull-right" flex layout-align="start start">
+		    <md-input-container >
+	          <label>&nbsp;</label>
+	           <input ng-model="searchTextPurchaseOrder.text" placeholder="Search Purchase-Order Number">
+	        </md-input-container>
+	        <md-button type="submit" class="md-fab md-mini md-primary pull-right">
+	          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+	          <md-tooltip md-direction="down" flex="60">
+	            Search
+	          </md-tooltip>
+	        </md-button> -->
+              <!-- Search: <input  type="text" data-ng-model="searchTextPurchaseOrder.text" placeholder = "Search Purchase-Order Number"></input>
+	      <button type="submit" class= "btn btn-primary btn-sm glyphicon glyphicon-search"></button> -->
+              <!-- </div>
+    	</form>
+  </div> -->
+  <md-card flex class="row" data-ng-repeat="purchaseorder in purchaseOrdersOnPage" md-whiteframe="4">
+    <!-- <div class = "list-group"> -->
+    <md-card-content style="background: #b3ffe6;" data-ng-click="clickPurchaseOrder(purchaseorder)">
+      <!-- <label for="purchaseOrderNumber"> -->
+      <label>
+        <h4>Purchase Order Number: <strong>{{purchaseorder.purchaseOrderNumber}}</strong>
+        </h4>
+      </label>
+    </md-card-content>
+    <md-card-content data-ng-if="purchaseorder.purchaseOrderNumber == activePurchaseOrder">
+      <!-- <div class="panel-body col-md-12 col-xs-12 col-sm-12" > -->
+      <div class="md-padding">
+        <div layout="row" layout-xs="column" flex>
+          <div flex>
+            <label for="paymentRefferenceNo">Payment Refference No : {{purchaseorder.paymentReferenceNumber}}</label>
+          </div>
+          <div flex>
+            <label for="Date">Date : {{dateofPurchaseString}}</label>
+          </div>
+        </div>
+        <div layout="row" layout-xs="column" flex>
+          <div flex>
+            <label for="Supplier">Supplier : {{purchaseorder.supplier.companyName}}</label>
+          </div>
+          <div flex>
+            <label for="totalAmount">Total Amount : {{currencySymbol}} {{purchaseorder.totalAmount}}</label>
+          </div>
+        </div>
+          <!-- need to add purchase order inventoryActivity here -->
+        <div>
+            <!-- <div class="panel-body col-md-12 col-xs-12 col-sm-12">
+          <span class="col-md-1 col-xs-1 col-sm-1" >
+            <md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addPurchaseOrderButtonClicked()" id="addPurchaseOrderButtonClicked">
+                    <md-tooltip md-direction="down">
+                    Click to add Purchase Orders!
+                    </md-tooltip>
+                    <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+            </md-button> -->
+                              <!-- <button title="Click to add Food Types!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addPurchaseOrderButtonClicked()" id="addPurchaseOrderButtonClicked">
+            </button> -->
+                              <!-- </span> -->
+            <!-- <span class="col-md-11 col-xs-11 col-sm-11" data-ng-show="addPurchaseOrderClicked" id="addPurchaseOrderClicked">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+              <form name="foodTypeForm" data-ng-submit="" class="form-inline animate-show" autocomplete="off">
+                <fieldset>
+                  <div class="col-md-12 col-xs-12 col-sm-12" >
+                    <div class="form-group col-md-6 col-xs-12 col-sm-6">
+                      <label  for="PurchaseOrderNo">Purchase Order No: </label>
+                      <input type="text" id="PurchaseOrderNo" name="PurchaseOrderNo" class="form-control" data-ng-model="ordpurch.purchaseOrderNo" placeholder="Enter Purchase Order No" data-ng-focus="focusPurchaseOrder()" disabled>
+    
+                                    </div>
+                    <div class="form-group col-md-6 col-xs-12 col-sm-6">
+                      <label  for="purchaseDate">Date : </label>
+                      <input type="date"  class="form-control" name="purchaseDate" data-ng-model = "ordpurch.purchaseDate" data-ng-change="" min="{{ordpurch.purchaseDate}}" max="{{ordpurch.purchaseDate}}" data-ng-focus="focusPurchaseOrder()" id="purchaseDate">
+                                    </div>
+                    <div class="form-group col-md-6 col-xs-12 col-sm-6">
+                      <label  for="PaymentRefferenceNo">Payment Reference No: </label>
+                      <input type="text" id="paymentRefferenceNo" name="paymentRefferenceNo" class="form-control" data-ng-model="ordpurch.paymentRefferenceNo" placeholder="Enter Payment Refference No" data-ng-focus="focusPurchaseOrder()" required>
+                                    </div> -->
+    
+    
+    
+    
+    
+                              <!-- <div class="form-group col-md-6 col-xs-12 col-sm-6">
+                              <label for="Supplier">Supplier : </label>
+                                    <md-input-container>
+    
+                                    <md-select  name="supplierName" data-ng-model="ordpurch.supplier" style="min-width: 200px;" required>
+                                      <md-option ng-value="supplier.companyName" ng-repeat= "supplier in suppliers"  data-ng-focus="focusPurchaseOrder()">{{supplier.companyName}}
+                                      </md-option>
+                                      </md-select>
+                  <div ng-messages="foodTypeForm.supplier.$error" ng-if="foodTypeForm.supplier.$touched || foodTypeForm.supplier.$dirty">
+                    <div ng-message="required" ng-style="{color: foodTypeForm.supplier.$touched ? 'Red' : 'Blue' }">This is a required Field</div>
+                    </div>
+                  -->
+                        <!--  <div class="form-group col-md-6 col-xs-12 col-sm-6">
+                         <label for="Supplier">Supplier : </label>
+                              <md-input-container>
+
+                              <md-select  name="supplierName" data-ng-model="ordpurch.supplier" style="min-width: 200px;" required>
+                                <md-option ng-value="supplier.companyName" ng-repeat= "supplier in suppliers"  data-ng-focus="focusPurchaseOrder()">{{supplier.companyName}}
+                                </md-option>
+                                </md-select>
+
+                                 <div ng-messages="foodTypeForm.supplierName.$error" ng-if="foodTypeForm.supplier.$touched || foodTypeForm.supplier.dirty">
+                               <div ng-message="required" ng-style="{color:foodTypeForm.supplier.$touched ? 'Red' : 'Blue'}">You did not enter a field</div>
+                                </div>
+                              </md-input-container>
+                              </div> -->
+                        <!-- 				<div class="form-group col-md-6 col-xs-12 col-sm-6">
+
+								<label  for="Supplier">Supplier : </label>
+
+								<select class="form-control" data-ng-model="ordpurch.supplier" data-ng-options="supplier._id as supplier.companyName for supplier in suppliers"data-ng-focus="focusPurchaseOrder()" data-ng-change="" >
+                                </select>
+              </div> -->
+                        <!-- <div class="form-group col-md-5 col-xs-12 col-sm-5">
+								<label  for="TotalAmount">Total Amount : </label>
+								<span class="input-group">
+									<span class="input-group-addon">{{currencySymbol}} </span>
+									<input type="text" id="totalAmount" name="totalAmount" class="form-control" data-ng-model="ordpurch.totalAmount" placeholder="Enter Total Amount"data-ng-focus="focusPurchaseOrder()" disabled>
+                </span> -->
+                        <!-- >>>>>>> Stashed changes
+              </div>
+            <div flex>
+            <label for="description">Description :  {{purchaseorder.description}}</label>
+              </div>
+              </div>
+            <div layout="column">
+                  <h3  class="md-padding">Food Component in the Purchase Order:</h3> -->
+                        <!-- purchaseOrderInventoryActivityInPurchaseOrders:{{purchaseOrderInventoryActivityInPurchaseOrders}} -->
+          <div layout="column">        
+            <table class="maintable poTable  row">
+              <thead>
+                <tr>
+                  <th scope="col">Food Component Name</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Description</th>
+                </tr>
+              </thead>
+              <tr data-ng-repeat="foodComponentRelated in purchaseOrderInventoryActivityInPurchaseOrders">
+                <td  data-label="food component">
+                  <label>{{foodComponentRelated.inventoryActivity.foodcomponent.foodComponentName}}</label>
+                </td>
+                <td data-label="Quantity">
+                  <label>{{foodComponentRelated.inventoryActivity.addedOrRemovedStock}} {{foodComponentRelated.inventoryActivity.foodcomponent.baseUnit.baseUnitSymbol}} </label>
+                </td>
+                <td data-label="Price">
+                  <label>{{currencySymbol}} {{foodComponentRelated.inventoryActivity.price}} / {{foodComponentRelated.inventoryActivity.unitUsedForPrice.multiplierWithBaseUnit}} {{foodComponentRelated.inventoryActivity.foodcomponent.baseUnit.baseUnitSymbol}}</label>
+                </td>
+                <td data-label="Amount">
+                  <label>{{currencySymbol}} {{ (foodComponentRelated.inventoryActivity.addedOrRemovedStock / foodComponentRelated.inventoryActivity.unitUsedForPrice.multiplierWithBaseUnit) * foodComponentRelated.inventoryActivity.price}}</label>
+                </td>
+                <td data-label="Description">
+                  <label>{{foodComponentRelated.inventoryActivity.description}}</label>
+                </td>
+              </tr>
+            </table>
+          </div>
+              <!-- 	</div> -->
+              <!-- </md-card-content> -->
+              <!--  </div> -->
+              <!-- </md-card> -->
+
+            <!--  </div> -->
+        </div>
+      </div>
+    </md-card-content>
+  </md-card>
+  <div layout="row" data-ng-if="purchaseorders.length!==0">
+    <div flex data-ng-if="(totalItemsPurchaseOrder.count===0)" class="alert alert-warning text-center">
+      Your search did not match any documents.
+    </div>
+  </div>
+  <div layout="column">
+    <ul uib-pagination total-items="totalItemsPurchaseOrder.count"
+      ng-model="curPagePurchaseOrder.page"
+      max-size="maxSize"
+      class="pagination-sm"
+      boundary-links="true"
+      rotate="false"
+      num-pages="numPages"
+      ng-change="pageChangedPurchaseOrder(searchTextPurchaseOrder.text)">
+    </ul>
+    <pre>showing <b>{{getPurchaseOrderCount.count===0 ? 0 :indexStart+1}}-{{indexEnd}}</b> of <b>{{getPurchaseOrderCount.count}} Purchase Orders </b>
+    </pre>
+  </div>
+</section>
+
+
+          

@@ -1,0 +1,228 @@
+<section>
+  <div layout-fill role="main" class="relative" ng-cloak >
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h1>Table Details</h1>{{rent.attendantDisplayName}}
+        <span flex></span>
+        <md-checkbox ng-model="rent.foodOnly" aria-label="Checkbox 1" ng-change="changeFoodOnly()">
+          Food Only
+        </md-checkbox>
+      </div>
+    </md-toolbar><!-- rent.serialSelectedItem: {{rent.serialSelectedItem}} -->
+    <br> <!-- tables: {{tables}} -->
+    <md-content flex md-scroll-y layout-xs="column" layout-wrap>
+      <div class="float-button" ><!-- ng-show="assignmentsQueryPromise.$resolved" -->
+        <md-button data-ng-click="addCustomerbuttonclicked($event)" class="md-fab md-mini md-primary md-fab-bottom-right" aria-label="Favorite" ng-if="button">
+          <md-tooltip md-direction="end" flex="90">
+            Click To Add New Customer.
+          </md-tooltip>
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_add_white_24px.svg" aria-lable="Add"></md-icon>
+        </md-button>
+      </div>
+      <md-subheader class="md-primary">
+        <div layout-xs="column" layout="row" flex>
+          <div layout="row" flex>
+            <md-input-container flex>
+              <h4><label>Tables</label></h4>
+              <md-select ng-model="rent.table" data-ng-change="tableChanged(rent.table)">
+
+                <md-option ng-repeat="table in tables" ng-value="table._id">
+                  {{table.tableNumber}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+          <div style="position: relative; top: 10px; " layout="row" flex>
+          <!-- <md-input-container flex>
+              <h4><label>Attendant </label></h4>
+              <md-select ng-model="rent.attendant" md-on-open="loadUsers()">
+                <md-option ng-repeat="user in vm.users" ng-value="user._id">
+                  {{user.displayName}}
+                </md-option>
+              </md-select>
+              ng-model = "<rent class="attendant"></rent>"
+              md-no-cache="rent.noCache"
+              md-search-text-change="searchTextChange(rent.attendantSearchText)"
+              data-ng-focus="focusRental()"
+            </md-input-container> -->
+
+            <md-autocomplete
+              ng-disabled="isDisabled"
+              md-dropdown-position="bottom"
+              md-search-text="rent.attendantSearchText"
+              md-selected-item="rent.attendantSelectedItem"
+              md-selected-item-change="selectedAttedantItemChange(item)"
+              md-items="item in vm.users | filter : { displayName : rent.attendantSearchText }"
+              md-item-text="item.displayName"
+              md-min-length="0"
+              md-floating-label="Attendant" flex required>
+                <md-item-template>
+                  <span md-highlight-text="rent.attendantSearchText" md-highlight-flags="^i">{{item.displayName}}</span>
+                </md-item-template>
+                <md-not-found>
+                  "{{rent.attendantSearchText}}" not found.
+                </md-not-found>
+
+            </md-autocomplete>
+            <label data-ng-if="!tableAvailable() && !tableSerialEditing" data-ng-bind="rent.attendantDisplayName"></label>
+
+
+          </div>
+
+
+
+
+
+          <div layout="row" data-ng-if="!rent.foodOnly" style="position:relative; top:10px;" flex>
+
+
+          <!-- <label data-ng-if= "!tableAvailable() && !tableSerialEditing" data-ng-bind= "rent.displaySerial"></label>
+          <select data-ng-model="rent.serial" data-ng-options="serial._id  as serial.displaySerial for serial in serials | filter : { alreadyRenting : false, status :'In Stock'}" data-ng-focus="focusRental()" data-ng-if="tableAvailable() || tableSerialEditing" style="width: 200px !important; min-width: 200px; max-width: 200px;"></select>
+
+ -->
+             <label data-ng-if= "!tableAvailable() && !tableSerialEditing" data-ng-bind= "rent.displaySerial"></label>
+
+            <md-autocomplete
+              ng-disabled="isDisabled"
+              md-no-cache="rent.noCache"
+              md-selected-item="rent.serialSelectedItem"
+              md-search-text-change="searchTextChange(rent.serialSearchText)"
+              md-dropdown-position="bottom"
+              md-search-text="rent.serialSearchText"
+              md-selected-item-change="selectedSerialItemChange(item)"
+              md-items="item in querySerials(rent.serialSearchText)"
+              md-item-text="item.displaySerial"
+              md-min-length="0"
+              data-ng-focus="focusRental()"
+              md-floating-label="Select Serial" flex>
+                <md-item-template>
+                  <span md-highlight-text="rent.serialSearchText" md-highlight-flags="^i">{{item.displaySerial}}</span>
+                </md-item-template>
+                <md-not-found>
+                  "{{rent.serialSearchText}}" not found.
+                </md-not-found>
+            </md-autocomplete>
+
+          </div>
+
+      <div layout="row" >
+        <button class = "btn btn-success pull-right" data-ng-if = "!tableAvailable() && tableSerialEditing" data-ng-click = "checkIfSerialAllreadyRenting(rent.serial , rent.table)" >Submit</button>
+
+        <button class = "btn btn-primary glyphicon glyphicon-pencil pull-right" data-ng-if="!tableAvailable()" data-ng-click = "focusRental();tableSerialEdit(rent.table)" ng-disabled = "selectedTableUnavailable"></button>
+
+        <div class="pull-center">
+          <p data-ng-show="updatedRentalSuccessfully" class="text-center text-success">
+            <strong>Updated Rental Successfully</strong>
+          </p>
+          <p data-ng-show="errorUpdateRental" class="text-center text-danger">
+            <strong data-ng-bind="errorUpdateRental"></strong>
+          </p>
+          <p data-ng-show="noRentalIsOn" class="text-center text-danger">
+            <strong >All Rental on this Table are Billed</strong>
+          </p>
+        </div>
+       </div>
+
+          <!-- <button class = "btn btn-success pull-right" data-ng-if = "!tableAvailable() && tableSerialEditing" data-ng-click = "checkIfSerialAllreadyRenting(rent.serial , rent.table)" >Submit</button> -->
+         <!--  <div>
+            <button class = "btn btn-success pull-right" data-ng-if = "!tableAvailable() && tableSerialEditing" data-ng-click = "checkIfSerialAllreadyRenting(rent.serial , rent.table)" >Submit</button>
+
+            <button class = " btn btn-primary glyphicon glyphicon-pencil pull-right" data-ng-if="!tableAvailable()" data-ng-click = "focusRental();tableSerialEdit(rent.table)" ng-disabled = "selectedTableUnavailable"></button>
+
+            <div class="pull-center">
+              <p data-ng-show="updatedRentalSuccessfully" class="text-center text-success">
+                <strong>Updated Rental Successfully</strong>
+              </p>
+              <p data-ng-show="errorUpdateRental" class="text-center text-danger">
+                <strong data-ng-bind="errorUpdateRental"></strong>
+              </p>
+              <p data-ng-show="noRentalIsOn" class="text-center text-danger">
+                <strong >All Rental on this Table are Billed</strong>
+              </p>
+            </div>
+          </div> -->
+        </div>
+        <div layout="row">
+          <div flex>
+            <md-checkbox ng-click="toggleAllCheckboxes();generateBillForAllCheck()" ng-model="rent.selectedall" aria-label="Checkbox 1">
+              Select All
+            </md-checkbox>
+          </div>
+          <div flex layout="row" layout-align="end center">
+            <button class="btn btn-success" ng-click="showBillDialog($event)"  ng-disabled="!generateBillAvailable">Generate Bill</button>
+          </div>
+        </div>
+      </md-subheader>
+      <md-list layout-padding>
+        <md-list-item class="md-3-line" ng-repeat="rental in rentals | filter:{ activeRental : true }"><!-- | filter:{ table : {_id : rent.table }, activeRental : true} -->
+            <md-checkbox ng-model="rental.selected"  ng-change="generateBillCheck(rental)"></md-checkbox>
+            <div class="md-list-item-text" layout="row" layout-xs="column">
+              <div flex>
+                <h3>{{rental.customer.customerName}}<label data-ng-if="rental.isMember"> - Member</label></h3>
+                <h4 data-ng-if="!rent.foodOnly"><small>start:</small>{{rental.startTimeString}}-<small>end:</small>{{rental.endTimeString}}</h4>
+                <p>
+                  <!-- deposit:500{{currencySymbol}}{{rental.deposit||0}}<br> -->
+                  revenue:{{currencySymbol}}{{rental.expectedRevenue}}
+                </p>
+              </div>
+              <div flex layout="row" layout-align="end center">
+                <!-- <button class = "btn btn-info glyphicon glyphicon-list" data-ng-click ="openGameHistoryModal(rental)"></button> -->
+                <md-fab-speed-dial md-open="isOpen" md-direction="{{selectedDirection}}" ng-class="selectedMode" >
+                  <md-fab-trigger>
+                    <md-button aria-label="menu" class="md-fab md-warn">
+                      <md-tooltip md-direction="top">
+                        Menu
+                      </md-tooltip>
+                      <md-icon md-svg-src="/modules/core/client/img/svg/ic_menu_black_24px.svg"></md-icon>
+                    </md-button>
+                  </md-fab-trigger>
+                  <md-fab-actions>
+                    <md-button aria-label="Twitter" class="md-fab md-raised md-mini" data-ng-click="transferDialog($event,rental)">
+                      <md-tooltip md-direction="top">
+                        Transfer Within Table
+                      </md-tooltip>
+                      <md-icon md-svg-src="/modules/core/client/img/svg/ic_transfer_within_a_station_black_24px.svg" aria-label="Twitter"></md-icon>
+                    </md-button>
+                    <md-button aria-label="Facebook" class="md-fab md-raised md-mini" data-ng-click="rentalHistoryDialog($event,rental)" data-ng-if="!rent.foodOnly">
+                      <md-tooltip md-direction="end">
+                        View Game History
+                      </md-tooltip>
+                      <md-icon md-svg-src="/modules/core/client/img/svg/ic_view_list_black_24px.svg" aria-label="Facebook"></md-icon>
+                    </md-button>
+                    <md-button aria-label="Google Hangout" class="md-fab md-raised md-mini" data-ng-click="packageOrderDialog($event, rental)">
+                      <md-tooltip md-direction="left">
+                        Package
+                      </md-tooltip>
+                      <md-icon md-svg-src="/modules/core/client/img/svg/package-variant.svg" aria-label="Google Hangout"></md-icon>
+                    </md-button>
+                  </md-fab-actions>
+                </md-fab-speed-dial>
+
+                <!-- <md-button data-ng-click="goToAssignment()" class="md-icon-button" aria-label="Favorite">
+                  <md-tooltip md-direction="end" flex="90">
+                    Click To Transfer.
+                  </md-tooltip>
+                  <md-icon md-svg-src="/modules/core/client/img/svg/ic_transfer_within_a_station_black_24px.svg" aria-lable="Add"></md-icon>
+                </md-button>
+                <md-button data-ng-click="goToAssignment()" class="md-icon-button" aria-label="Favorite">
+                  <md-tooltip md-direction="end" flex="90">
+                    Click To View Game Histroy.
+                  </md-tooltip>
+                  <md-icon md-svg-src="/modules/core/client/img/svg/ic_view_list_black_24px.svg" aria-lable="Add"></md-icon>
+                </md-button> -->
+                <md-button data-ng-click="addFoodOder($event,rental)" class="md-icon-button" aria-label="Favorite">
+                  <md-tooltip md-direction="end" flex="90">
+                    Click To Order Food.
+                  </md-tooltip>
+                  <md-icon md-svg-src="/modules/core/client/img/svg/food-fork-drink.svg" aria-lable="Add"></md-icon>
+                </md-button>
+                <!-- <button class = "btn btn-large btn-warning glyphicon glyphicon-share" data-ng-click ="openTableTransferModal(rental,rental.table._id)" data-ng-if = "!rental.bill"></button>
+                <button class = "btn btn-primary glyphicon glyphicon-cutlery" data-ng-click ="openFoodOrder(rental._id , rental.customer._id)" data-ng-if = "!rental.bill"></button> -->
+              </div>
+            </div>
+            <md-divider></md-divider>
+        </md-list-item>
+      </md-list>
+    </md-content>
+  </div>
+</section>

@@ -1,0 +1,217 @@
+<div class = "col-md-12 col-xs-12 col-sm-12">
+	<!-- ******************************Pagination for Serials******************************** -->
+	<ul uib-pagination
+    total-items="totalItemsSerial"
+    ng-model="curPageSerial.currentPage"
+    max-size="maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="pageChangedSerial(product._id, searchTextSerial.text)">
+  </ul>
+	<!-- ******************************Pagination for Serials******************************** -->
+
+	<!-- ******************************SearchBox for Serials********************************* -->
+	<div class=" pull-right panel-body">Search:
+		<input type="text" data-ng-model="searchTextSerial.text" data-ng-change="curPageSerial.currentPage = 1; pageChangedSerial(product._id, searchTextSerial.text)" placeholder = "Search Serials"></input>
+	</div>
+	<!-- ******************************SearchBox for Serials******************************** -->
+</div>
+<div class = "col-md-12 col-xs-12 col-sm-12">
+	<div class = "list-group">
+		<div data-ng-repeat="serial in serialsOnPage" class = "list-group-item panel panel-default">
+			<span data-ng-if="serial.serialNumber == activeSerial" class="pull-right panel-body">
+				<!--button  type="Click to edit Record(e.g. change location in Warehouse)!" data-ng-click="editSerialClicked(serial)" class = "btn btn-primary btn-large glyphicon glyphicon-pencil"></button-->
+				<button  type="Click to create a Sell Record!" data-ng-click="sellSerialClicked(serial);focusSerial()" class = "btn btn-primary btn-large glyphicon glyphicon-export"></button>
+				<button  type="Click to create a Junk Record!" data-ng-click="junkSerialClicked(serial);focusSerial()" class = "btn btn-primary btn-large glyphicon glyphicon-trash"></button>
+			</span>
+			<div class="panel-heading" data-ng-click="clickSerial(serial);focusSerial()">
+					<h3 class = "list-group-item-heading">Serial No : {{serial.serialNumber}}</h3>
+			</div>
+			<div>
+				<section class="animate-show" data-ng-hide = "serial.serialNumber==sellingSerial || serial.serialNumber==junkingSerial">
+					<section class="animate-show" data-ng-if = "serial.serialNumber == activeSerial">
+						<div class="panel-body">
+							<form name="serialUpdateForm" data-ng-submit="UpdateSerials(serial)" class="form-inline animate-show" autocomplete="off" data-ng-focus = "focusSerial()">
+								<div class="col-md-6">
+									<label  for="supplierName">Supplier Name : </label>
+										<input class="form-control" type="text" id="supplierName1" name="supplierName1"  placeholder="Select Supplier Name"  data-ng-model="serial.supplier.companyName" data-ng-focus="focusSerial()" title="Contact Name : {{serial.supplier.contactName}}
+										Designation : {{serial.supplier.designation}}
+										Telephone :{{serial.supplier.telephone}}
+										Mobile : {{serial.supplier.mobile}}
+										Email : {{serial.supplier.email}}
+										Address : {{serial.supplier.address}}" disabled="disabled" style="background:lavender"   ></input>
+								</div>
+								<div class="col-md-6">
+									<label  for="acquisitionType">Acquisition Type : </label>
+									<input class="form-control" type="text" id="acquisitionType1" name="acquisitionType1"  placeholder="Select 	Acquisition Type" data-ng-model="serial.acquisitionType" disabled="disabled" style="background:lavender">
+									</input>
+								</div>
+								<div class="col-md-6">
+									<label for="dateOfPurchase">Date of Purchase : </label>
+									<input type="date"  class="form-control" name="dateOfPurchase" data-ng-model = "dateofPurchaseString" data-ng-change="updateWarrantyExpiry()" disabled="disabled" style="background:lavender"></input>
+								</div>
+								<div class="col-md-6">
+									<label for="warrantyPeriod">Warranty Period : </label>
+									<input type="number" id="warrantyPeriod" name="warrantyPeriod" class="form-control" data-ng-model="serial.warrantyPeriod" data-ng-focus="focusProduct()" style="width:90px; background:lavender" min="0" step="1" data-ng-change="updateWarrantyExpiry()" disabled="disabled"></input>
+									<span>Months</span>
+								</div>
+								<div class="col-md-6">
+									<label for="dateOfWarrantyExpiry">Warranty Expiry : </label>
+									<input type="date" id="dateOfWarrantyExpiry" name="dateOfWarrantyExpiry" class="form-control" data-ng-model="dateofExpString" placeholder="Warranty Expiry" data-ng-focus="focusProduct()" data-ng-change="updateWarrantyPeriod()" disabled="disabled" style="background:lavender"></input>
+								</div>
+								<div class="col-md-6">
+									<label  for="price">Purchase Price : </label>
+									<div class="input-group">
+									<div class="input-group-addon">{{currencySymbol}} </div>
+									<input type="number" id="price" name="price" class="form-control" placeholder="Price" data-ng-model="serial.purchasePrice" data-ng-focus="focusProduct()" min="0" step="0.01" disabled="disabled" style="background:lavender"></input>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<label  for="manufacturerSerialNumber">Manufacturer<br>Serial No : </label>
+									<span>
+										<input type="text" id="manufacturerSerialNumber" name="manufacturerSerialNumber" class="form-control" placeholder="Manufacturer serial No" data-ng-model="serial.manufacturerSerialNumber" data-ng-focus="focusProduct()" disabled="disabled" style="background:lavender"></input>
+									</span>
+								</div>
+								<div class="col-md-6">
+									<label  for="priceupdate">Deprecited Value : </label>
+									<div class="input-group">
+									<div class="input-group-addon">{{currencySymbol}} </div>
+									<input type="number" id="depreciatedpriceupdate" name="depreciatedpriceupdate" class="form-control" placeholder="depreciatedprice" data-ng-model="serial.depreciatedValue" data-ng-focus="focusProduct(); focusSerial()" min="0" step="0.01"  ></input>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<label  for="residualValue">Residual Value : </label>
+									<div class="input-group">
+									<div class="input-group-addon">{{currencySymbol}} </div>
+									<input type="number" id="residualValue" name="residualValue" class="form-control" placeholder="Residual Value" data-ng-model="serial.residualValue" data-ng-focus="focusProduct(); focusSerial()" min="0" step="0.01" ></input>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<label  for="locationWarehouseupdate">Location in<br>Warehouse : </label>
+									<input type="text" id="locationWarehouseupdate" name="locationWarehouseupdate" class="form-control" placeholder="Location Warehouse" data-ng-model="serial.locationWarehouse" data-ng-focus="focusProduct(); focusSerial()" tooltip="Please clear and then scan new Location ID"></input>
+								</div>
+								<div class="col-md-6">
+									<label for="descriptionupdate">Description :</label>
+									<textarea name="descriptionupdate" id="descriptionupdate" name="descriptionupdate" class="form-control" placeholder="Description" data-ng-model="serial.description" data-ng-focus="focusProduct(); focusSerial()" rows="2" cols="30" ></textarea>
+								</div>
+								<button type="submit" class="btn btn-large btn-primary pull-right">Update</button>
+
+								<div class="text-center text-success" data-ng-if="updatedSuccessfullySerial">Serial updated successfully
+								</div>
+								<div data-ng-show="errorUpdateSerial" class="text-center text-danger">
+									<strong data-ng-bind="errorUpdateSerial"></strong>
+								</div>
+								<div data-ng-show="errorSerialActivity" class="text-center text-danger">
+									<strong data-ng-bind="errorSerialActivity"></strong>
+								</div>
+							</form>
+								<!-- <div class="text-center text-success" data-ng-if="updatedSuccessfullySerial">Serial updated successfully
+								</div>
+								<div data-ng-show="errorUpdateSerial" class="text-center text-danger">
+									<strong data-ng-bind="errorUpdateSerial"></strong>
+								</div>
+								<div data-ng-show="errorSerialActivity" class="text-center text-danger">
+									<strong data-ng-bind="errorSerialActivity"></strong>
+								</div> -->
+						</div>
+					</section>
+				</section>
+				<section class="animate-show" data-ng-hide="serial.serialNumber != activeSerial">
+					<section class="animate-show panel-body" data-ng-show="serial.serialNumber == sellingSerial">
+						<div class = "pull-left">
+							<form name="serialSellForm" data-ng-submit="sellSerial(serial)" class="form-inline animate-show" >
+								<h4>Please provide following information and click 'Submit' to create a Sell Record :</h4>
+								<div class="col-md-4">
+									<label>Sold To : </label>
+									<input class="form-control" type="text" data-ng-model="sellSerialValue.soldTo" data-ng-focus ="focusSerial()"></input>
+								</div>
+								<div class="col-md-4">
+									<label>Date Sold : </label>
+									<input class="form-control" type="date" data-ng-model="sellSerialValue.dateOfSold" data-ng-focus ="focusSerial()"></input>
+								</div>
+								<div class="col-md-4">
+									<label>Selling Price : </label>
+									<input class="form-control" type="number" min="0" step="0.01" data-ng-model="sellSerialValue.depreciatedValue" data-ng-focus ="focusSerial()" required></input>
+								</div>
+								<div class="col-md-6">
+									<label>Description : </label>
+									<textarea class="form-control" cols="40" rows="2" data-ng-model="sellSerialValue.description" data-ng-focus ="focusSerial()" ></textarea>
+								</div>
+								<div class="pull-right panel-body">
+									<button class="btn btn-large btn-primary" type="button" data-ng-click="goBack()">Cancel</button>
+									<button class="btn btn-large btn-primary" type="submit">Submit</button>
+								</div>
+									<div class="text-center text-success" data-ng-if="updatedSuccessfullySerial">Serial updated successfully
+									</div>
+									<div data-ng-show="errorUpdateSerial" class="text-center text-danger">
+									<strong data-ng-bind="errorUpdateSerial"></strong>
+									</div>
+									<div data-ng-show="errorSerialActivity" class="text-center text-danger">
+									<strong data-ng-bind="errorSerialActivity"></strong>
+									</div>
+							</form>
+						</div>
+					</section>
+					<section class="animate-show panel-body" data-ng-show="serial.serialNumber == junkingSerial">
+						<div class = "pull-left">
+							<form name="serialJunkForm" data-ng-submit = "junkSerial(serial); pageChangedSerial(product._id,searchTextSerial.text);" class="form-inline animate-show">
+								<h4>Please provide following information and click 'Submit' to create a Junk Record :</h4>
+								<div class="col-md-4">
+									<label>Junked To : </label>
+									<input class="form-control" type="text" data-ng-model="junkSerialValue.junkTo" data-ng-focus ="focusSerial()"></input>
+								</div>
+								<div class="col-md-4">
+									<label>Junked Date : </label>
+									<input class="form-control" type="date" data-ng-model="junkSerialValue.dateOfJuck" data-ng-focus ="focusSerial()"></input>
+								</div>
+								<div class="col-md-6">
+									<label>Description : </label>
+									<textarea class="form-control" cols="40" rows="2" data-ng-model="junkSerialValue.description" data-ng-focus ="focusSerial()"></textarea>
+								</div>
+								<div class="pull-right panel-body">
+									<button class="btn btn-large btn-primary" type="button" data-ng-click="goBack();focusSerial()">Cancel</button>
+									<button class="btn btn-large btn-primary" type="submit">Submit</button>
+								</div>
+								<div data-ng-show="errorUpdateSerial" class="text-center text-danger">
+									<strong data-ng-bind="errorUpdateSerial">Please Add Name Whom To Junk.</strong>
+								</div>
+								<div data-ng-show="errorSerialActivity" class="text-center text-danger">
+								<strong data-ng-bind="errorSerialActivity"></strong>
+								</div>
+							</form>
+						</div>
+					</section>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>
+<div class = "col-md-12 col-xs-12 col-sm-12">
+	<!-- <div class="alert alert-warning text-center" data-ng-if="(serials|filter:{status:'In Stock', product:product._id}).length === 0">
+		No serials created for this product yet, please create a serial by clicking the blue icon above
+	</div> -->
+  <div class="alert alert-warning text-center" data-ng-if="!serials.length === 0">
+    No serials created for this product yet, please create a serial by clicking the blue icon above
+  </div>
+  <div data-ng-if="serials.length && (serialsWithSearchNumber.length===0)" class="alert alert-warning text-center">
+    Your search did not match any documents.
+  </div>
+</div>
+</div>
+<div class = "col-md-12 col-xs-12 col-sm-12">
+	<!------------------------------------Pagination for Serials------------------------------------>
+	<ul uib-pagination
+    total-items="totalItemsSerial"
+    ng-model="curPageSerial.currentPage"
+    max-size="maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="pageChangedSerial(product._id, searchTextSerial.text)">
+  </ul>
+	<pre>showing <b>{{totalItemsSerial===0 ? 0 :indexStartSer+1}}-{{indexEndSer}}</b> of <b>{{serialsWithSearchNumber.length}}</b> Serials</pre>
+	<!------------------------------------Pagination for Serials------------------------------------>
+</div>

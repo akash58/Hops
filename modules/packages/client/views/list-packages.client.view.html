@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Packages</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="package in vm.packages"
+       ui-sref="packages.view({ packageId: package._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="package.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="package.user" ng-bind="package.user.displayName"></span>
+        <span ng-if="!package.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="package.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.packages.$resolved && !vm.packages.length">
+    No Packages yet, why don't you <a ui-sref="packages.create">create one</a>?
+  </div>
+</section>

@@ -1,0 +1,547 @@
+<section data-ng-controller="ProductsController" data-ng-init="find()" >
+	<div class="page-header" id="pageheader16">
+		<h1>Games</h1>
+	</div>
+	<div class="animate-show" data-ng-if="!productPageVisible" data-ng-include="'modules/core/views/invalidusererrorscreen.client.view.html'">
+	</div>
+	<div class="col-md-12 col-xs-12 col-sm-12" data-ng-if="productPageVisible">
+		<div data-ng-controller = "ComponentsController" data-ng-init="find()">
+			<uib-tabset>
+				<uib-tab  heading="All Games" select=" focusProduct(); pageChangedProdForAll(searchTextProdAll.text)">
+					<!-- curPageProductAll.currentPageAll = 1; -->
+				<div class="col-md-12 col-xs-12 col-sm-12">
+					<h2>All Games</h2>
+					<div class="col-md-12 col-xs-12 col-sm-12">
+<!-- ***************************************Pagination ******************************************** -->
+						<ul uib-pagination total-items="totalItemsAllProduct.count"
+						ng-model="currentPageAll.page"
+						max-size="maxSize" class="pagination-sm"
+						boundary-links="true"
+						rotate="false"
+						num-pages="numPages"
+						ng-change="pageChangedProdForAll(searchTextProdAll.text)">
+						</ul>
+<!-- ******************************************Pagination******************************************** -->
+<!-- ********************************************SearchBox ************************************ -->
+						<!-- <div class=" pull-right">
+							Search: <input type="text" data-ng-model="searchTextProdAll.text" data-ng-change="pageChangedProdForAll(searchTextProdAll.text)" placeholder = "Search Games">
+						</div> -->
+						<div class=" pull-right"><!-- Search : -->
+              <md-input-container class="md-block" flex-gt-sm>
+								<input type="text" data-ng-model="searchTextProdAll.text" data-ng-change="pageChangedProdForAll(searchTextProdAll.text)" placeholder = "Search Games">
+              </md-input-container>
+						</div>
+<!-- ********************************************SearchBox****************************************** -->
+					</div>
+					<div class="col-md-12 col-xs-12 col-sm-12">
+						<div class = "list-group">
+							<div data-ng-repeat="product in allProductsOnPage" class = "panel panel-default list-group-item col-md-12 col-xs-12 col-sm-12">
+								<span class = "pull-right">
+										<a class="btn btn-primary" data-ng-if="product._id == activeProduct" data-ng-click="deactivateProduct($event, product, component)" data-ng-show="!product.editingProductName" >
+										<i class="glyphicon glyphicon-trash"></i>
+										</a>
+								</span>
+								<span class = "pull-right" data-ng-show="product._id == activeProduct">
+										<a class="btn btn-primary" data-ng-click="editProductButtonClicked(product)" data-ng-show="!product.editingProductName">
+											<i class="glyphicon glyphicon-pencil"></i>
+										</a>
+								</span>
+								<span class="pull-left panel-body" data-ng-show="product.editingProductName && product._id == activeProduct ">
+										<form data-ng-submit="updateProd(product)">
+											<input data-ng-model="prod.updateProdNum" data-ng-focus ="focusProduct(); focusProductUpd()">
+											<button type="submit" class= "btn btn-large btn-primary">Update</button>
+									    </form>
+								</span>
+
+								<div data-ng-click="clickProduct(product); focusSpecValue()" class = "panel-heading">
+									<span data-ng-show="!product.editingProductName">
+										<h3 class = "list-group-item-heading"><small>Game Name: </small >{{product.productNumber}}</h3>
+									</span>
+									<span data-ng-show = "product.editingProductName && product._id == activeProduct">
+										<button class="btn btn-primary" data-ng-click="cancel(product)">  Cancel</button>
+									</span>
+									<span class="text-center">
+										<p data-ng-show="updatedSuccessfullyProduct && product._id == activeProduct" class="text-center text-success">
+											<strong>Game Update Successfully</strong>
+										</p>
+										<p data-ng-show="errorUpdPro && product._id == activeProduct" class="text-center text-danger">
+											<strong data-ng-bind="errorUpdPro"></strong>
+										</p>
+									</span>
+								</div>
+
+								<div>
+								<section class="list-group-item" data-ng-if="product._id == activeProduct">
+									<div class="panel panel-body">
+										<form name="specvalueForm" data-ng-submit="updateSpecValues(activeProduct); updateProductCategory(product)" class="form-inline animate-show" autocomplete="off">
+											<div class="col-md-6 col-xs-12 col-sm-6 form-group" data-ng-repeat="specvalue in specvalues| filter : {product:product._id}">
+												<label for="specificationDescription" class="" data-ng-bind="specvalue.specdesc.specificationDescription + ' :'"></label>
+												<input type="text" id="specdesc" name="specdesc" class="form-control" data-ng-model="specvalue.specificationValue" placeholder="Enter Specification value" data-ng-focus="focusSpecValue()"  ng-disabled = "IsDisabled">
+											</div>
+											<div class="col-md-6 col-xs-12 col-sm-6 form-group">
+												<label for="category">Category : </label>
+												<select class="form-control" type="text" id="category" name="category"  placeholder="Select Category" data-ng-model="product.category" data-ng-options="category._id as category.categoryName for category in categories | filter: { active : true}" ng-disabled = "IsDisabled">
+												<!-- <option title="{{category.ratePerHour}}" data-ng-repeat="category in categories | filter: { active : true}" value="{{category._id}}">{{category.categoryName}}</option> -->
+												</select>
+											</div>
+											<div class="pull-right">
+												<button type="submit" class="btn btn-large btn-primary pull-right" ng-show = "IsVisible">Update</button>
+											</div>
+										</form>
+										<div class="text-center text-success" data-ng-if="updatedSuccessfullySpecValue">Specifications updated successfully
+										</div>
+										<p data-ng-show="errorSpecValue" class="text-center text-danger">
+											<strong data-ng-bind="errorSpecValue"></strong>
+										</p>
+									</div>
+									<div class="panel-body col-md-12 col-xs-12 col-sm-12">
+										<div class ="col-md-5 col-xs-12 col-sm-6 panel-body">
+											<label><font size = "5">Contents : </font></label>
+											 <button title="Click to add contents!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addContentGroupButtonClicked()" type="button" ng-show = "IsVisible"> Content Group</button>
+											<!-- <span class="col-md-3">
+											<button title="Click to add contents!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addContentGroupButtonClicked()" type="button"> Add Content Group</button>
+											</span> -->
+										</div>
+										<div class="col-md-7 col-xs-12 col-sm-6 panel-body" data-ng-show="contentGroupButtonClick">
+											<form name="contentGroupForm" data-ng-submit="createContentGroup(product);" class="form-inline animate-show" autocomplete="off">
+												<fieldset>
+													<span class="col-md-12 col-xs-12 col-sm-12">
+														<label for="contentGroup">Content Group : </label>
+														<input type="text" id="contentGroup" name="contentGroup" class="form-control" data-ng-model="conGrp.contentGroup" placeholder="Content Group" data-ng-focus = "focusContentGroup();">
+														<button type="submit" class="btn btn-primary">Save</button>
+													</span>
+													<span class="col-md-12 col-xs-12 col-sm-12">
+														<p data-ng-show="savedContentGroupSuccessfully" class="text-center text-success">
+															<strong>Content Group Saved Successfully</strong>
+														</p>
+														<p data-ng-show="errorContentGroup" class="text-center text-danger">
+															<strong data-ng-bind="errorContentGroup"></strong>
+														</p>
+													</span>
+												</fieldset>
+											</form>
+										</div>
+										<div class = "pull-left col-md-12 col-xs-12 col-sm-12">
+											<div data-ng-repeat="contentgroup in contentgroups | filter : {product:product._id}">
+												<div>
+													<span class = "pull-right panel-body">
+															<button type="button" class="btn-danger glyphicon glyphicon-trash" data-ng-if="activeContentgroup == contentgroup._id" data-ng-click="alertDeleteCtnGrp($event, contentgroup);">
+															</button>
+															<button type="button" class="btn-success glyphicon glyphicon-pencil" data-ng-if="activeContentgroup == contentgroup._id" data-ng-click="editContentgroupButtonClicked(contentgroup);"></button>
+													</span>
+													<span class="pull-left panel-body" data-ng-show="contentgroup.editContentgroupNameClicked  && activeContentgroup == contentgroup._id">
+															<form data-ng-submit="updateContentGroup(contentgroup)">
+																<input data-ng-model="conGrp.contgrpName" data-ng-focus = "focusContentGroupUpdt();">
+																<button type="submit" class= "btn btn-large btn-primary">Update</button>
+															</form>
+													</span>
+													<span>
+													<div data-ng-click="clickContentGrp(contentgroup); focusContentGroup();" class= "panel-default">
+
+														<div class="panel-heading">
+															<span data-ng-show="!contentgroup.editContentgroupNameClicked">
+																{{contentgroup.totalItems}} of {{contentgroup.contentGroupName}}
+															</span>
+															<span data-ng-show = "contentgroup.editContentgroupNameClicked && activeContentgroup == contentgroup._id">
+																<button class="btn btn-primary">  Cancel</button>
+															</span>
+															<span class="text-center">
+																<p data-ng-show="updatedSuccessfullyContentgroup && activeContentgroup == contentgroup._id" class="text-center text-success">
+																	<strong>Game Update Successfully</strong>
+																</p>
+																<p data-ng-show="errorCtnGrp && activeContentgroup == contentgroup._id" class="text-center text-danger">
+																	<strong data-ng-bind="errorCtnGrp"></strong>
+																</p>
+															</span>
+														</div>
+													</div>
+													</span>
+												</div>
+
+												<div data-ng-show = "activeContentgroup == contentgroup._id" class = "panel panel-default">
+													<span class ="col-md-2 panel-body">
+														<button type="button" class="btn btn-large btn-primary glyphicon glyphicon-plus" data-ng-click="addContentButtonClicked(contentgroup._id)" ng-show = "IsVisible"> Add Content</button>
+													</span>
+													<span class="col-md-10 panel-body" data-ng-show="contentgroup.contentButtonClick">
+														<form name="contentForm" data-ng-submit="createContent(contentgroup);" class="form-inline animate-show" autocomplete="off">
+															<fieldset>
+																<div class="col-md-6 col-xs-12 col-sm-5">
+																	<label for="content">No of Items:</label>
+																	<input type="number" id="noOfItems" name="noOfItems" class="form-control" data-ng-model="con.numberOfItems" placeholder="No Of Items" ng-focus="focusDesc(); focus();" min="0" step="1">
+																</div>
+																<div class="col-md-6 col-xs-12 col-sm-5">
+																	<label for="content">Content:</label>
+																	<input type="text" id="content" name="content" class="form-control" data-ng-model="con.contentName" placeholder="Content" data-ng-focus = "focusContent();" >
+																</div>
+																<div class="col-md-12 col-xs-12 col-sm-12">
+																	<span class="col-md-9 col-xs-9 col-sm-9">
+																		<p data-ng-show="savedContentSuccessfully" class="text-center text-success">
+																		<strong>Content Saved Successfully</strong>
+																		</p>
+																		<p data-ng-show="errorContent" class="text-center text-danger">
+																		<strong data-ng-bind="errorContent"></strong>
+																		</p>
+																	</span>
+																	<span class="col-md-3 col-xs-3 col-sm-3">
+																		<button type="submit" class="btn btn-primary pull-right">Save</button>
+																	</span>
+																</div>
+															</fieldset>
+														</form>
+													</span>
+													<div class="panel-body">
+														<div class="pull-left col-md-12 col-xs-12 col-sm-12" data-ng-repeat="content in contents | filter :{contentgroup:contentgroup._id}">
+															<span class="col-md-12 col-xs-12 col-sm-12">
+																<li>
+																	<b>{{content.numberOfItems}} {{content.contentName}}</b>
+																	<button type="button" class="btn-danger glyphicon glyphicon-remove" data-ng-click=" alertDeleteCtn($event, content);" ng-show = "IsVisible"></button>
+																</li>
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</section>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div data-ng-if="(products | filter:{active:true, component:component._id}).length === 0" class="alert alert-warning text-center">
+							No Games for this Game Type yet, please create a Game by clicking the blue icon above
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<!-- *************************************Pagination********************************* -->
+						<ul uib-pagination total-items="totalItemsAllProduct.count"
+						ng-model="currentPageAll.page"
+						max-size="maxSize" class="pagination-sm"
+						boundary-links="true"
+						rotate="false"
+						num-pages="numPages"
+						ng-change="pageChangedProdForAll(searchTextProdAll.text)">
+						</ul>
+						<pre>showing <b>{{totalItemsAllProduct.count===0 ? 0 :indexStartProdAll+1}}-{{indexEndProdAll}}</b> of <b>{{totalItemsAllProduct.count}}</b> Games</pre>
+						<!-- **************************************Pagination********************************* -->
+					</div>
+				</div>
+				</uib-tab>
+
+
+				<uib-tab data-ng-repeat="component in components" heading="{{component.componentTypeName}}" select=" clickComponent(component);curPageProduct.page = 1; pageChangedProd(component, searchTextProd.text); focusProduct(); " id="tab-{{component.componentTypeName}}">
+
+				<div class="col-md-12 col-xs-12 col-sm-12">
+					<h2>{{activeComponentName}}</h2>
+					<div class="panel-body col-md-12 col-xs-12 col-sm-12">
+						<!-- <span class="col-md-2 col-xs-2 col-sm-2" >
+							<button title="Click to add games!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addProductbuttonclicked()" id ="addProductbuttonclicked-{{$index}}"></button>
+						</span> -->
+						<div layout="row" layout-wrap layout-sm="column" layout-xs="column" >
+							<md-button  class="md-fab md-mini md-primary"  layout-align="end" aria-label="Favorite" data-ng-click="addProductbuttonclicked()" id="addProductbuttonclicked-{{$index}}">
+							  <md-tooltip md-direction="down">
+									Click to add payment mode types!
+							  </md-tooltip>
+								<md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+							</md-button>
+						</div>
+						<div data-ng-show="addProductclicked" id="addProductclicked-{{$index}}">
+							<form name="productForm" data-ng-submit="createProduct(component)" class="form-inline animate-show" autocomplete="off">
+								<fieldset>
+									<div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+
+										<!-- <div class= "col-md-6 col-xs-12 col-sm-6 form-group">
+											<label for="productNumber">Game Name : </label>
+											<input type="text" id="productNumber" name="productNumber" class="form-control" data-ng-model="prod.productNumber" placeholder="Game Name" data-ng-focus="focusProduct()" >
+										</div> -->
+
+										<div flex>
+						          <md-input-container class="md-block" flex-gt-sm>
+						            <input type="text" name="productNumber" placeholder="Game Name" ng-model="prod.productNumber" ng-focus="focusCategory()">
+				                <div ng-messages="productForm.productNumber.$error"  multiple md-auto-hide="true" ng-if="productForm.productNumber.$touched || productForm.productNumber.$dirty ">
+				                  <div ng-message="required" ng-style="{color: productForm.productNumber.$touched ? 'Red' : 'Blue' }">
+				                		This is a required Field
+				                  </div>
+				                </div>
+						          </md-input-container>
+						        </div>
+										<div flex>
+											<!-- <label for= "category"> Category : </label>
+											<select class="form-control" type="text"  name="category"  placeholder="Select Category" data-ng-model="prod.category" data-ng-focus="focusProduct()">
+												<option title="{{category.ratePerHour}}" data-ng-repeat="category in categories | filter: { active : true}" value="{{category._id}}"  id="category-{{category.categoryName}}-{{$index}}">{{category.categoryName}}</option>
+											</select> -->
+											<md-autocomplete
+												md-selected-item="categoryData.selectedItem"
+												md-search-text-change="searchTextChange(searchTexts)"
+												md-search-text="searchTexts"
+												md-selected-item-change="selectedItemChange(item)"
+												md-items="item in queryCategoryData(searchTexts)"
+												md-item-text="item.categoryName"
+												md-min-length="0"
+												md-floating-label="Select Category">
+												<md-item-template>
+													<span md-highlight-text="searchTexts" md-highlight-flags="^i">{{item.categoryName}}
+													</span>
+												</md-item-template>
+											</md-autocomplete>
+										</div>
+
+										<!-- <span class="col-md-12 col-xs-12 col-sm-12">
+											<button type="submit" class="btn btn-large btn-primary pull-right" id="prodSave-{{$index}}">Save</button>
+										</span> -->
+										<div>
+							        <md-button class="md-fab md-mini md-primary pull-right" id="prodSave-{{$index}}" type="submit">
+								        <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+							          <md-tooltip md-direction="down" flex="50">
+							            Save
+							          </md-tooltip>
+							        </md-button>
+							      </div>
+						      </div>
+						      <div >
+										<!-- <p data-ng-show="savedProductSuccessfully" class="text-center text-success">
+											<strong id="savedProductSuccessfully-0">Game Saved Successfully</strong>
+										</p> -->
+										<p data-ng-show="errorProduct" class="text-center text-danger" id="errorProduct-{{$index}}">
+											<strong data-ng-bind="errorProduct"></strong>
+										</p>
+									</div>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+					<div class="col-md-12 col-xs-12 col-sm-12">
+					<form name="search" data-ng-submit="curPageProduct.page = 1; pageChangedProd(searchTextProd.text)" class="form-inline animate-show" autocomplete="off">
+<!-- ***************************************Pagination ******************************************** -->
+						<ul uib-pagination total-items="totalItemsProduct.count"
+						ng-model="curPageProduct.page"
+						max-size="maxSize" class="pagination-sm"
+						boundary-links="true"
+						rotate="false"
+						num-pages="numPages"
+						ng-change="pageChangedProd(searchTextProd.text)">
+						</ul>
+<!--******************************************Pagination********************************************-->
+<!-- ********************************************SearchBox ************************************ -->
+						<!-- <div class=" pull-right">
+							Search: <input data-ng-model="searchTextProd.text" data-ng-change="pageChangedProd(component,searchTextProd.text)" placeholder = "Search Games">
+						</div> -->
+						<div class=" pull-right"><!-- Search : -->
+              <md-input-container class="md-block" flex-gt-sm>
+								<input type="text" data-ng-model="searchTextProd.text" data-ng-change="pageChangedProd(component,searchTextProd.text)" placeholder = "Search Games">
+              </md-input-container>
+						</div>
+						</form>
+<!-- ********************************************SearchBox****************************************** -->
+					</div>
+
+					<div class="col-md-12 col-xs-12 col-sm-12">
+						<div class = "list-group">
+							<div data-ng-repeat="product in productsOnPage" class = "panel panel-default list-group-item col-md-12 col-xs-12 col-sm-12">
+								<span class = "pull-right">
+										<a class="btn btn-primary " data-ng-if="product._id == activeProduct" data-ng-click="deactivateProduct(product, component)" data-ng-show="!product.editingProductName">
+										<i class="glyphicon glyphicon-trash"></i>
+										</a>
+								</span>
+								<span class = "pull-right" data-ng-show="product._id == activeProduct">
+										<a class="btn btn-primary" data-ng-click="editProductButtonClicked(product)" data-ng-show="!product.editingProductName">
+											<i class="glyphicon glyphicon-pencil"></i>
+										</a>
+								</span>
+								<span class="pull-left panel-body" data-ng-show="product.editingProductName && product._id == activeProduct">
+										<form data-ng-submit="updateProd(product)">
+											<input data-ng-model="prod.updateProdNum" data-ng-focus = "focusProduct(); focusProductUpd()">
+											<button type="submit" class= "btn btn-large btn-primary">Update</button>
+
+										</form>
+								</span>
+
+
+								<div data-ng-click="clickProduct(product); focusSpecValue()" class = "panel-heading">
+									<span data-ng-show="!product.editingProductName">
+										<h3 class = "list-group-item-heading"><small>Game Name: </small>{{product.productNumber}}</h3>
+									</span>
+									<span data-ng-show = "product.editingProductName && product._id == activeProduct">
+
+										<button class="btn btn-primary" data-ng-click="cancel(product)">Cancel</button>
+
+									<span class="text-center">
+										<p data-ng-show="updatedSuccessfullyProduct && product._id == activeProduct" class="text-center text-success">
+											<strong>Game Update Successfully</strong>
+										</p>
+										<p data-ng-show="errorUpdPro && product._id == activeProduct" class="text-center text-danger">
+											<strong data-ng-bind="errorUpdPro"></strong>
+										</p>
+									</span>
+								</div>
+
+								<div>
+								<section class="list-group-item" data-ng-if="product._id == activeProduct">
+									<div class="panel panel-body">
+										<form name="specvalueForm" data-ng-submit="updateSpecValues(activeProduct); updateProductCategory(product)" class="form-inline animate-show" autocomplete="off">
+											<div class="col-md-6 col-xs-12 col-sm-6 form-group" data-ng-repeat="specvalue in specvalues| filter : {product:product._id}">
+												<label for="specificationDescription" class="" data-ng-bind="specvalue.specdesc.specificationDescription + ' :'"></label>
+												<input type="text" id="specdesc" name="specdesc" class="form-control" data-ng-model="specvalue.specificationValue" placeholder="Enter Specification value" data-ng-focus="focusSpecValue()"  ng-disabled = "IsDisabled">
+											</div>
+											<div class="col-md-6 col-xs-12 col-sm-6 form-group">
+												<label for="category">Category : </label>
+												<select class="form-control" type="text" id="category" name="category"  placeholder="Select Category" data-ng-model="product.category" data-ng-options="category._id as category.categoryName for category in categories | filter: { active : true}" ng-disabled = "IsDisabled">
+												<!-- <option title="{{category.ratePerHour}}" data-ng-repeat="category in categories | filter: { active : true}" value="{{category._id}}">{{category.categoryName}}</option> -->
+												</select>
+											</div>
+											<div class="pull-right">
+												<button type="submit" class="btn btn-large btn-primary pull-right" ng-show = "IsVisible">Update</button>
+											</div>
+										</form>
+										<div class="text-center text-success" data-ng-if="updatedSuccessfullySpecValue">Specifications updated successfully
+										</div>
+										<p data-ng-show="errorSpecValue" class="text-center text-danger">
+											<strong data-ng-bind="errorSpecValue"></strong>
+										</p>
+									</div>
+									<div class="panel-body col-md-12 col-xs-12 col-sm-12">
+										<div class ="col-md-5 col-xs-12 col-sm-6 panel-body">
+											<label><font size = "5">Contents : </font></label>
+											 <button title="Click to add contents!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addContentGroupButtonClicked()" type="button" ng-show = "IsVisible"> Content Group</button>
+											<!-- <span class="col-md-3">
+											<button title="Click to add contents!" class="btn btn-large btn-primary glyphicon glyphicon-plus"  data-ng-click="addContentGroupButtonClicked()" type="button"> Add Content Group</button>
+											</span> -->
+										</div>
+										<div class="col-md-7 col-xs-12 col-sm-6 panel-body" data-ng-show="contentGroupButtonClick">
+											<form name="contentGroupForm" data-ng-submit="createContentGroup(product);" class="form-inline animate-show" autocomplete="off">
+												<fieldset>
+													<span class="col-md-12 col-xs-12 col-sm-12">
+														<label for="contentGroup">Content Group : </label>
+														<input type="text" id="contentGroup" name="contentGroup" class="form-control" data-ng-model="conGrp.contentGroup" placeholder="Content Group" data-ng-focus = "focusContentGroup();">
+														<button type="submit" class="btn btn-primary">Save</button>
+													</span>
+													<span class="col-md-12 col-xs-12 col-sm-12">
+														<p data-ng-show="savedContentGroupSuccessfully" class="text-center text-success">
+															<strong>Content Group Saved Successfully</strong>
+														</p>
+														<p data-ng-show="errorContentGroup" class="text-center text-danger">
+															<strong data-ng-bind="errorContentGroup"></strong>
+														</p>
+													</span>
+												</fieldset>
+											</form>
+										</div>
+										<div class = "pull-left col-md-12 col-xs-12 col-sm-12">
+											<div data-ng-repeat="contentgroup in contentgroups | filter : {product:product._id}">
+												<div>
+													<span class = "pull-right panel-body">
+															<button type="button" class="btn-danger glyphicon glyphicon-trash" data-ng-if="activeContentgroup == contentgroup._id" data-ng-click="alertDeleteCtnGrp($event, contentgroup);">
+															</button>
+															<button type="button" class="btn-success glyphicon glyphicon-pencil" data-ng-if="activeContentgroup == contentgroup._id" data-ng-click="editContentgroupButtonClicked(contentgroup);"></button>
+													</span>
+													<span class="pull-left panel-body" data-ng-show="contentgroup.editContentgroupNameClicked && activeContentgroup == contentgroup._id">
+															<form data-ng-submit="updateContentGroup(contentgroup)">
+																<input data-ng-model="conGrp.contgrpName" data-ng-focus = "focusContentGroupUpdt();">
+																<button type="submit" class= "btn btn-large btn-primary">Update</button>
+															</form>
+													</span>
+													<span>
+													<div data-ng-click="clickContentGrp(contentgroup); focusContentGroup();" class= "panel-default">
+
+														<div class="panel-heading">
+															<span data-ng-show="!contentgroup.editContentgroupNameClicked">
+																{{contentgroup.totalItems}} of {{contentgroup.contentGroupName}}
+															</span>
+															<span data-ng-show = "contentgroup.editContentgroupNameClicked && activeContentgroup == contentgroup._id">
+																<button class="btn btn-primary">Cancel</button>
+															</span>
+															<span class="text-center">
+																<p data-ng-show="updatedSuccessfullyContentgroup && activeContentgroup == contentgroup._id" class="text-center text-success">
+																	<strong>Game Update Successfully</strong>
+																</p>
+																<p data-ng-show="errorCtnGrp && activeContentgroup == contentgroup._id" class="text-center text-danger">
+																	<strong data-ng-bind="errorCtnGrp"></strong>
+																</p>
+															</span>
+														</div>
+													</div>
+													</span>
+												</div>
+
+												<div data-ng-show = "activeContentgroup === contentgroup._id" class = "panel panel-default" data-ng-focus= "focusContentGroup()">
+													<span class ="col-md-2 panel-body">
+														<button type="button" class="btn btn-large btn-primary glyphicon glyphicon-plus" data-ng-click="addContentButtonClicked(contentgroup._id)" ng-show = "IsVisible"> Add Content</button>
+													</span>
+													<span class="col-md-10 panel-body" data-ng-show="contentgroup.contentButtonClick">
+														<form name="contentForm" data-ng-submit="createContent(contentgroup);" class="form-inline animate-show" autocomplete="off">
+															<fieldset>
+																<div class="col-md-6 col-xs-12 col-sm-5">
+																	<label for="content">No of Items:</label>
+																	<input type="number" id="noOfItems" name="noOfItems" class="form-control" data-ng-model="con.numberOfItems" placeholder="No Of Items" ng-focus="focusDesc(); focus();" min="0" step="1">
+																</div>
+																<div class="col-md-6 col-xs-12 col-sm-5">
+																	<label for="content">Content:</label>
+																	<input type="text" id="content" name="content" class="form-control" data-ng-model="con.contentName" placeholder="Content" data-ng-focus = "focusContent();" >
+																</div>
+																<div class="col-md-12 col-xs-12 col-sm-12">
+																	<span class="col-md-9 col-xs-9 col-sm-9">
+																		<p data-ng-show="savedContentSuccessfully" class="text-center text-success">
+																		<strong>Content Saved Successfully</strong>
+																		</p>
+																		<p data-ng-show="errorContent" class="text-center text-danger">
+																		<strong data-ng-bind="errorContent"></strong>
+																		</p>
+																	</span>
+																	<span class="col-md-3 col-xs-3 col-sm-3">
+																		<button type="submit" class="btn btn-primary pull-right">Save</button>
+																	</span>
+																</div>
+															</fieldset>
+														</form>
+													</span>
+													<div class="panel-body">
+														<div class="pull-left col-md-12 col-xs-12 col-sm-12" data-ng-repeat="content in contents | filter :{contentgroup:contentgroup._id}">
+															<span class="col-md-12 col-xs-12 col-sm-12">
+																<li>
+																	<b>{{content.numberOfItems}} {{content.contentName}}</b>
+																	<button type="button" class="btn-danger glyphicon glyphicon-remove" data-ng-click=" alertDeleteCtn(content);" ng-show = "IsVisible"></button>
+																</li>
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</section>
+								</div>
+							</div>
+						</div>
+					</div>
+						<div class="col-md-12 col-sm-12 col-xs-12">
+						<div data-ng-if="(products | filter:{active:true, component:component._id}).length === 0" class="alert alert-warning text-center">
+							No Games for this Game Type yet, please create a Game by clicking the blue icon above
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<!-- ****************************************Pagination************************************ -->
+						<ul uib-pagination total-items="totalItemsProduct.count"
+						ng-model="curPageProduct.page"
+						max-size="maxSize" class="pagination-sm"
+						boundary-links="true"
+						rotate="false"
+						num-pages="numPages"
+						ng-change="pageChangedProd(searchTextProd.text)">
+						</ul>
+						<pre>showing <b>{{totalItemsProduct.count===0 ? 0 :indexStartProd+1}}-{{indexEndProd}}</b> of <b>{{totalItemsProduct.count}}</b> Games</pre>
+						<!-- *****************************************Pagination************************************ -->
+					</div>
+				  </div>
+				</uib-tab>
+			   </uib-tabset>
+			<!--   </div>
+			</div> -->
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div data-ng-if="components.length === 0" class="alert alert-warning text-center">
+						No Games Types created yet, please create a <a href="/#!/gametypes">Game Type</a> first
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

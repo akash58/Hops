@@ -1,0 +1,49 @@
+<!-- <section> -->
+<md-dialog aria-label="view assignment details" class="fullscreen-dialog" ng-init="initialize()">
+  <!-- <form ng-cloak> -->
+    <md-toolbar>
+      <div class="md-toolbar-tools" ng-class="{ 'redcolor' : assignment.calculatedStatus.overDue ,'lightOrange' : assignment.calculatedStatus.daysLeft , 'lightGreen' : assignment.calculatedStatus.beforeDate }">
+        <h2>Rental History</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel($event)" aria-label="cancel">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="column" layout-fill>{{rentalsForActiveRental}}
+          <md-list layout-padding>
+            <md-list-item class="md-3-line" ng-repeat="rental in rentalsForActiveRental"><!-- | filter:{ table : {_id : rent.table }, activeRental : true} -->
+              <div class="md-list-item-text" layout="row" layout-xs="column">
+                <div flex>
+                  <h3>{{rental.customer.customerName}}<label data-ng-if="rental.isMember"> - Member</label></h3>
+                  <h4 data-ng-if="!rent.foodOnly"><small>start:</small>{{rental.startTimeString}}-<small>end:</small>{{rental.endTimeString}}</h4>
+                  <p>
+                    <!-- deposit:500{{currencySymbol}}{{rental.deposit||0}}<br> -->
+                    revenue:{{currencySymbol}}{{rental.expectedRevenue}}
+                  </p>
+                </div>
+              </div>
+            </md-list-item>
+          </md-list>
+        </div>
+        <div>
+          {{errorResponse.data}}
+        </div>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="savePackageOrder()">
+       save order
+      </md-button>
+      <md-button ng-click="cancelPackageOrder()">
+       cancel order
+      </md-button>
+    </md-dialog-actions>
+  <!-- </form> -->
+</md-dialog>
+
+<!-- </section> -->

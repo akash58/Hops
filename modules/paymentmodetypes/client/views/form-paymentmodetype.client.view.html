@@ -1,0 +1,73 @@
+<section data-ng-init="find()" >
+  <div class="page-header" id="pageheader">
+	<span hide-xs flex="60">
+      <h3><b>Payment Modes</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Payment Modes</b></h3>
+    </span>
+</div>
+  <div layout="row" layout-xs="column" layout-sm="row" class="md-padding">
+  	<md-button  class="md-fab md-mini md-primary"  layout-align="end" aria-label="Favorite" data-ng-click="addPaymentModeTypebuttonclicked()" id="addPaymentModeTypebuttonclicked">
+	  <md-tooltip md-direction="down">
+		Click to add payment mode types!
+	  </md-tooltip>
+		<md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+	</md-button>
+	  <div flex  data-ng-show="addPaymentModeTypeclicked" id="addPaymentModeTypeclicked">
+		<form name="paymentmodetypeForm" data-ng-submit="createPaymentModeType()" class="form-inline animate-show" autocomplete="off">
+		  <div flex layout="row">
+					<!-- <label  for="paymentMode">Payment Mode : </label>
+					<input type="text" id="paymentMode" name="paymentMode" class="form-control" data-ng-model="pt.paymentType" placeholder="Payment Mode Type" data-ng-focus="focusPaymentType()"> -->
+		    <md-input-container class="md-block" flex-gt-sm>
+			  <input type="text" name="paymentMode" placeholder="Payment Mode Type" ng-model="pt.paymentType" ng-focus="focusPaymentType()" required>
+			    <div ng-messages="paymentmodetypeForm.paymentMode.$error" ng-if="paymentmodetypeForm.paymentMode.$touched || paymentmodetypeForm.paymentMode.$dirty">
+                  <div ng-message="required">This is a required Field</div>
+                </div>
+			</md-input-container>
+			  <div layout="row" layout-xs="column">
+				<md-button  class="md-fab md-mini md-primary pull-right" type="submit">
+				  <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+					<md-tooltip md-direction="down">Save Customer</md-tooltip>
+				</md-button>
+			  </div>
+		  </div>
+		  <div  class="form-group">
+		    <div data-ng-show="savedPaymentModeTypeSuccessfully" class="text-center text-success">
+			  <strong id="savedPaymentModeTypeSuccessfully">Payment Mode Type Saved Successfully</strong>
+			</div>
+			<div data-ng-show="errorPaymentModeType" class="text-center text-danger">
+			    <strong data-ng-bind="errorPaymentModeType"></strong>
+		    </div>
+		  </div>
+		</form>
+	  </div>
+  </div>
+  <md-card class ="list-group row">
+	<md-card-content  style="background: #b3ffe6;"  flex  data-ng-repeat="paymentmodetype in paymentmodetypes | filter: { active : true}"  class = "panel panel-default list-group-item">
+	  <div data-ng-click="focusPaymentType()">
+		<form name="paymentmodetypeForm"  class="form-inline animate-show" autocomplete="off">
+		  <div layout="row" class = "list-group-item-heading">
+			<h3 flex> <span class="md-subhead">Payment Mode :</span>   {{paymentmodetype.paymentType}}</h3>
+			  <span data-ng-show="paymentmodetype.errorpaymentModeTypeUpdate" class="text-center text-danger">
+				<strong data-ng-bind="paymentmodetype.errorpaymentModeTypeUpdate"></strong>
+			  </span>
+			  <md-button ng-click="deactivatePaymentModeType(paymentmodetype); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary" id="deactivatePaymentModeType-{{$index}}">
+	            <md-tooltip md-direction="down">
+	                Click To Delete
+	            </md-tooltip>
+	              <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+               </md-button>
+					<!-- <button flex type="button" class="btn btn-primary glyphicon glyphicon-trash pull-right"  data-ng-click="deactivatePaymentModeType(paymentmodetype);" id="deactivatePaymentModeType-{{$index}}"></button> -->
+		  </div>
+		</form>
+	  </div>
+	</md-card-content>
+  </md-card>
+  <div class="col-md-12 col-xs-12 col-sm-12">
+	<div data-ng-if="(paymentmodetypes | filter:{active:true}).length === 0" class="alert alert-warning text-center">
+		No Payment Mode entered yet, please create a Payment Mode by clicking the blue plus icon above
+	</div>
+  </div>
+</section>
+	

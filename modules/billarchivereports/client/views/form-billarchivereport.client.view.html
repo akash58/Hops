@@ -1,0 +1,588 @@
+<section  data-ng-init="initialize()" > 
+	<div class="page-header hidden-print">
+		<h1>Bill Archives</h1>
+  </div><!-- {{test}}<hr><button type="button" data-ng-click="test = ''">clear</button> -->
+	
+	<div>
+		<div class="col-md-12 col-xs-12 col-sm-12 hidden-print">
+			<div class="col-md-12 col-xs-12 col-sm-12 panel panel-info">
+				<div class="form-inline col-md-12 col-xs-12 col-sm-12">
+					<label class="radio-inline">
+						<input class="form-group" type="radio" name="searchType" value="searchByDate" data-ng-model="searchTypeSelection" data-ng-click="curPageBillarchive.page=1;getBillsDateWise() "></input>
+						Search by Date
+          </label>
+					<label class="radio-inline">
+						<input class="form-group" type="radio" name="searchType" value="searchByBillNumber" data-ng-model="searchTypeSelection" data-ng-click="curPageBillarchive.page=1;getBills()">
+						</input>
+						Search by Bill Number
+          </label>
+          
+        </div>
+				<span class="col-md-12 col-xs-12 col-sm-12">
+					<div data-ng-if="searchTypeSelection!='searchByBillNumber'" class="col-md-6 col-xs-12 col-sm-12">
+						<label>Bills for one day:</label>{{date}}
+            <p class="input-group" >
+              <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="date" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" data-ng-change="getBillsDateWise(date)" />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+						<!-- <input type="date" data-ng-model="date" data-ng-change="getBillsDateWise()" max="{{date}}" ng-disabled="searchTypeSelection=='searchByBillNumber'"></input> -->
+          </div>
+					<div data-ng-if="searchTypeSelection=='searchByBillNumber'" class="col-md-6 col-xs-12 col-sm-12"> 
+            <!-- 						<form class="form-inline">
+            <fieldset> -->
+            <span>
+              <label>Search By Bill :</label>
+              <input class="form-control" type="Number" data-ng-model="searchTextBillarchive.text" data-ng-change="curPageBillarchive.page=1;getBills()" placeholder = "Search Bill" min=0></input>
+              <!-- <button class="btn btn-primary btn-sm  glyphicon glyphicon-search form-group" ng-click="curPageBillarchive.page=1;getBills()"></button> -->
+            </span>
+            <!--               </fieldset>
+            </form>  -->
+          </div>
+        </span>
+      </div>
+    </div>
+		<div class = "col-md-12 col-xs-12 col-sm-12 hidden-print">
+			<!-- *********************Pagination************************* -->
+      <ul uib-pagination 
+      total-items="totalItemsBillarchive.count" 
+      ng-model="curPageBillarchive.page"
+      max-size="maxSize"
+      class="pagination-sm"
+      boundary-links="true"
+      rotate="false"
+      num-pages="numPages"
+      ng-change="getBills();">
+      </ul>
+			<!--	*********************** Pagination********************************* -->
+    </div>
+    <!-- ******************************************* Bill details section ******************************************** -->
+		<div>
+			<div class="list-group">
+				<div data-ng-repeat="billarchive in billarchivesOnPage" class = "list-group-item panel panel-info hidden-print col-md-12 col-xs-12 col-sm-12">
+          
+					<span data-ng-if="billarchive.billNumber===activeBillarchive" class="pull-right panel-body">
+						<button  title="Click to Print Bill" data-ng-click="clickPrint()" class = "btn btn-success btn-large glyphicon glyphicon-print"></button>
+          </span>
+					<div data-ng-click="clickBillarchive(billarchive);getBillRentalArchiveForBillArchive(billarchive);generatedPrintBill(billarchive);billmembershiparchivesForBillarchive(billarchive)" class="panel-heading">
+						<div>
+							<h3 class = "list-group-item-heading"><small>Bill Number: </small>{{billarchive.billNumber}}</h3>							
+            </div>
+          </div>
+					<div data-ng-if="billarchive.billNumber===activeBillarchive" class="panel-body col-md-12 col-xs-12 col-sm-12">
+						<form class="form-inline">
+							<fieldset>
+								<div class= "col-md-4 col-xs-12 col-sm-4 form-group">
+									<label for= "attendant">Attendant :  </label>
+									<label>{{billarchive.userOrignal.displayName}}</label>
+                </div>
+								<div class= "col-md-4 col-xs-12 col-sm-4 form-group">
+									<label for= "tableNumber">Table Number :  </label>
+									<label>{{billarchive.table.tableNumber}}</label>
+                </div>
+								<div class= "col-md-4 col-xs-12 col-sm-4 form-group">
+									<label for= "dateOfBill">Date of Bill : </label>
+									<label>{{billarchive.dateOfBill | date}}</label>
+                </div>
+              </fieldset>	
+            </form>
+						<div data-ng-if="billmembershipArchiveAvailable" class="panel col-md-12 col-xs-12 col-sm-12">
+							<div class = " list-group">
+								<div class = "list-group-item panel panel-default col-md-12 col-xs-12 col-sm-12">
+									<div class="panel-heading" data-ng-click="">
+										<h3 class = "list-group-item-heading"><small>Customer Name: </small>{{billmembershiparchives.membershipactivity.customer.customerName}}</h3>
+                  </div>
+									<div>
+										<table class="table"  ng-style="{background:'Beige'}">
+											<thead>
+												<tr>
+													<th>Membership Start Date</th>
+													<th >Membership Period</th>
+													<th >Membership End Date</th>
+													<th class="text-right">Amount</th>
+                        </tr>
+                      </thead>
+											<tr>
+												<td>{{billmembershiparchives.membershipactivity.membershipStartDate | date}}</td>
+												<td >{{billmembershiparchives.membershipactivity.membershipPeriod}}</td>
+												<td >{{billmembershiparchives.membershipactivity.membershipExpiry | date}}</td>
+												<td class="text-right"><label>{{currencySymbol}}</label>{{billmembershiparchives.membershipactivity.billPrice}}</td>
+                      </tr>
+											<tr data-ng-if="billmembershiparchives.membershipactivity.serviceTaxOnMembership > 0">
+												<td colspan="3" ><strong>Service Tax  @{{billmembershiparchives.membershipactivity.serviceTaxPercentage}}%</strong></td>
+												<td class="text-right"><strong>{{billmembershiparchives.membershipactivity.serviceTaxOnMembership}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billmembershiparchives.membershipactivity.membershipAmount > 0">
+												<td colspan="3" ><strong>Total </strong></td>
+												<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billmembershiparchives.membershipactivity.membershipAmount}}</strong></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+						<div class="panel col-md-12 col-xs-12 col-sm-12">
+							<div class = " list-group">
+								<div data-ng-repeat="billrentalarchive in BillRentalarchivesInBillArchive" class = "list-group-item panel panel-default col-md-12 col-xs-12 col-sm-12">
+									<div class="panel-heading" data-ng-click="">
+										<!-- <h3 class = "list-group-item-heading"><small>Customer Name: </small>{{billrentalarchive.rentalArchive.customer.companyName}}</h3> -->
+										<form class="form-inline">
+											<fieldset>
+												<span class="col-md-8 form-group">
+													<h3 class = "list-group-item-heading"><small>Customer Name: </small>{{billrentalarchive.rentalArchive.customer.customerName}}</h3>
+                        </span>
+												<span class="col-md-4 form-group pull-right">
+													<label class="pull-right form-group" data-ng-if="billrentalarchive.isMember=== true"> Member</label>
+                        </span>
+                      </fieldset>
+                    </form>
+                  </div>
+									<div class="panel-body" ng-style="{background:'Azure'}">		
+                    
+										<label class="col-md-4 col-xs-12 col-sm-4">Deposit :{{billrentalarchive.rentalArchive.deposit}}</label>
+										<label class="col-md-4 col-xs-12 col-sm-4">Description : {{billrentalarchive.rentalArchive.description}}</label>			
+                  </div>
+									<div class="col-md-12 col-xs-12 col-sm-12">
+										<div  data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length">
+											<h4 ng-style="{background:'AntiqueWhite '}" ><u>Packages</u></h4>
+											<table class="table"  ng-style="{background:'Beige'}">
+												<thead>
+													<tr>
+														<th>Package</th>
+														<th  class="text-right">Quantity</th>
+														<th class="text-right">Price</th>
+														<th class="text-right">Amount</th>
+                          </tr>
+                        </thead>
+												<tr data-ng-repeat="packageorder in billrentalarchive.packageordesInBillRentalArchive">
+													<td>{{packageorder.packageName}}</td>
+													<td class="text-right">{{packageorder.quantity}}</td>
+													<td class="text-right">{{packageorder.billPrice}}</td>
+													<td class="text-right">{{packageorder.billCharge}}</td>
+                        </tr>
+												<tr data-ng-if="billrentalarchive.packageRevenue > 0  && billrentalarchive.totalOnPackage !== billrentalarchive.packageRevenue">
+													<td colspan="3" ><strong>Sub-Total</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.packageRevenue}}</strong></td>
+                        </tr>
+												<tr data-ng-if="billrentalarchive.serviceChargeForPackage > 0">
+													<td colspan="3" ><strong>Service charge @{{billrentalarchive.billArchive.serviceChargeRate}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.serviceChargeForPackage}}</strong></td>
+                        </tr>
+												<tr data-ng-if="billrentalarchive.vatForPackage > 0">
+													<td colspan="3" ><strong>Vat  @{{billrentalarchive.billArchive.vatRate}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.vatForPackage}}</strong></td>
+                        </tr>
+												<tr data-ng-if="billrentalarchive.serviceTaxForPackage > 0">
+													<td colspan="3" ><strong>Service Tax  @{{billrentalarchive.billArchive.serviceTaxRateWithFood}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.serviceTaxForPackage}}</strong></td>
+                        </tr>
+												<tr data-ng-if="billrentalarchive.totalOnPackage > 0">
+													<td colspan="3" ><strong>Total </strong></td>
+													<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalOnPackage}}</strong></td>
+                        </tr>
+                      </table>
+                    </div>	
+										<div class="col-md-12 col-xs-12 col-sm-12" data-ng-if="billrentalarchive.foodordersInBillRentalArchive.length">
+											<h4 ng-style="{background:'AntiqueWhite '}" ><u>Foods</u></h4>
+											<table class="table"  ng-style="{background:'Beige'}">
+												<thead>
+													<tr>
+														<th>Food</th>
+														<th data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">Quantity Ordered</th>
+														<th data-ng-if="!billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">Quantity</th>
+														<th data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">Quantity Charged</th>
+														<th data-ng-if="!billrentalarchive.packageordesInBillRentalArchive.length" class="text-right"></th>
+														<th class="text-right">Price</th>
+														<th class="text-right">Amount</th>
+                          </tr>
+                        </thead>
+												<tr data-ng-repeat="foodorder in billrentalarchive.foodordersInBillRentalArchive">
+													<td>{{foodorder.foodName}}</td>
+													<td class="text-right">{{foodorder.quantity}}</td>
+													<td data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">{{foodorder.quantityCharged}}</td>
+													<td data-ng-if="!billrentalarchive.packageordesInBillRentalArchive.length" class="text-right"></td>
+													<td class="text-right">{{foodorder.billPrice}}</td>
+													<td class="text-right">{{foodorder.billCharge}}</td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.membershipDiscountOnFood > 0">
+													<td colspan="4" ><strong>Membership Discount @ {{billrentalarchive.membershipDiscountPercentage}}%</strong></td>
+													<td class="text-right"><strong>-{{billrentalarchive.membershipDiscountOnFood}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.foodRevenue > 0 && billrentalarchive.totalOnFood !== billrentalarchive.foodRevenue">
+													<td colspan="4" ><strong>Sub-Total</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.foodRevenue}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.serviceChargeOnFood > 0">
+													<td colspan="4" ><strong>Service charge @{{billrentalarchive.billArchive.serviceChargeRate}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.serviceChargeOnFood}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.vatOnFood > 0">
+													<td colspan="4" ><strong>Vat @{{billrentalarchive.billArchive.vatRate}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.vatOnFood}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.serviceTaxOnFood > 0">
+													<td colspan="4" ><strong>Service Tax @{{billrentalarchive.billArchive.serviceTaxRateWithFood}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.serviceTaxOnFood}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.totalOnFood > 0">
+													<td colspan="4" ><strong>Total </strong></td>
+													<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalOnFood}}</strong></td>
+                        </tr>
+                      </table>
+                    </div>
+										<div class="col-md-12 col-xs-12 col-sm-12">
+											<h4 ng-style="{background:'AntiqueWhite '}" ><u>Games</u></h4>
+											<table class="table" ng-style="{background:'Beige'}">		
+												<thead>
+													<tr>
+														<th>Game Category</th>
+														<th class="text-right" >Rate/Hour</th>
+														<th class="text-right" >Time</th>
+														<th class="text-right" >Hours Charged</th>
+														<th class="text-right" >Amount</th>
+                          </tr>
+                        </thead>
+												<tr data-ng-repeat="rentalCategory in billrentalarchive.gamesInBillRentalArchive">
+													<td>{{rentalCategory.categoryName}}</td>
+													<td class="text-right">{{rentalCategory.ratePerHourCharged}}</td>
+													<td class="text-right" >{{rentalCategory.timePlayed}}</td>
+													<td  class="text-right" >{{rentalCategory.hoursCharged}}</td>
+													<td  class="text-right" >{{rentalCategory.amountCharged}}</td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.gameRevenue > 0 && billrentalarchive.totalOnGame !== billrentalarchive.gameRevenue">
+													<td colspan="4" ><strong>Sub-Total</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.gameRevenue}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.serviceChargeOnGame > 0">
+													<td colspan="4" ><strong>Service Charge @{{billrentalarchive.billArchive.serviceChargeRate}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.serviceChargeOnGame}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.serviceTaxOnGame > 0">
+													<td colspan="4" ><strong>Service Tax @{{billrentalarchive.billArchive.serviceTaxRate}}%</strong></td>
+													<td class="text-right"><strong>{{billrentalarchive.serviceTaxOnGame}}</strong></td>
+                        </tr>
+												<tr data-ng-if ="billrentalarchive.totalOnGame > 0">
+													<td colspan="4" ><strong>Total</strong></td>
+													<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalOnGame}}</strong></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+									<div class="col-md-12 col-xs-12 col-sm-12">
+										<table width="100%">
+											<tr data-ng-if="billrentalarchive.deposit>0">
+												<td colspan="4" align="right"><strong>Customer sub Total</strong></td>
+												<td align="right"><strong>{{billrentalarchive.subTotalAmountForCustomer}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billrentalarchive.deposit>0">
+												<td colspan="4" align="right"><strong>Deposit</strong></td>
+												<td align="right"><strong>{{billrentalarchive.deposit}}</strong></td>
+                      </tr>
+											<tr>
+												<td colspan="4" align="right"><strong>Customer Payable</strong></td>
+												<td align="right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalAmountForCustomer}}</strong></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div> 
+						<div class="panel col-md-12 col-xs-12 col-sm-12">
+							<table width="100%">
+								<tr>
+									<td colspan="5" align="left"><strong>Bill Description :{{billarchive.descriptionForBill}}</strong></td>
+                </tr>
+								<tr data-ng-if="billarchive.extraCharge>0">
+									<td colspan="5" align="left"><strong>Extra Charge :{{billarchive.extraChargeDescription}}</strong></td>
+									<td align="right"><strong>{{billarchive.extraCharge}}</strong></td>
+                </tr>
+								<tr data-ng-if="billarchive.discountInValue>0">
+									<td colspan="5" align="left"><strong>Discount @{{billarchive.discountInpercent}}% :{{billarchive.discountDescription}}</strong></td>
+									<td align="right"><strong>{{billarchive.discountInValue}}</strong></td>
+                </tr>
+								<tr data-ng-if="billarchive.rounding!=0">
+									<td colspan="5" align="right"><strong>Rounding : </strong></td>
+									<td align="right"><strong>{{billarchive.rounding}}</strong></td>
+                </tr>
+								<tr>
+									<td colspan="5" align="right"><font size="5"><strong>Total of Bill :  </strong></font></td>
+									<td align="right"><font size="5"><strong><label>{{currencySymbol}}</label>{{billarchive.billTotal}}</strong></font></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+				<div class="visible-print-block panel">
+					<div>
+						<p class="text-center">Duplicate copy</p>
+            <!-- <p align="middle">Rear End, Ground Floor, New Excelsior Cinema, Wallace St., Fort, Mumbai-01.</p> -->
+						<p align="middle"><b><u>Creeda Board Game Cafe</u></b></p>
+						<p align="middle">{{addressOnBill}}</p>
+						<form class="form-inline">
+							<fieldset>
+								<span data-ng-if="!billmembershipArchiveAvailable" class= "col-md-6 col-xs-6 form-group pull-left">
+									<label for= "tableNumber">Table Number :  </label>
+									<label>{{billArchiveForGenerationOfPrintout.table.tableNumber}}</label>
+                </span>
+								<span class= "col-md-6 col-xs-6 form-group pull-right">
+									<label for= "billNumber">Bill Number : </label>
+									<label id="billNumber" name="billNumber" >{{billArchiveForGenerationOfPrintout.billNumber}}</label>
+                </span>
+								<span data-ng-if="!billmembershipArchiveAvailable" class= "col-md-6 col-xs-6 form-group pull-left">
+									<label for= "attendant">Attendant :  </label>
+									<label>{{billArchiveForGenerationOfPrintout.userOrignal.displayName}}</label>
+                </span>
+								<span class= "col-md-6 col-xs-6 form-group pull-right">
+									<label for= "dateOdBill">Date of Bill : </label>
+									<label id="dateOdBill" name="dateOfBill">{{billArchiveForGenerationOfPrintout.dateOfBill | date}} </label> 
+                </span>
+              </fieldset>	
+            </form>
+						<div data-ng-if="billmembershipArchiveAvailable" class="panel col-md-12 col-xs-12 col-sm-12">
+							<div class = " list-group">
+								<div class = "list-group-item panel panel-default col-md-12 col-xs-12 col-sm-12">
+									<div class="panel-heading" data-ng-click="">
+										<h4 class = "list-group-item-heading"><small>Customer Name: </small>{{billmembershiparchives.membershipactivity.customer.customerName}}</h4>
+                  </div>
+									<div>
+										<table class="table"  ng-style="{background:'Beige'}">
+											<thead>
+												<tr>
+													<th>Membership Start Date</th>
+													<th >Membership Period</th>
+													<th >Membership End Date</th>
+													<th class="text-right">Amount</th>
+                        </tr>
+                      </thead>
+											<tr>
+												<td>{{billmembershiparchives.membershipactivity.membershipStartDate | date}}</td>
+												<td >{{billmembershiparchives.membershipactivity.membershipPeriod}}</td>
+												<td >{{billmembershiparchives.membershipactivity.membershipExpiry | date}}</td>
+												<td class="text-right"><label>{{currencySymbol}}</label>{{billmembershiparchives.membershipactivity.billPrice}}</td>
+                      </tr>
+											<tr data-ng-if="billmembershiparchives.membershipactivity.serviceTaxOnMembership > 0">
+												<td colspan="3" ><strong>Service Tax  @{{billmembershiparchives.membershipactivity.serviceTaxPercentage}}%</strong></td>
+												<td class="text-right"><strong>{{billmembershiparchives.membershipactivity.serviceTaxOnMembership}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billmembershiparchives.membershipactivity.membershipAmount > 0">
+												<td colspan="3" ><strong>Total </strong></td>
+												<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billmembershiparchives.membershipactivity.membershipAmount}}</strong></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+						<div class = " list-group">
+							<div data-ng-repeat="billrentalarchive in BillRentalarchivesInBillArchive" class = "list-group-item panel panel-default col-md-12 col-xs-12 col-sm-12">
+								<div class="panel-heading" data-ng-click="">
+									<h4 class = "list-group-item-heading"><small>Customer Name: </small>{{billrentalarchive.rentalArchive.customer.companyName}}
+										<label class="pull-right form-group" data-ng-if="billrentalarchive.isMember=== true"> [Member]</label>
+                  </h4>
+                </div>
+								<!-- <div class="panel-body" ng-style="{background:'Azure'}">		
+                  
+									<label class="col-md-4 col-xs-12 col-sm-4">Deposit :{{billrentalarchive.rentalArchive.deposit}}</label>
+									<label class="col-md-4 col-xs-12 col-sm-4">Description : {{billrentalarchive.rentalArchive.description}}</label>			
+                </div> -->
+								<div class="col-md-12 col-xs-12 col-sm-12">
+									<span data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length">
+										<h4 ng-style="{background:'AntiqueWhite '}" ><u>Packages</u></h4>
+										<table class="table"  ng-style="{background:'Beige'}">
+											<thead>
+												<tr>
+													<th>Package</th>
+													<th data-ng-if="!billrentalarchive.packageQuantityHigherThanOne"></th>
+													<th data-ng-if="billrentalarchive.packageQuantityHigherThanOne" class="text-right">Quantity</th>
+													<th data-ng-if="!billrentalarchive.packageQuantityHigherThanOne"></th>
+													<th data-ng-if="billrentalarchive.packageQuantityHigherThanOne" class="text-right">Price</th>
+													<th class="text-right">Amount</th>
+                        </tr>
+                      </thead>
+											<tr data-ng-repeat="packageorder in billrentalarchive.packageordesInBillRentalArchive">
+												<td>{{packageorder.packageName}}</td>
+												<td data-ng-if="packageorder.quantity <= 1"></td>
+												<td data-ng-if="packageorder.quantity > 1" class="text-right">{{packageorder.quantity}}</td>
+												<td data-ng-if="packageorder.quantity <= 1"></td>
+												<td data-ng-if="packageorder.quantity > 1" class="text-right">{{packageorder.billPrice}}</td>
+												<td class="text-right">{{packageorder.billCharge}}</td>
+                      </tr>
+											<tr data-ng-if="billrentalarchive.packageRevenue > 0 && billrentalarchive.totalOnPackage !== billrentalarchive.packageRevenue">
+												<td colspan="3" ><strong>Sub-Total</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.packageRevenue}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billrentalarchive.serviceChargeForPackage > 0">
+												<td colspan="3" ><strong>Service charge @{{billrentalarchive.billArchive.serviceChargeRate}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.serviceChargeForPackage}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billrentalarchive.vatForPackage > 0">
+												<td colspan="3" ><strong>Vat  @{{billrentalarchive.billArchive.vatRate}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.vatForPackage}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billrentalarchive.serviceTaxForPackage > 0">
+												<td colspan="3" ><strong>Service Tax  @{{billrentalarchive.billArchive.serviceTaxRateWithFood}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.serviceTaxForPackage}}</strong></td>
+                      </tr>
+											<tr data-ng-if="billrentalarchive.totalOnPackage > 0">
+												<td colspan="3" ><strong>Total </strong></td>
+												<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalOnPackage}}</strong></td>
+                      </tr>
+                    </table>
+                  </span>	
+									<span data-ng-if="billrentalarchive.foodordersInBillRentalArchive.length">
+										<h4 ng-style="{background:'AntiqueWhite '}" ><u>Foods</u></h4>
+										<table class="table"  ng-style="{background:'Beige'}">
+											<thead>
+												<tr>
+													<th>Food</th>
+													<th data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">Quantity Ordered</th>
+													<th data-ng-if="!billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">Quantity</th>
+													<th data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">Quantity Charged</th>
+													<th data-ng-if="!billrentalarchive.packageordesInBillRentalArchive.length" class="text-right"></th>
+													<th class="text-right">Price</th>
+													<th class="text-right">Amount</th>
+                        </tr>
+                      </thead>
+											<tr data-ng-repeat="foodorder in billrentalarchive.foodordersInBillRentalArchive">
+												<td>{{foodorder.foodName}}</td>
+												<td class="text-right">{{foodorder.quantity}}</td>
+												<td data-ng-if="billrentalarchive.packageordesInBillRentalArchive.length" class="text-right">{{foodorder.quantityCharged}}</td>
+												<td data-ng-if="!billrentalarchive.packageordesInBillRentalArchive.length" class="text-right"></td>
+												<td class="text-right">{{foodorder.billPrice}}</td>
+												<td class="text-right">{{foodorder.billCharge}}</td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.membershipDiscountOnFood > 0">
+												<td colspan="4" ><strong>Membership Discount @ {{billrentalarchive.membershipDiscountPercentage}}%</strong></td>
+												<td class="text-right"><strong>-{{billrentalarchive.membershipDiscountOnFood}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.foodRevenue > 0 && billrentalarchive.totalOnFood !== billrentalarchive.foodRevenue">
+												<td colspan="4" ><strong>Sub-Total</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.foodRevenue}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.serviceChargeOnFood > 0">
+												<td colspan="4" ><strong>Service charge @{{billrentalarchive.billArchive.serviceChargeRate}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.serviceChargeOnFood}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.vatOnFood > 0">
+												<td colspan="4" ><strong>Vat @{{billrentalarchive.billArchive.vatRate}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.vatOnFood}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.serviceTaxOnFood > 0">
+												<td colspan="4" ><strong>Service Tax @{{billrentalarchive.billArchive.serviceTaxRateWithFood}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.serviceTaxOnFood}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.totalOnFood > 0">
+												<td colspan="4" ><strong>Total </strong></td>
+												<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalOnFood}}</strong></td>
+                      </tr>
+                    </table>
+                  </span>
+									<span>
+										<h4 ng-style="{background:'AntiqueWhite '}" ><u>Games</u></h4>
+										<table class="table" ng-style="{background:'Beige'}">		
+											<thead>
+												<tr>
+													<th>Game Category</th>
+													<th class="text-right" >Rate/Hour</th>
+													<th class="text-right" >Time</th>
+													<th class="text-right" >Hours Charged</th>
+													<th class="text-right" >Amount</th>
+                        </tr>
+                      </thead>
+											<tr data-ng-repeat="rentalCategory in billrentalarchive.gamesInBillRentalArchive">
+												<td>{{rentalCategory.categoryName}}</td>
+												<td class="text-right">{{rentalCategory.ratePerHourCharged}}</td>
+												<td class="text-right" >{{rentalCategory.timePlayed}}</td>
+												<td  class="text-right" >{{rentalCategory.hoursCharged}}</td>
+												<td  class="text-right" >{{rentalCategory.amountCharged}}</td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.gameRevenue > 0 && billrentalarchive.totalOnGame !== billrentalarchive.gameRevenue">
+												<td colspan="4" ><strong>Sub-Total</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.gameRevenue}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.serviceChargeOnGame > 0">
+												<td colspan="4" ><strong>Service Charge @{{billrentalarchive.billArchive.serviceChargeRate}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.serviceChargeOnGame}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.serviceTaxOnGame > 0">
+												<td colspan="4" ><strong>Service Tax @{{billrentalarchive.billArchive.serviceTaxRate}}%</strong></td>
+												<td class="text-right"><strong>{{billrentalarchive.serviceTaxOnGame}}</strong></td>
+                      </tr>
+											<tr data-ng-if ="billrentalarchive.totalOnGame > 0">
+												<td colspan="4" ><strong>Total</strong></td>
+												<td class="text-right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalOnGame}}</strong></td>
+                      </tr>
+                    </table>
+                  </span>
+                </div>
+								<div class="col-md-12 col-xs-12 col-sm-12">
+									<table width="100%">
+										<tr data-ng-if="billrentalarchive.deposit>0">
+											<td colspan="4" align="right"><strong>Customer sub Total</strong></td>
+											<td align="right"><strong>{{billrentalarchive.subTotalAmountForCustomer}}</strong></td>
+                    </tr>
+										<tr data-ng-if="billrentalarchive.deposit>0">
+											<td colspan="4" align="right"><strong>Deposit</strong></td>
+											<td align="right"><strong>{{billrentalarchive.deposit}}</strong></td>
+                    </tr>
+										<tr>
+											<td colspan="4" align="right"><strong>Customer Payable</strong></td>
+											<td align="right"><strong><label>{{currencySymbol}}</label>{{billrentalarchive.totalAmountForCustomer}}</strong></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+							<div>
+								<table width="100%">
+									<tr data-ng-if="billArchiveForGenerationOfPrintout.extraCharge>0">
+										<td colspan="5" align="left"><strong>Extra Charge :{{billArchiveForGenerationOfPrintout.extraChargeDescription}}</strong></td>
+										<td align="right"><strong>{{billArchiveForGenerationOfPrintout.extraCharge}}</strong></td>
+                  </tr>
+									<tr data-ng-if="billArchiveForGenerationOfPrintout.discountInValue>0">
+										<td colspan="5" align="left"><strong>Discount @{{billArchiveForGenerationOfPrintout.discountInpercent}}% :{{billArchiveForGenerationOfPrintout.discountDescription}}</strong></td>
+										<td align="right"><strong>{{billArchiveForGenerationOfPrintout.discountInValue}}</strong></td>
+                  </tr>
+									<tr data-ng-if="billArchiveForGenerationOfPrintout.rounding!=0">
+										<td colspan="5" align="right"><strong>Rounding : </strong></td>
+										<td align="right"><strong>{{billArchiveForGenerationOfPrintout.rounding}}</strong></td>
+                  </tr>
+									<tr>
+										<td colspan="5" align="right"><font size="5"><strong>Total of Bill :  </strong></font></td>
+										<td align="right"><font size="5"><strong>{{currencySymbol}}{{billArchiveForGenerationOfPrintout.billTotal}}</strong></font></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+					<div class="panel-body">
+						<div class="col-md-12">
+							<p align="center">THANK YOU !! <br>www.creeda.in </p>
+            </div>
+          </div>	
+        </div>
+      </div>
+    </div>
+		<div class="col-md-12 col-xs-12 col-sm-12">
+			<div data-ng-if="(totalItemsBillarchive.count===0)" class="alert alert-warning text-center">
+        Your search did not match any documents.
+      </div>
+    </div>	
+		<div class="col-md-12 col-xs-12 col-sm-12 hidden-print">
+      
+      
+			<!--	********************************* Pagination  ***************************************-->
+      <ul uib-pagination 
+      total-items="totalItemsBillarchive.count" 
+      ng-model="curPageBillarchive.page"
+      max-size="maxSize"
+      class="pagination-sm"
+      boundary-links="true"
+      rotate="false"
+      num-pages="numPages"
+      ng-change="getBills();">
+      </ul>
+			<!--	*********************************Pagination******************************************** -->
+    </div>
+  </div>
+</section>

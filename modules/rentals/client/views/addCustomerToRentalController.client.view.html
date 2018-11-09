@@ -1,0 +1,101 @@
+<!-- <section> -->
+<md-dialog aria-label="view assignment details" class="fullscreen-dialog" ng-init="initialize()">
+  <!-- <form ng-cloak> -->
+    <md-toolbar>
+      <div class="md-toolbar-tools" ng-class="{ 'redcolor' : assignment.calculatedStatus.overDue ,'lightOrange' : assignment.calculatedStatus.daysLeft , 'lightGreen' : assignment.calculatedStatus.beforeDate }">
+        <h2>Add Customer</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel($event)" aria-label="call">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="column" layout-fill>
+          <div layout="row">
+            <!-- <span layout="row"> -->
+              <md-input-container>
+                <label>Customer ID</label>
+                <input ng-model="customerToBeAdded.customerID">
+              </md-input-container>
+              <md-autocomplete
+                ng-disabled="isDisabled"
+                md-no-cache="customerToBeAdded.noCache"
+                md-selected-item="customerToBeAdded.customerSelectedItem"
+                md-search-text-change="searchTextChange(customerToBeAdded.customerSearchText);toCheckIfCustomerHasMembership(customerToBeAdded.customerSearchText)"
+                md-search-text="customerToBeAdded.customerSearchText"
+                md-selected-item-change="selectedCustomerItemChange(item)"
+                md-items="item in queryCustomer(customerToBeAdded.customerSearchText)"
+                md-item-text="item.customerName"
+                md-min-length="0"
+                data-ng-focus="focusRental()"
+                md-floating-label="Select customer">
+                  <md-item-template>
+                    <span md-highlight-text="customerToBeAdded.customerSearchText" md-highlight-flags="^i">{{item.customerName}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No states matching "{{customerToBeAdded.customerSearchText}}" were found.
+                    <!-- <a ng-click="ctrl.newState(ctrl.customerSearchText)">Create a new one!</a> -->
+                  </md-not-found>
+              </md-autocomplete>
+              <md-input-container>
+                <label>Deposit</label>
+                <input ng-model="deposit">
+              </md-input-container>
+            <!-- </span> -->
+          </div>
+          <div layout="row" layout-fill>
+            <md-autocomplete flex
+                ng-disabled="false"
+                md-selected-item="customerToBeAdded.selectedPackage"
+                md-search-text="customerToBeAdded.packageSearchText"
+                md-selected-item-change="getExpectedtimeforPackage(customerToBeAdded.selectedPackage);"
+                md-items="item in queryPackage(customerToBeAdded.packageSearchText)"
+                md-item-text="item.packageName"
+                md-min-length="0"
+                data-ng-focus="focusRental()"
+                md-floating-label="Select Package"
+                md-menu-class="autocomplete-custom-template">
+                  <md-item-template>
+                    <span md-highlight-text="customerToBeAdded.packageSearchText" md-highlight-flags="^i" popover-placement="bottom" popover="{{item.packageName}}" popover-trigger="mouseenter">{{item.packageName}}</span>
+                  </md-item-template>
+                  <md-not-found>
+                    No states matching "{{customerToBeAdded.packageSearchText}}" were found.
+                    <a ng-click="createPackage(packageSearchText)">Create a new one!</a>
+                  </md-not-found>
+              </md-autocomplete>
+              <!-- <md-button data-ng-click="addPackageOrder()" class="md-fab md-mini md-primary" aria-label="Favorite">
+                <md-tooltip md-direction="end" flex="90">
+                  Click To Add New Package Order.
+                </md-tooltip>
+                <md-icon md-svg-src="/modules/core/client/img/svg/ic_add_white_24px.svg" aria-lable="Add"></md-icon>
+              </md-button> -->
+              <md-input-container data-ng-if="!foodOnly" flex>
+                <label>Expected Rental Time </label>
+                <input type="time" ng-model="customerToBeAdded.expectedRentalTime">
+              </md-input-container>
+          </div>
+          <div layout="row">
+            <md-input-container class="md-block" flex>
+              <label>Description</label>
+              <textarea ng-model="customerToBeAdded.description" md-maxlength="150" rows="2" md-select-on-focus></textarea>
+            </md-input-container>
+          </div>
+        </div>
+        <div>
+          {{errorResponse.data}}
+        </div>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="addCustomer()">
+       Add
+      </md-button>
+    </md-dialog-actions>
+  <!-- </form> -->
+</md-dialog>
+
+<!-- </section> -->

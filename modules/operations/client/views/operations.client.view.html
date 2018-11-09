@@ -1,0 +1,111 @@
+<section ng-init="find()">
+  <!-- <div class="page-header">
+    <h1>Operation Overview</h1>
+  </div>
+  <div class="list-group">
+
+  </div> -->
+  <div layout="column" layout-fill role="main" class="relative" ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools" flex>
+        <h1 class="md-toolbar-tools">Operation Overview</h1>
+      </div>
+    </md-toolbar>
+    <md-content class="md-padding" flex md-scroll-y layout="row" layout-wrap>
+      <md-card data-ng-repeat="table in tables" layout="column" flex="45" flex-xs="100" ng-click="tableClicked(table)">
+        <div ng-style="{background: table.status == 'billed' ?  'SkyBlue' : table.status == 'busy' ? 'Tomato' : table.status == 'available' ? 'PaleGreen' : table.status == 'unavailable' ? 'Gainsboro' :'Orange' }">
+          <div layout="row">
+            <div flex="20" layout="column" layout-align="center center">
+              <label flex>
+                Table
+              </label>
+              <label flex>
+                <strong>
+                  {{table.tableNumber}}
+                </strong>
+              </label>
+              <!-- <h4 class = "text-left"><small>Table: </small>{{table.tableNumber}}</h4> -->
+            </div>
+            <div flex="60" layout="column" layout-align="center center">
+              <label flex>
+                Attendant
+              </label>
+              <label flex>
+                <strong>
+                  {{table.currentAttendant.displayName}}
+                </strong>
+              </label>
+              <!-- <h4 class = "text-left"><small>Attendant: </small>{{table.currentAttendant.displayName}}</h4> -->
+            </div>
+            <div flex="20" layout="column" layout-align="center center">
+              <label flex>
+                Time Left
+              </label>
+              <label flex>
+                <strong>
+                  {{table.remainingTime}}
+                </strong>
+              </label>
+              <!-- <h4 class = "text-left"><small>Time Left: </small>{{table.remainingTime}}</h4> -->
+            </div>
+          </div>
+          <md-divider class="inset"></md-divider>
+          <div layout="row">
+            <div flex="30" layout="column" layout-align="center center">
+              <span flex>
+                <label data-ng-if="table.busyCount">
+                  Busy/
+                </label>
+                <label>Size</label>
+              </span>
+              <label flex>
+                <strong data-ng-if="table.busyCount">
+                  {{table.busyCount}}/
+                </strong>
+                <strong>
+                  {{table.tableSize}}
+                </strong>
+              </label>
+              <!-- <h4 class = "text-left"><small>Busy/Size: </small>{{table.busyCount}}/{{table.tableSize}}</h4> -->
+            </div>
+            <div flex="70" layout="column" layout-align="center center" data-ng-if="table.displaySerial">
+              <label flex>
+                Game
+              </label>
+              <label flex>
+                <strong>
+                  {{table.displaySerial}}
+                </strong>
+              </label>
+              <!-- <h4 class = "text-left"><small>Game: </small>{{table.displaySerial}}</h4> -->
+            </div>
+          </div>
+          <!-- <div layout="row" layout-align="center center">
+            <label flex>
+              Total Revenue
+            </label>
+            <label flex>
+              <strong>
+                {{table.totalRevenue}}
+              </strong>
+            </label>
+          </div> -->
+          <md-divider></md-divider>
+          <!-- <div data-ng-if="table.foodOnly" layout="column" layout-align="center center" layout-fill>
+            <div flex>
+              <label>Food Orders</label>
+            </div>
+            <div flex layout="row" layout-fill>
+              <div flex layout="row" layout-align="center center">
+                <label><small>Pending:</small> 10 </label>
+              </div>
+              <div flex layout="row" layout-align="center center">
+                <label><small>Server:</small> 10 </label>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </md-card>
+    </md-content>
+  </div>
+</section>

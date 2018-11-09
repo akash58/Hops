@@ -1,0 +1,310 @@
+<section data-ng-init="vm.initialize()">
+ <!--  <div class="page-header">
+   <h1>Customer</h1>
+  </div> -->
+ <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Customer</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Customer</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="vm.searchCustomerForm" data-ng-submit="vm.curPageCustomer.currentPage = 1; vm.pageChangedCust(vm.searchTextCust.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; vm.searchTextCust.text=''; vm.pageChangedCust(vm.searchTextCust.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="vm.searchTextCust.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+  <div class="padding">
+    <form name="vm.customerForm" class="form-horizontal" ng-submit="vm.createCustomer()" >
+      <!-- <fieldset>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="name">Name</label>
+          <input name="name" type="text" ng-model="vm.customer.name" id="name" class="form-control" placeholder="Name" required>
+          <div ng-messages="vm.form.customerForm.name.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Customer name is required.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">{{vm.customer._id ? 'Update' : 'Create'}}</button>
+        </div>
+        <div ng-show="vm.error" class="text-danger">
+          <strong ng-bind="vm.error"></strong>
+        </div>
+      </fieldset> -->
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="number" name="CustomerId" placeholder="Customer Id" ng-model="vm.cust.customerId" ng-focus="vm.focusCustomer()" min="0" required>
+              <div ng-messages="vm.customerForm.CustomerId.$error"  multiple md-auto-hide="true" ng-if="vm.customerForm.CustomerId.$touched || vm.customerForm.CustomerId.$dirty">
+                <div ng-message="required" ng-style="{color: vm.customerForm.CustomerId.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                </div>
+              </div>
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="text" name="CustomerName" placeholder="Customer Name" ng-model="vm.cust.customerName" ng-focus="vm.focusCustomer()" required>
+              <div ng-messages="vm.customerForm.CustomerName.$error"  multiple md-auto-hide="true" ng-if="vm.customerForm.CustomerName.$touched || vm.customerForm.CustomerName.$dirty">
+                <div ng-message="required" ng-style="{color: vm.customerForm.CustomerName.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                </div>
+              </div>
+          </md-input-container>
+        </div>
+
+      </div>
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+        <div flex>
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="email" name="Email" placeholder="Email" ng-model="	vm.cust.email" ng-focus="vm.focusCustomer()" minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/" required>
+              <div ng-messages="vm.customerForm.Email.$error" ng-if="vm.customerForm.Email.$touched || vm.customerForm.Email.$dirty">
+		            <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">It doesnt look like an e-mail.</div>
+		          </div>
+          </md-input-container>
+        </div>
+        <div flex>
+          <md-input-container class = "md-block">
+            <input type="number" name="MobileNumber" placeholder="Mobile Number" ng-pattern="/^[0-9]/" ng-maxlength="12" ng-minlength="12" min="0" ng-model="vm.cust.mobile" ng-focus="vm.focusCustomer()" required>
+              <div ng-messages="vm.customerForm.MobileNumber.$error"  multiple md-auto-hide="true" ng-if="vm.customerForm.MobileNumber.$touched || vm.customerForm.MobileNumber.$dirty">
+                <div ng-message="required" ng-style="{color: vm.customerForm.MobileNumber.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                </div>
+                <div ng-message="maxlength" ng-style="{color: vm.customerForm.MobileNumber.$touched ? 'Red' : 'Blue'}">
+                  Please Include country code (eg.+91).Telephone Number should not be greater than 10.
+                </div>
+                <div ng-message="minlength" ng-style="{color: vm.customerForm.MobileNumber.$touched ? 'Red' : 'Blue'}">
+                  Please Include country code (eg.+91).Telephone Number should not be not less than 10.
+                </div>
+                <div ng-message="pattern" ng-style="{color: vm.customerForm.MobileNumber.$touched ? 'Red' : 'Blue' }">
+                  Pattern not match.
+                </div>
+              </div>
+          </md-input-container>
+        </div>
+        <!-- <textarea type="text" name="Address" placeholder="Address" required>
+        </textarea> -->
+      </div>
+      <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+
+        <div flex="95">
+          <md-input-container class="md-block" flex-gt-sm>
+            <input type="text" name="Address" placeholder="Address" ng-model="vm.cust.address" ng-focus="vm.focusCustomer()" required>
+              <div ng-messages="vm.customerForm.Address.$error"  multiple md-auto-hide="true" ng-if="vm.customerForm.Address.$touched || vm.customerForm.Address.$dirty">
+                <div ng-message="required" ng-style="{color: vm.customerForm.Address.$touched ? 'Red' : 'Blue' }">
+                This is a required Field
+                </div>
+              </div>
+          </md-input-container>
+        </div>
+        <div flex>
+        <md-button class="md-fab md-mini md-primary pull-right" type="submit">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+          <md-tooltip md-direction="down" flex="50">
+            Save Customer
+          </md-tooltip>
+        </md-button>
+      </div>
+
+        <!-- <textarea type="text" name="Address" placeholder="Address" required>
+        </textarea> -->
+      </div>
+    </form>
+  </div>
+   <!-- <div layout="row" layout-align="center center">
+    <form name="search" data-ng-submit="curPageCustomer.currentPage = 1; pageChangedCust(searchTextCust.text)">
+      <div layout="row" >
+        <md-input-container >
+          <label>&nbsp;</label>
+          <input ng-model="searchTextCust.text" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+          <md-tooltip md-direction="down" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+
+      </div>
+    </form>
+  </div> -->
+  <!-- <md-content class="md-padding">
+    <div data-ng-repeat="customer in customersOnPage" >
+      <div class="md-tile-content"  style="background: #80d8ff;" flex="auto">
+        <div layout="row" layout-align="space-between start">
+          <div>
+            <h3 layout="row" layout-align="start start">Customer Name : {{customer.customerName}}</h3>
+          </div>
+        </div>
+        <span>
+          <p layout="row" layout-align="start end">
+            <span>Customer ID: : {{customer.customerId}}</span>
+          </p>
+        </span>
+      </div>
+    </div>
+  </md-content> -->
+  <md-card  data-ng-repeat="customer in vm.customersOnPage" data-ng-if="customer.active" md-whiteframe="4" >
+
+    <md-card-content style="background: #b3ffe6;" data-ng-click="vm.clickCustomer(customer);">
+        <div layout="row" layout-sm="row" layout-sm="row" layout-xs="column" data-ng-if="!vm.editing || vm.activeCustomerId != customer._id">
+            <h4 flex>{{customer.customerName}}</h4>
+            <h4 flex>{{customer.customerId}}</h4>
+            <div layout="row" layout-sm="row" layout-xs="row"  layout-align="end"   data-ng-if="!vm.editing">
+                <div  data-ng-if = "vm.activeCustomerId == customer._id">
+                    <md-button ng-click="!vm.editCustomer(customer); $event.stopPropagation();" class="md-fab md-mini md-primary">
+                        <md-tooltip md-direction="down">
+                          Click To Edit
+                        </md-tooltip>
+                        <md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+                    </md-button>
+                </div>
+                <div data-ng-if="vm.activeCustomerId == customer._id">
+                    <md-button ng-click="vm.deleteCustomer(customer); $event.stopPropagation();" class="md-fab md-mini md-primary">
+                        <md-tooltip md-direction="down">
+                          Click To Delete
+                        </md-tooltip>
+                        <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+                    </md-button>
+                </div>
+            </div>
+        </div>
+        <div layout="row" layout-sm="row" layout-xs="column" data-ng-if="vm.editing && vm.activeCustomerId == customer._id" ng-click="$event.stopPropagation();">
+            <h4 flex>
+              Customer Name :  {{vm.edit.customerName}}
+             <!--  <input name="customerName" ng-model="vm.edit.customerName" required>  -->
+            </h4>
+             <h4 flex>
+             Customer ID : {{vm.edit.customerId}}
+              <!-- <input name="customerId" ng-model="vm.edit.customerId" required>
+            </md-input-container> --> </h4>
+
+            <div layout="row" layout-align="end" layout-sm="column"  layout-xs="row" data-ng-if="vm.editing">
+                <div data-ng-if = "vm.activeCustomerId === customer._id">
+                  <md-button ng-click="vm.updateCustomer(customer); $event.stopPropagation();" class="md-fab md-mini md-primary">
+                    <md-tooltip md-direction="down">
+                      Update Customer
+                    </md-tooltip>
+                    <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+                  </md-button>
+                </div>
+                <div data-ng-if = "vm.activeCustomerId === customer._id">
+                  <md-button ng-click="vm.cancelEditCustomer(customer); $event.stopPropagation();" class="md-fab md-mini md-primary">
+                    <md-tooltip md-direction="down">
+                      Click To Cancel
+                    </md-tooltip>
+                    <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+                  </md-button>
+                </div>
+            </div>
+        </div>
+    </md-card-content>
+    <md-card-content data-ng-if="vm.activeCustomerId === customer._id">
+        <form name="customerUpdateForm" data-ng-submit="vm.updateCustomer(customer)" class="form-inline animate-show">
+          <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+            <div flex>
+              <md-input-container class="md-block" flex-gt-sm>
+                <input type="text" name="CustomerName" placeholder="Customer Name"  ng-model="vm.edit.customerName" ng-focus="vm.focusUpdateCustomer()" ng-disabled="!vm.editing" required>
+                  <div ng-messages="vm.customerUpdateForm.CustomerName.$error"  multiple md-auto-hide="true" >
+                    <div ng-message="required" >
+                      This is a required Field
+                    </div>
+                  </div>
+              </md-input-container>
+            </div>
+            <div flex>
+              <md-input-container class="md-block" flex-gt-sm>
+                <input type="text" name="CustomerId" placeholder="Customer Id" ng-model="vm.edit.customerId"  ng-focus="vm.focusUpdateCustomer()" ng-disabled="!vm.editing" required>
+                  <div ng-messages="customerUpdateForm.CustomerId.$error"  multiple md-auto-hide="true" >
+                    <div ng-message="required" >
+                      This is a required Field
+                    </div>
+                  </div>
+              </md-input-container>
+            </div>
+
+          </div>
+          <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+            <div flex>
+              <md-input-container class="md-block" flex-gt-sm>
+                <input type="email" name="editEmail" placeholder="Email" ng-model="vm.edit.email" ng-focus="vm.focusUpdateCustomer()" ng-disabled="!vm.editing"  minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/" required>
+
+             <div ng-messages="vm.customerUpdateForm.editEmail.$error" ng-if="vm.customerUpdateForm.editEmail.$touched || vm.customerUpdateForm.editEmail.$dirty">
+		            <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">It doesnt look like an e-mail.</div>
+		      </div>
+              </md-input-container>
+            </div>
+            <div flex>
+              <md-input-container class="md-block" flex-gt-sm>
+                <input type="number" name="editMobileNumber" placeholder="Mobile Number" ng-pattern="/^[0-9]/" ng-maxlength="12" ng-minlength="12" min="0" ng-model="vm.edit.mobile" ng-focus="vm.focusUpdateCustomer()" ng-disabled="!vm.editing" required>
+                  <div ng-messages="vm.customerUpdateForm.editMobileNumber.$error"  multiple md-auto-hide="true" >
+                    <div ng-message="required" ng-style="{color: vm.customerUpdateForm.editMobileNumber.$touched ? 'Red' : 'Blue' }">
+                      This is a required Field
+                    </div>
+                    <div ng-message="maxlength" ng-style="{color: vm.customerUpdateForm.editMobileNumber.$touched ? 'Red' : 'Blue'}">
+                     Please Include country code (eg.+91).Telephone Number should not be greater than 10.
+                    </div>
+                    <div ng-message="minlength" ng-style="{color: vm.customerUpdateForm.editMobileNumber.$touched ? 'Red' : 'Blue'}">
+                     Please Include country code (eg.+91).Telephone Number should not be not less than 10.
+                    </div>
+                    <div ng-message="pattern" ng-style="{color: vm.customerUpdateForm.editMobileNumber.$touched ? 'Red' : 'Blue' }">
+                      Pattern not match.
+                    </div>
+                  </div>
+              </md-input-container>
+            </div>
+
+          </div>
+           <div layout="row" layout-wrap layout-sm="column" layout-xs="column">
+            <div flex>
+              <md-input-container class="md-block" flex-gt-sm>
+                <input type="text" name="Address" placeholder="Address" ng-model="vm.edit.address" ng-focus="vm.focusUpdateCustomer()" ng-disabled="!vm.editing" required>
+                  <div ng-messages="vm.customerUpdateForm.Address.$error"  multiple md-auto-hide="true" >
+                    <div ng-message="required" >
+                      This is a required Field
+                    </div>
+                  </div>
+              </md-input-container>
+            </div>
+          </div>
+      </form>
+    </md-card-content>
+  </md-card>
+     <ul uib-pagination total-items="vm.totalItemsCustomer.count"
+      ng-model="vm.curPageCustomer.page"
+      max-size="vm.maxSize"
+      class="pagination-sm"
+      boundary-links="true"
+      rotate="false"
+      num-pages="numPages"
+      ng-change="vm.pageChangedCust(vm.searchTextCust.text)">
+     </ul>
+  <pre>showing <b>{{vm.totalItemsCustomer.count===0 ? 0 :vm.indexStartCustomer+1}}-{{vm.indexEndCustomer}}</b> of <b>{{vm.totalItemsCustomer.count}}</b> Customers</pre>
+</section>

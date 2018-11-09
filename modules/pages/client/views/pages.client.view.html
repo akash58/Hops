@@ -1,0 +1,114 @@
+<!-- <script src="../controllers/angular-drag-and-drop-lists.js"></script> -->
+
+<section data-ng-controller="PagesController" data-ng-init="find()">
+<!-- <link rel="stylesheet" type="text/css" href="/modules/systemtypes/css/simple.css" /> -->
+  <div layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px" id="pageheader">
+<span hide-xs flex="60">
+      <h3><b>Page Managements</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Page Managements</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+      <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+       <span layout="row" layout-align="space-between center">
+        <md-button class="md-icon-button" ng-click="showSearch = !showSearch;">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+          <md-tooltip md-direction="bottom">
+            Close Search
+          </md-tooltip>
+        </md-button>
+        <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+          <label>&nbsp;</label>
+          <!-- custom placeholder in search box in white color -->
+          <input ng-model="searchPage" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-icon-button">
+          <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+          <md-tooltip md-direction="bottom" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+      </span>
+    </span>
+  </div>
+    <!-- <section class="animate-show" data-ng-if="!pageVisible" data-ng-include="'modules/core/views/invalidusererrorscreen.client.view.html'">
+    </section> -->
+    <div class="col-md-12 col-xs-12 col-sm-12">
+  <!--  <div data-ng-if="pageVisible"> -->
+      <!-- *********** Division Start for ng-repeat ***************** -->
+      <div class = "list-group">
+        <div data-ng-repeat="page in pages | filter : searchPage" class = "list-group-item panel panel-info">
+          <div data-ng-click="clickPage(page)" class="panel-heading">
+
+            <h4 class="list-group-item-heading" data-ng-bind="page.pageName" id="clickPage-{{$index}}"></h4>
+      </div>
+          <section  class="list-group-item" data-ng-show="page.pageName == activePage" id="activePage-{{$index}}">
+            <div class="panel-body">
+              <form name="pageRoleForm" data-ng-submit="updatePageRole(page)" class="form-inline animate-show" autocomplete="off">
+
+
+                <fieldset>
+                  <div class="simpleDemo row">
+                    <!-- <div class="row">
+                      <div ng-repeat="(listName, list) in page.Models.lists" class="col-md-6 col-xs-12 col-sm-6">
+                        <div class="panel panel-default">
+                          <h3 class="panel-title" id="{{page.pageName}}-{{listName}}">{{listName}}</h3>
+                        </div>
+                        <div class="panel-body" ng-include="'modules/pages/client/views/simpleone.html'"> </div>
+                      </div>
+                    </div> -->
+                  <!-- </div> -->
+
+                  <md-content class="md-padding autocomplete" layout="column">
+                    <md-chips ng-model="page.roles" md-autocomplete-snap
+			          md-transform-chip="transformChip($chip)"
+			          md-require-match="true">
+			            <md-autocomplete
+			              md-selected-item="vm.selectedItem"
+			              md-search-text="vm.searchText"
+			              md-items="item in queryRoles(vm.searchText)"
+			              md-item-text="item"
+			              placeholder="Search for Roles">
+			              <span md-highlight-text="vm.searchText">{{item.roleName}}</span>
+			            </md-autocomplete>
+			            <md-chip-template>
+			              <span>
+			                <strong>{{$chip}}</strong>
+			              </span>
+			            </md-chip-template>
+			          </md-chips>
+                  </md-content>
+                   <button type="submit" class="btn btn-large btn-primary pull-right">Update</button>
+                  <span>
+                    <p data-ng-show="savedSuccessfully" class="text-center text-success">
+                      <strong>Roles Authorized Successfully</strong>
+                    </p>
+                    <p data-ng-show="error" class="text-center text-danger">
+                  <strong data-ng-bind="error"></strong>
+                    </p>
+                  </span>
+                </fieldset>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  <!--  </div> -->
+</div>
+  <div>
+    <div data-ng-if="!pages.length" class="alert alert-warning text-center">
+      No pages yet created
+    </div>
+  </div>
+</section>
+
+

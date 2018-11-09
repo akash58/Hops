@@ -1,0 +1,126 @@
+[{
+	"systemParameterName" : "Short Title",
+	"defaultValue" : "FooBar",
+	"description" : "Short Title of the Organisation",
+	"value" : "Update Short Title Here"
+}, {
+	"systemParameterName" : "Title",
+	"defaultValue" : "FooBar",
+	"description" : "Title of the Organisation",
+	"value" : "Update Title Here"
+}, {
+	"systemParameterName" : "Address on Bill",
+	"defaultValue" : "123 Street or Lane Name, Area Name, Mumbai - 400001",
+	"description" : "This Address will get printed on the bill.",
+	"value" : "123 Street or Lane Name, Area Name, Mumbai - 400001"
+}, {
+	"systemParameterName" : "Grace Period",
+	"defaultValue" : "15",
+	"description" : "The number of minutes grace for which there are no charges generated.(Must be positive integer)",
+	"value" : "15"
+}, {
+	"systemParameterName" : "Weekend Holiday Today",
+	"defaultValue" : "N",
+	"description" : "Determines whether system will use weekday or weekend rate in calculation of Billing (Y - Weekend Rates; else weekday rates)",
+	"value" : "N"
+}, {
+	"systemParameterName" : "Service Charge",
+	"defaultValue" : "10",
+	"description" : "Service Charge Rate that will be used for bill calculations as percentage(%). This Service Charge is generally goes directly to the attendant and is shown seperately on the bill.",
+	"value" : "10"
+}, {
+	"systemParameterName" : "Partial Payment Disabled",
+	"defaultValue" : "Y",
+	"description" : "For disabling Partial Payments(Y - To disable Partial Payment; Else enable Partial Payment)",
+	"value" : "Y"
+}, {
+	"systemParameterName" : "Tax included in price",
+	"defaultValue" : "Y",
+	"description" : "All taxes included in price(Y-the price is inclusive of all taxes; else taxes add to price.)",
+	"value" : "Y"
+}, {
+	"systemParameterName" : "Currency Symbol",
+	"defaultValue" : "₹",
+	"description" : "Currency Symbol displayed before prices and revenue throughout the system",
+	"value" : "₹"
+}, {
+	"systemParameterName" : "Stock Buffer",
+	"defaultValue" : "10",
+	"description" : "Set stock buffer during food order.(Must be positive integer)",
+	"value" : "10"
+}, {
+	"systemParameterName" : "Membership Discount Weekend",
+	"defaultValue" : "10",
+	"description" : "Discount percentage for Membership on weekend",
+	"value" : "10"
+}, {
+	"systemParameterName" : "Membership Discount Weekday",
+	"defaultValue" : "20",
+	"description" : "Discount percentage for Membership on weekday",
+	"value" : "20"
+}, {
+	"systemParameterName" : "Membership Monthly Amount",
+	"defaultValue" : "3000",
+	"description" : "Membership Monthly Fees",
+	"value" : "3000"
+}, {
+	"systemParameterName" : "Game CGST",
+	"defaultValue" : "14",
+	"description" : "Game CGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "14"
+}, {
+	"systemParameterName" : "Game SGST",
+	"defaultValue" : "14",
+	"description" : "Game SGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "14"
+}, {
+	"systemParameterName" : "Game SAC/HSN Code",
+	"defaultValue" : "ABC",
+	"description" : "Game SAC/HSN Code",
+	"value" : "ABC"
+}, {
+	"systemParameterName" : "Food CGST",
+	"defaultValue" : "9",
+	"description" : "Food CGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "9"
+}, {
+	"systemParameterName" : "Food SGST",
+	"defaultValue" : "9",
+	"description" : "Food SGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "9"
+}, {
+	"systemParameterName" : "Food SAC/HSN Code",
+	"defaultValue" : "BCD",
+	"description" : "Food SAC/HSN Code",
+	"value" : "BCD"
+}, {
+	"systemParameterName" : "Package CGST",
+	"defaultValue" : "9",
+	"description" : "package CGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "9"
+}, {
+	"systemParameterName" : "Package SGST",
+	"defaultValue" : "9",
+	"description" : "Package SGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "9"
+}, {
+	"systemParameterName" : "Package SAC/HSN Code",
+	"defaultValue" : "CDE",
+	"description" : "Package SAC/HSN Code",
+	"value" : "CDE"
+}, {
+	"systemParameterName" : "Membership CGST",
+	"defaultValue" : "14",
+	"description" : "Membership CGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "14"
+}, {
+	"systemParameterName" : "Membership SGST",
+	"defaultValue" : "14",
+	"description" : "Membership SGST Tax Rate that will be used in bill calculations as percentage(%).",
+	"value" : "14"
+}, {
+	"systemParameterName" : "Membership SAC/HSN Code",
+	"defaultValue" : "DEF",
+	"description" : "Membership SAC/HSN Code",
+	"value" : "DEF"
+}]

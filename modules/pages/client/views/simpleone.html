@@ -1,0 +1,16 @@
+<!-- The dnd-list directive allows to drop elements into it.
+     The dropped data will be added to the referenced list -->
+<ul dnd-list="list" id="list-{{page.pageName}}-{{listName}}-{{item}}" class="itmes">
+    <!-- The dnd-draggable directive makes an element draggable and will
+         transfer the object that was assigned to it. If an element was
+         dragged away, you have to remove it from the original list
+         yourself using the dnd-moved attribute -->
+    <li ng-repeat="item in list"
+        dnd-draggable="item"
+        dnd-moved="list.splice($index, 1)"
+        dnd-effect-allowed="move"
+        dnd-selected="page.Models.selected = item"
+        ng-class="{'selected': page.Models.selected === item}"
+        ng-click="itemDoubleClicked(item,listName,page.Models.selected,page._id)" id="item-{{page.pageName}}-{{listName}}-{{item}}">{{item}}
+    </li>
+</ul>

@@ -1,0 +1,278 @@
+<section class="containt" data-ng-init="initialize()">
+
+   	<!-- <div class="page-header">
+    	<h1>Food Types</h1>
+  	</div> -->
+    <div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Food Types</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Food Types</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="searchPageFoodTypeForm" data-ng-submit="curPageFoodType.curPageFoodType = 1; pageChangedFoodType(searchTextFoodType.txt)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextFoodType.txt=''; pageChangedFoodType(searchTextFoodType.txt);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextFoodType.txt" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+
+  	<div>
+  		<form name="foodTypeForm" ng-submit="createFoodType()">
+      <div layout="row" >
+  			<div layout="row" flex>
+		  		<md-input-container flex>
+		         <input autofocus name="foodTypeName" ng-model="foodTypeName" placeholder="Enter Food Type Name" required>
+		            <div ng-messages="foodTypeForm.foodTypeName.$error"  multiple md-auto-hide="true" ng-if="foodTypeForm.foodTypeName.$touched || foodTypeForm.foodTypeName.$dirty">
+		               <div ng-message="required" ng-style="{color: foodTypeForm.foodTypeName.$touched ? 'Red' : 'Blue' }">
+		                      This is a required Field
+		            	 </div>
+                </div>
+		        </md-input-container>
+        	</div>
+    	    	<md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+              <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add">
+              </md-icon>
+                <md-tooltip md-direction="down">
+                Click To Create Food Type
+                </md-tooltip>
+            </md-button>
+        </div>
+      </form>
+    </div>
+
+  <!-- <div flex layout="center center">
+  	<form name="foodTypeForm" ng-submit="vm.createFoodType()" layout="row">
+  		<div layout="row" flex>
+  		<div layout-align="space-between start">
+  		<md-input-container>
+            <label>Enter FoodType Name</label>
+            <input name="foodTypeName" ng-model="vm.foodTypeName" required>
+            <div ng-messages="foodTypeForm.foodTypeName.$error" multiple md-auto-hide="true" ng-if="foodTypeForm.foodTypeName.$touched || foodTypeForm.foodTypeName.$dirty">
+                <div ng-message="required" ng-style="{color: foodTypeForm.foodTypeName.$touched ? 'Red' : 'Blue' }">
+                      This is a required Field
+            	</div>
+            </div>
+        </md-input-container>
+        </div>
+        <div layout-wrap >
+            <md-button type="submit" class="md-fab md-mini md-primary" aria-label="Favorite" onclick="">
+                <md-tooltip md-direction="down">
+                  Click To Create Food Type
+                </md-tooltip>
+                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+            </md-button>
+        </div>
+        </div>
+  	</form>
+  </div> -->
+  <!-- <div layout="row" layout-align="center">
+    <form name="search" data-ng-submit="curPageFoodType.curPageFoodType = 1; pageChangedFoodType(searchTextFoodType.txt)">
+      <div layout="row">
+        <md-input-container>
+          <label>&nbsp;</label>
+          <input ng-model="searchTextFoodType.txt" placeholder="Search">
+        </md-input-container>
+        <md-button type="submit" class="md-fab md-mini md-primary pull-right">
+          <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+          <md-tooltip md-direction="down" flex="60">
+            Search
+          </md-tooltip>
+        </md-button>
+      </div>
+    </form>
+  </div>
+ -->
+  <ul uib-pagination total-items="totalItemsFoodType.count"
+    ng-model="curPageFoodType.page"
+    max-size="maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="pageChangedFoodType(searchTextFoodType.searchText)">
+  </ul>
+
+
+  <div flex>
+<!--   foodTypesOnPage : {{foodTypesOnPage}} -->
+    <md-card data-ng-repeat="foodType in foodTypesOnPage" data-ng-if="foodType.active" md-whiteframe="4">
+      <md-card-content style="background: #b3ffe6; " layout="row"  data-ng-click="foodTypeClicked(foodType);">
+        <div data-ng-if="!editer || activeFoodtype != foodType._id" style="overflow: hidden;" flex>
+   				<h4>{{foodType.foodTypeName}}</h4>
+   			</div>
+   			<div data-ng-if="editer && activeFoodtype == foodType._id" ng-click="$event.stopPropagation();" flex>
+   					<md-input-container  class="md-block" flex-gt-sm>
+	            <input name="foodTypeName" ng-model="edit.foodTypeName" placeholder="Food Type Name" required >
+        		</md-input-container>
+   			</div>
+   			<!-- <span flex></span> -->
+   			<div layout="row" layout-sm="column" layout-xs="column" data-ng-if="!editer">
+	   			<div data-ng-if = "activeFoodtype == foodType._id">
+	   				<md-button ng-click="editFoodType(foodType); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            	<md-tooltip md-direction="down">
+              Click To Edit
+            	</md-tooltip>
+            	<md-icon md-svg-icon="/modules/core/client/img/svg/ic_edit_white_24px.svg"></md-icon>
+        	  </md-button>
+	   			</div>
+  	   		<div data-ng-if = "activeFoodtype == foodType._id">
+  	   			<md-button ng-click="deleteFoodType(foodType); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            	<md-tooltip md-direction="down">
+              Click To Delete
+            	</md-tooltip>
+            	<md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+        	  </md-button>
+  	   		</div>
+   			</div>
+   			<div layout="row" layout-sm="column" layout-xs="column" data-ng-if="editer" layout-align="end start">
+	   		  <div data-ng-if = "activeFoodtype == foodType._id">
+	   				<md-button ng-click="updateFoodType(foodType); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+	            <md-tooltip md-direction="down">
+	              Update Food Type
+	            </md-tooltip>
+	           <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg"></md-icon>
+	          </md-button>
+	   			</div>
+	   		  <div data-ng-if = "activeFoodtype == foodType._id">
+	   				<md-button ng-click="cancelEditFoodType(foodType); $event.stopPropagation();" class="pull-right md-fab md-mini md-primary">
+            	<md-tooltip md-direction="down">
+              Click To Cancel
+            	</md-tooltip>
+            	<md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+        	  </md-button>
+	   			</div>
+   			</div>
+ 		</md-card-content>
+ 		<md-card-content data-ng-if = "activeFoodtype == foodType._id">
+ 			<div layout="row" layout-sm="column" layout-xs="column" flex>
+			  	<form name="foodForm" ng-submit="createFood(foodType)" layout="row" flex>
+          <div layout="row" layout-sm="column" layout-xs="column" flex>
+			  		<md-input-container  layout="row" layout-sm="column" layout-xs="column" flex>
+			            <input name="foodName" ng-model="food.foodName" placeholder="Food Name" required>
+			            <!-- div ng-messages="foodForm.foodName.$error"  multiple md-auto-hide="true" ng-if="foodForm.foodName.$touched || foodForm.foodName.$dirty">
+			                <div ng-message="required" ng-style="{color: foodForm.foodName.$touched ? 'Red' : 'Blue' }">
+			                      This is a required Field
+			            	</div>
+			            </div> -->
+			        </md-input-container>
+              <div layout="row" flex>
+              <h3>{{currencySymbol}}</h3>
+			          <md-input-container flex>
+			            <input name="foodPrice" type="Number" ng-model="food.foodPrice" min="0" placeholder="Food Price" required>
+    			            <!-- <div ng-messages="foodForm.foodPrice.$error"  multiple md-auto-hide="true" ng-if="foodForm.foodPrice.$touched || foodForm.foodPrice.$dirty">
+    			                <div ng-message="required" ng-style="{color: foodForm.foodPrice.$touched ? 'Red' : 'Blue' }">
+    			                 This is a required Field
+    			            	</div>
+    			            </div> -->
+
+			          </md-input-container>
+
+              </div>
+			        <div layout-wrap layout-align="end end">
+		            <md-button type="submit" class="md-fab md-mini md-primary" aria-label="Favorite" onclick="">
+		                <md-tooltip md-direction="down">
+		                  Click To Create Food
+		                </md-tooltip>
+		                <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+		            </md-button>
+		          </div>
+              </div>
+			  	</form>
+  			</div>
+  			<h3> Foods List</h3>
+  			<hr>
+  			<div>
+  				<ul flex  data-ng-repeat="food in foods | filter:{active:true}">
+  					<li layout="row" layout-align="space-between center">
+  						<!-- <div>
+  							<md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_black_18px.svg" ng-click="vm.deleteFood(food);">
+  							<md-tooltip md-direction="down">
+			                  Delete Food
+			                </md-tooltip>
+  						</div> -->
+  						<!-- <div data-ng-if="vm.editer">
+  							<md-icon md-svg-icon="/modules/core/client/img/svg/close.svg" ng-click="vm.deleteFood(food);"></md-icon>
+  							<md-tooltip md-direction="down">
+			            Delete Food
+			          </md-tooltip>
+  						</div>
+  						&nbsp; -->
+              <div layout="row" layout-xs="column" layout-sm="row" flex>
+    						<div layout="row" flex>
+  	  						<md-input-container flex>
+  					        <input name="editfoodName" ng-model="food.foodName" placeholder="Food Name" required ng-disabled="!editer">
+  				        </md-input-container>
+  				      </div>
+  				      <div layout="row" flex>
+                  <md-input-container flex>
+  					        <input name="editfoodPrice" type="Number" ng-model="food.price" placeholder="Food Price" required ng-disabled="!editer" min="0">
+  				        </md-input-container><h4>{{currencySymbol}}</h4>
+  				      </div>
+              </div>
+              <div data-ng-if="editer" layout="row" layout-xs="column">
+                <md-button ng-click="updateFood(food); $event.stopPropagation();" class="pull-right md-fab  md-mini md-primary" data-ng-if = "editer">
+                  <md-icon md-svg-icon="/modules/core/client/img/svg/ic_update_white_24px.svg">
+                    </md-icon>
+                    <md-tooltip md-direction="down">
+                    Update Food
+                    </md-tooltip>
+                </md-button>
+                <md-button ng-click="deleteFood(food);" class="pull-right md-fab md-mini md-primary">
+                  <md-tooltip md-direction="down">
+                  Click To Delete
+                  </md-tooltip>
+                  <md-icon md-svg-icon="/modules/core/client/img/svg/ic_delete_white_24px.svg"></md-icon>
+                </md-button>
+              </div>
+				      <div>
+  						  <md-icon md-svg-icon="/modules/core/client/img/svg/ic_more_vert_black_36px.svg" ng-click="foodComponents(food);">
+	  						  <md-tooltip md-direction="down">
+				            Food Components
+				          </md-tooltip>
+			          </md-icon>
+  						  </div>
+  					</li>
+  					<md-divider flex></md-divider>
+  				</ul>
+  			</div>
+ 		  </md-card-content>
+  	</md-card>
+    <ul uib-pagination total-items="totalItemsFoodType.count"
+    ng-model="curPageFoodType.page"
+    max-size="maxSize"
+    class="pagination-sm"
+    boundary-links="true"
+    rotate="false"
+    num-pages="numPages"
+    ng-change="pageChangedFoodType(searchTextFoodType.searchText)">
+  </ul>
+  <pre>showing <b>{{totalItemsFoodType.count===0 ? 0 :indexStartFoodType+1}}-{{indexEndFoodType}}</b> of <b>{{totalItemsFoodType.count}}</b> Food Types</pre>
+  </div>
+</section>

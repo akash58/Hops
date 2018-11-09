@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Baseunits</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="baseunit in vm.baseunits"
+       ui-sref="baseunits.view({ baseunitId: baseunit._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="baseunit.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="baseunit.user" ng-bind="baseunit.user.displayName"></span>
+        <span ng-if="!baseunit.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="baseunit.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.baseunits.$resolved && !vm.baseunits.length">
+    No Baseunits yet, why don't you <a ui-sref="baseunits.create">create one</a>?
+  </div>
+</section>

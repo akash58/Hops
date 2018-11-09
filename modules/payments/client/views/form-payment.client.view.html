@@ -1,0 +1,296 @@
+<section data-ng-init="initialize()" >
+  <!-- <div class="page-header">
+    <h1>Payments</h1>
+  </div> -->
+
+<div  layout="row" layout-align="space-between center" class="page-header" style="margin-top: 5px">
+    <span hide-xs flex="60">
+      <h3><b>Payments</b></h3>
+    </span>
+    <span hide-gt-xs ng-if="!showSearch" flex>
+      <h3><b>Payments</b></h3>
+    </span>
+    <span flex layout="row" layout-align="end center" ng-hide="showSearch">
+      <md-button class="md-icon-button" ng-click="showSearch = true;">
+        <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg" style=" margin-bottom: -15px; "></md-icon>
+        <md-tooltip md-direction="end">
+          Open Search
+        </md-tooltip>
+      </md-button>
+    </span>
+    <span flex ng-show="showSearch" style=" margin-bottom: -15px; ">
+      <form name="search" data-ng-submit="curPagePayment.currentPage = 1; pageChangedPay(searchTextPay.text)">
+        <span layout="row" layout-align="space-between center">
+          <md-button class="md-icon-button" ng-click="showSearch = !showSearch; searchTextPay.text=''; pageChangedPay(searchTextPay.text);">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_clear_black_24px.svg" ></md-icon>
+            <md-tooltip md-direction="bottom">
+              Close Search
+            </md-tooltip>
+          </md-button>
+          <md-input-container md-theme="input" layout="row" layout-align="center end" flex>
+            <label>&nbsp;</label>
+            <!-- custom placeholder in search box in white color -->
+            <input ng-model="searchTextPay.text" placeholder="Search">
+          </md-input-container>
+          <md-button type="submit" class="md-icon-button">
+            <md-icon md-svg-src="/modules/core/client/img/svg/ic_search_black_24px.svg"></md-icon>
+            <md-tooltip md-direction="bottom" flex="60">
+              Search
+            </md-tooltip>
+          </md-button>
+        </span>
+      </form>
+    </span>
+  </div>
+
+
+  <div>
+    <div layout="row">
+      <md-button  class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click="addPaymentButtonclicked()" data-ng-focus="focusPayment()">
+         <md-tooltip md-direction="down">
+           Click to add payments
+         </md-tooltip>
+         <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+      </md-button>
+    </div>
+    <div data-ng-show="addPaymentclicked">
+      <form name="paymentForm" data-ng-submit="createPaymentPrecheck(tempBills)" class="form-inline animate-show" autocomplete="off" data-ng-focus="focusPayment()">
+        <div layout="row" layout-xs="column" flex>
+             <div layout="row" flex>
+                <md-input-container flex>
+                  <input type="number" id="paymentReferenceNo" name="paymentReferenceNo" data-ng-model="pt.paymentReferenceNo" placeholder="Payment Ref.No" data-ng-focus="focusPayment()" readonly>
+                </md-input-container>
+            </div>
+           <!--  &nbsp;&nbsp;&nbsp; -->
+          <div layout="row" flex>
+             <label for="paymentMode" style="position: relative; top: 10px;">Payment Mode : </label>
+                <font size = "5">
+                   <select class="form-control" data-ng-model="pt.paymentModeType" data-ng-options="paymentmodetype._id as paymentmodetype.paymentType for paymentmodetype in paymentmodetypes |  filter:{active:true}" data-ng-focus="focusPayment()">
+                   </select>
+                </font>
+          </div>
+        </div>
+        <div layout="row" layout-xs="column" flex>
+        <div layout="row" data-ng-if = "checkIfCashPayment()" layout-xs="column" flex>
+          <div layout="row" flex>
+            <h3>{{currencySymbol}}</h3>
+              <md-input-container flex>
+                  <input type="number" id="receivedMoney" name="receivedMoney" data-ng-model= "pt.receivedMoney" min="0" data-ng-change ="pt.moneyToReturn=moneyToReturn();" placeholder="Cash Received">
+              </md-input-container>
+           </div>
+             &nbsp;&nbsp;&nbsp;
+             <div layout="row" flex>
+             <h3>{{currencySymbol}}</h3>
+               <md-input-container flex>
+                  <input type="number" data-ng-model = "pt.moneyToReturn" placeholder="Cash To Be Returned" readonly>
+               </md-input-container>
+          </div>
+          </div>
+            &nbsp;&nbsp;&nbsp;
+           <div layout="row" flex="50" flex-xs="100">
+              <div layout="row" flex>
+                 <h3 >{{currencySymbol}}</h3>
+                    <md-input-container flex>
+                      <input id="paidAmount" name="paidAmount" type="number" data-ng-model= "totals.totalPaymentTowardBills" data-ng-focus="focusPayment()" placeholder="Paid Amount" readonly>
+                    </md-input-container>
+              </div>
+           </div>
+
+          <!--   <div layout="row" flex>
+                <md-input-container flex>
+                  <input type="number" id="paymentReferenceNo" name="paymentReferenceNo" data-ng-model="pt.paymentReferenceNo" placeholder="Payment Ref.No" data-ng-focus="focusPayment()" readonly >
+                </md-input-container>
+            </div> -->
+        </div>
+
+           <div layout="row" layout-xs="column" flex>
+              <md-input-container flex>
+                  <!--  <label>Description</label> -->
+                 <input id="paidAmount" name="description" type="text" data-ng-model= "pt.description" rows="1" data-ng-focus="focusPayment()" placeholder="Description">
+              </md-input-container>
+           </div>
+           <div layout="row">
+               <table class="table">
+                  <thead>
+                     <tr>
+                        <th>Bill No</th>
+                        <th data-ng-show = "visible">Bill Cleared</th>
+                        <th data-ng-show = "visible">Payment Towards Bill</th>
+                        <th>Bill Total Amount</th>
+                        <th></th>
+                     </tr>
+                  </thead>
+                     <tr data-ng-repeat = "tempBill in tempBills">
+                        <td>{{tempBill.bill.billNumber}}</td>
+                        <td data-ng-show = "visible">
+                           <input type="checkbox" data-ng-model="tempBill.bill.billCleared" data-ng-change = "tempBill.bill.paymentTowardBill = tempBill.maxPaymentTowardBill; calculatePaymentTowardBill()" data-ng-disabled="tempBill.bill.isNegative">
+                        </td>
+                        <td data-ng-show = "visible">
+                          <div class="input-group">
+                            <div class="input-group-addon">{{currencySymbol}} </div>
+                              <input type="number" id="billedAmount" name="billedAmount" class="form-control" data-ng-model="tempBill.bill.paymentTowardBill" placeholder="" data-ng-focus="focusPayment()" data-ng-disabled= "tempBill.bill.billCleared" data-ng-change ="calculatePaymentTowardBill(bill)" max = "{{tempBill.maxPaymentTowardBill}}" required>
+                          </div>
+                        </td>
+                        <td>{{currencySymbol}} {{tempBill.bill.billTotal}}</td>
+                        <td>
+                           <md-button class="md-fab md-mini md-primary pull-right" ng-click=" deleteaddedpayments(tempBill); calculatePaymentTowardBill(bill)">
+                             <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+                               <md-tooltip md-direction="down">
+                         Click To cancel
+                               </md-tooltip>
+                           </md-button>
+                        </td>
+                     </tr>
+                     <tr>
+                       <td>
+                          <label  for="billNo">Bill No : </label>
+                            <font size = "4">
+                               <select data-ng-model="pt.bill" data-ng-options="bill as bill.billNumber for bill in bills | filter : {alreadyAddedBill : false}" data-ng-focus="focusPayment()">
+                               </select>
+                            </font>
+                       </td>
+                       <td>
+                          <md-button type="button" class="md-fab md-mini md-primary" aria-label="Favorite" data-ng-click = "addMoreBill(pt.bill)" data-ng-focus="focusPayment()">
+                            <md-icon md-svg-icon="/modules/core/client/img/svg/ic_add_white_24px.svg"></md-icon>
+                              <md-tooltip md-direction="down">
+                                Add Bill
+                             </md-tooltip>
+                          </md-button>
+                       </td>
+                       <td></td>
+                       <td></td>
+                       <td data-ng-show = "visible"></td>
+                     </tr>
+               </table>
+            </div>
+          <div layout="row" layout-align="end">
+             <md-button type="submit" class="md-fab md-mini md-primary pull-right" aria-label="Favorite" onclick="">
+                <md-icon md-svg-src="/modules/core/client/img/svg/ic_save_white_24px.svg" aria-lable="Add"></md-icon>
+                   <md-tooltip md-direction="down">
+                     Save
+                   </md-tooltip>
+             </md-button>
+          </div>
+             <div flex>
+                <p data-ng-show="savedPaymentSuccessfully" class="text-center text-success">
+                   <strong>Payment Saved Successfully</strong>
+                </p>
+                <p data-ng-show="errorPayment" class="text-center text-danger">
+                   <strong data-ng-bind="errorPayment"></strong>
+                </p>
+             </div>
+          </form>
+        </div>
+    <div>
+      <!-- <form name="search" data-ng-submit="curPagePayment.page = 1; pageChangedPay(searchTextPay.text)" class="form-inline animate-show" autocomplete="off" data-ng-focus="focusPayment()"> -->
+        <!-- ************************************************Pagination*************************************************************** -->
+         <!-- <div layout="row" layout-align="center">
+           <md-input-container >
+              <input data-ng-model="searchTextPay.text" placeholder= "Search Payments">
+           </md-input-container>
+              <md-button type="submit" class="md-fab md-mini md-primary pull-left">
+                 <md-icon md-svg-icon="/modules/core/client/img/svg/ic_search_white_24px.svg"></md-icon>
+                   <md-tooltip md-direction="down" flex="60">
+                      Search
+                   </md-tooltip>
+              </md-button>
+         </div> -->
+         <div layout="row">
+           <ul uib-pagination
+               total-items="totalItemsPayment.count"
+               ng-model="curPagePayment.page"
+               max-size="maxSize"
+               class="pagination-sm"
+               boundary-links="true"
+               rotate="false"
+               num-pages="numPages"
+               ng-change="pageChangedPay(searchTextPay.text)">
+           </ul>
+         </div>
+        <!-- ************************************************Pagination****************************************** -->
+
+        <!-- ************************************************SearchBox******************************************** -->
+        <!-- <div class=" pull-right panel panel-body">
+          Search Bill: <input type="text" data-ng-model="searchTextPayBill.text" data-ng-change="curPagePaymentBill.currentPage = 1; pageChangedPayBill(searchTextPayBill.text)" placeholder= " Search Bill"></input>
+        </div> -->
+        <!-- *************************************************SearchBox****************************************** -->
+        <!-- curPagePayment.page = 1;searchOnEnterKey(searchTextPay.text, event) -->
+        <!-- *********************************************SearchBox*************************************************** -->
+      </form>
+    </div>
+    <!-- *********************************************SearchBox*************************************************** -->
+    <div>
+       <md-card data-ng-repeat="payment in paymentsOnPage" >
+          <md-card-content style="background: #b3ffe6;" class= "panel-heading" data-ng-click="clickPaymentRef(payment)">
+             <div>
+               <h4 class = "list-group-item-heading"><small>Reference No: </small>{{payment.paymentReferenceNo}}</h4>
+             </div>
+          </md-card-content>
+          <md-card-content data-ng-if="payment._id === activePaymentRef">
+        <div layout="row" layout-xs="column" flex>
+           <div flex>
+              <label for= "attendant">Payment Received By : </label>
+              <label>{{payment.user.username}}</label>
+           </div>
+           <div flex>
+              <label for= "tableNumber">Payment Mode : </label>
+              <label>{{payment.paymentModeType.paymentType}}</label>
+               <!-- select class="form-control" data-ng-model="paymentList.paymentModeType" data-ng-options="paymentmodetype._id as paymentmodetype.paymentType for paymentmodetype in paymentmodetypes | filter:{active:true}" data-ng-focus="focusPayment()" ng-disabled="editButtonForCashMode">
+                </select>
+              </label> -->
+                <!--  <button title="click to Edit payment mode type" data-ng-if="editButtonForCashMode" class= "btn btn-primary btn-group-sm glyphicon glyphicon-edit" data-ng-click="editButtonForCashModeGetClicked(payment)"></button>
+                 <button data-ng-if="!editButtonForCashMode" class= "btn btn-primary btn-sm glyphicon glyphicon-ok" data-ng-click="updateCashModeTypeForPayments(payment)"></button> -->
+           </div>
+             <div flex>
+                <label for= "dateOfBill">Paid Amount : </label>
+                <label>{{currencySymbol}}</label>
+                <label>{{payment.paidAmount}}</label>
+              </div>
+        </div>
+        <div>
+           <div class="panel-heading" data-ng-click="">
+              <h3 class = "list-group-item-heading">Bills within payment:</h3>
+           </div>
+              <table class="table fontSize" ng-style="{background:'Beige'}">
+                 <thead>
+                   <tr>
+                     <th>Bill No</th>
+                     <th class="text-center" >Payment Towards Bill</th>
+                     <th class="text-center" >Remaining Amount</th>
+                     <th class="text-right" >Total Bill Amount</th>
+                   </tr>
+                 </thead>
+                   <tr data-ng-repeat="paymentbill in paymentbills ">
+                     <td>{{paymentbill.billNumber}}</td>
+                     <td class="text-center">{{currencySymbol}} {{paymentbill.paymentTowardBill}}</td>
+                     <td class="text-center">{{currencySymbol}} {{paymentbill.remainingAmount}}</td>
+                     <td class="text-right">{{currencySymbol}} {{paymentbill.billTotal}}</td>
+                   </tr>
+              </table>
+             </div>
+          </md-card-content>
+      </md-card>
+    </div>
+    <div data-ng-if="payments.length!==0">
+       <div data-ng-if="(totalItemsPayment.count===0)" class="alert alert-warning text-center">
+        Your search did not match any documents.
+       </div>
+    </div>
+    <div>
+      <!-- ************************************************Pagination********************************************** -->
+       <ul uib-pagination
+           total-items="totalItemsPayment.count"
+           ng-model="curPagePayment.page"
+           max-size="maxSize"
+           class="pagination-sm"
+           boundary-links="true"
+           rotate="false"
+           num-pages="numPages"
+           ng-change="pageChangedPay(searchTextPay.text)">
+       </ul>
+          <pre>showing <b>{{totalItemsPayment.count===0 ? 0 :indexStartPay+1}}-{{indexEndPay}}</b> of <b>{{totalItemsPayment.count}}</b> Payments</pre>
+      <!-- *************************************************Pagination************************************************ -->
+    </div>
+  </div>
+</section>
+

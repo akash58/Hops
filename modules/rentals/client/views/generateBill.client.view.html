@@ -1,0 +1,369 @@
+<!-- <section> -->
+
+  <style>
+    @media print {
+    body * {
+    visibility: hidden;
+    }
+    #print-content * {
+    visibility: visible;
+    }
+    #hideB{
+      display: none !important;
+    }
+    .md-dialog{
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    min-height:min-content;
+
+    }
+    }
+    <!--  3550px height: auto; -->
+  </style>
+<md-dialog id="print-content" aria-label="view assignment details" class="fullscreen-dialog" ng-init="initialize()">
+  <!-- <form ng-cloak> -->
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Bill</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="cancel($event)" aria-label="call">
+      <md-icon md-svg-icon="/modules/core/client/img/svg/ic_close_white_24px.svg"></md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+<md-dialog-content>
+  <div class="md-dialog-content">
+    <div layout="column" layout-fill>
+      <div data-ng-show="printMode">
+        <p align="middle"><b><u>{{titleOnBill}}</u></b></p>
+        <p align="middle">{{addressOnBill}}</p>
+        <div layout="row" layout-align="space-around center">
+
+          <span flex>
+            <label for= "tableNumber">Table Number :  </label>
+            <label>{{rentalsToBeBilled[0].table.tableNumber}}</label>
+          </span>
+          <span flex>
+            <label for= "billNumber">Bill Number : </label>
+            <label id="billNumber" name="billNumber" >{{rentbill.billNumber}}</label>
+          </span>
+          <span flex>
+            <label for= "attendant">Attendant :  </label>
+            <label>{{rentalsToBeBilled[0].table.currentAttendant.displayName}}</label>
+          </span>
+          <span flex>
+            <label for= "dateOdBill">Date of Bill : </label>
+            <label id="dateOdBill" name="dateOfBill">{{rentbill.dateOfBill | date}} </label>
+          </span>
+
+        </div><!-- rentalsToBeBilled : {{rentalsToBeBilled[0].table}} -->
+        <div layout="column">
+          <div layout="column">
+            <div data-ng-repeat="rental in rentalsToBeBilled" layout="column" layout-fill>
+              <div class="panel-heading">
+                <div class="visible-print-block panel">
+                  <h4><small>Customer Name: </small>{{rental.customer.companyName}}
+                    <label class="pull-right form-group" data-ng-if="rental.isMember=== true"> Member </label>
+                  </h4>
+                </div>
+                <div class="hidden-print" layout="row">
+                  <form class="form-inline">
+                    <fieldset>
+                      <span flex="80" class="form-group">
+                        <h4 class = "list-group-item-heading form-group"><small>Customer Name: </small>{{rental.customer.customerName}}</h4>
+                      </span>
+                      <span flex="40" class="form-group">
+                        <label class="pull-right form-group" data-ng-if="rental.isMember=== true"> Member</label>
+                      </span>
+                    </fieldset>
+                  </form>
+                </div>
+              <div>
+                <div data-ng-if="rental.packageorders.length">
+                  <h4 ng-style="{background:'AntiqueWhite '}"><u>Packages</u></h4>
+                  <table class="table"  ng-style="{background:'Beige'}">
+                    <thead>
+                      <tr>
+                        <th>Package</th>
+                        <th data-ng-if="!rental.packageQuantityHigherThanOne"></th>
+                        <th data-ng-if="rental.packageQuantityHigherThanOne" class="text-right">Quantity</th>
+                        <th data-ng-if="!rental.packageQuantityHigherThanOne"></th>
+                        <th data-ng-if="rental.packageQuantityHigherThanOne" class="text-right">Price</th>
+                        <th colspan="4" class="text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tr data-ng-repeat="packageorder in rental.packageorders">
+                      <td>{{packageorder.package.packageName}}</td>
+                      <td data-ng-if="!rental.packageQuantityHigherThanOne"></td>
+                      <td data-ng-if="rental.packageQuantityHigherThanOne" class="text-right">{{packageorder.quantity}}</td>
+                      <td data-ng-if="!rental.packageQuantityHigherThanOne" ></td>
+                      <td data-ng-if="rental.packageQuantityHigherThanOne" class="text-right">{{packageorder.billPrice}}</td>
+                      <td colspan="4"class="text-right">{{packageorder.billCharge}}</td>
+                    </tr>
+                    <tr data-ng-if="rental.packageRevenue > 0 && rental.totalOnPackage !== rental.packageRevenue">
+                      <td colspan="4" ><strong>Sub-Total</strong></td>
+                      <td class="text-right"><strong>{{rental.packageRevenue}}</strong></td>
+                    </tr>
+                    <tr data-ng-if="rental.serviceChargeOnPackage > 0">
+                      <td colspan="4" ><strong>Service charge @{{serviceCharge}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.serviceChargeOnPackage}}</strong></td>
+                    </tr>
+<!--                     <tr data-ng-if="rental.vatOnPackage > 0">
+                      <td colspan="3" ><strong>Vat  @{{vat}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.vatOnPackage}}</strong></td>
+                    </tr> -->
+                    <tr data-ng-if ="rental.cgstOnPackage > 0">
+                      <td colspan="4" ><strong>CGST On Package @{{packageCgstTaxParameter}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.cgstOnPackage}}</strong></td>
+                    </tr>
+                    <tr data-ng-if ="rental.sgstOnPackage > 0">
+                      <td colspan="4" ><strong>SGST On Package @{{packageSgstTaxParameter}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.sgstOnPackage}}</strong></td>
+                    </tr>
+                    <tr data-ng-if ="rental.sgstOnPackage > 0">
+                      <td colspan="4" ><strong>Package SAC/HSN Code</strong></td>
+                      <td class="text-right"><strong>{{packageHsnParameter}}</strong></td>
+                    </tr>
+<!--                     <tr data-ng-if="rental.serviceTaxOnPackage > 0">
+                      <td colspan="3" ><strong>Service Tax  @{{serviceTaxRateWithFood}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.serviceTaxOnPackage}}</strong></td>
+                    </tr> -->
+                    <tr data-ng-if="rental.totalOnPackage > 0">
+                      <td colspan="4" ><strong>Total </strong></td>
+                      <td class="text-right"><strong><label>{{currencySymbol}}</label>{{rental.totalOnPackage}}</strong></td>
+                    </tr>
+                  </table>
+                </div>
+                <div data-ng-if="rental.foodorders.length">
+                  <h4 ng-style="{background:'AntiqueWhite '}"><u>Foods</u></h4>
+                  <table class="table"  ng-style="{background:'Beige'}">
+                    <thead>
+                      <tr>
+                        <!-- <th>Food Type</th> -->
+                        <th>Food</th>
+                        <th data-ng-if="rental.packageorders.length" class="text-right">Quantity Ordered</th>
+                        <th data-ng-if="!rental.packageorders.length" class="text-right">Quantity</th>
+                        <th data-ng-if="rental.packageorders.length" class="text-right">Quantity Charged</th>
+                        <th data-ng-if="!rental.packageorders.length" class="text-right"></th>
+                        <th class="text-right">Price</th>
+                        <th class="text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tr data-ng-repeat="foodorder in rental.foodorders">
+                      <!-- | filter : { quantity > 0} -->
+                      <!-- <td>{{foodorder.food.foodtype.foodTypeName}}</td> -->
+                      <td>{{foodorder.food.foodName}}</td>
+                      <td class="text-right">{{foodorder.quantity}}</td>
+                      <td data-ng-if="rental.packageorders.length" class="text-right">{{foodorder.quantityCharged}}</td>
+                      <td data-ng-if="!rental.packageorders.length" class="text-right"></td>
+                      <td class="text-right">{{foodorder.billPrice}}</td>
+                      <td class="text-right">{{foodorder.billCharge}}</td>
+                    </tr>
+                    <tr data-ng-if ="rental.membershipDiscountOnFood > 0">
+                      <td colspan="4" ><strong>Membership Discount @ {{rental.membershipDiscountPercentage}}%</strong></td>
+                      <td class="text-right"><strong>-{{rental.membershipDiscountOnFood}}</strong></td>
+                    </tr>
+                    <tr data-ng-if ="rental.foodRevenue > 0 && rental.totalOnFood !== rental.foodRevenue">
+                      <td colspan="4" ><strong>Sub-Total</strong></td>
+                      <td class="text-right"><strong>{{rental.foodRevenue}}</strong></td>
+                    </tr>
+                    <tr data-ng-if ="rental.serviceChargeOnFood > 0">
+                      <td colspan="4" ><strong>Service charge @{{serviceCharge}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.serviceChargeOnFood}}</strong></td>
+                    </tr>
+<!--                     <tr data-ng-if ="rental.vatOnFood > 0">
+                      <td colspan="4" ><strong>Vat @{{vat}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.vatOnFood}}</strong></td>
+                    </tr> --><!-- rental : {{rental}} -->
+                    <tr data-ng-if ="rental.cgstOnFood > 0">
+                      <td colspan="4" ><strong>CGST On Food @{{foodCgstTaxParameter}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.cgstOnFood}}</strong></td>
+                    </tr>
+                    <tr data-ng-if ="rental.sgstOnFood > 0">
+                      <td colspan="4" ><strong>SGST On Food @{{foodSgstTaxParameter}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.sgstOnFood}}</strong></td>
+                    </tr>
+                    <tr data-ng-if ="rental.sgstOnFood > 0">
+                    <td colspan="4" ><strong>Food SAC/HSN Code</strong></td>
+                    <td class="text-right"><strong>{{foodHsnParameter}}</strong></td>
+                    </tr>
+<!--                     <tr data-ng-if ="rental.serviceTaxOnFood > 0">
+                      <td colspan="4" ><strong>Service Tax @{{serviceTaxRateWithFood}}%</strong></td>
+                      <td class="text-right"><strong>{{rental.serviceTaxOnFood}}</strong></td>
+                    </tr> -->
+                    <tr data-ng-if ="rental.totalOnFood > 0">
+                      <td colspan="4" ><strong>Total </strong></td>
+                      <td class="text-right"><strong>{{rental.totalOnFood}}</strong></td>
+                    </tr>
+                  </table>
+                </div>
+                <div data-ng-if = "rental.games.length">
+                <h4 ng-style="{background:'AntiqueWhite '}"><u>Games</u></h4>
+                <table class="table" ng-style="{background:'Beige'}">
+                  <thead>
+                    <tr>
+                      <th>Game Category</th>
+                      <th class="text-right" >Rate/Hour</th>
+                      <th class="text-right" >Time</th>
+                      <th class="text-right" >Hours Charged</th>
+                      <th class="text-right" >Amount</th>
+                    </tr>
+                  </thead>
+                  <tr data-ng-repeat="rentalCategory in rental.games">
+                    <td>{{rentalCategory.category.categoryName}}</td>
+                    <td class="text-right">{{rentalCategory.ratePerHourCharged}}</td>
+                    <td class="text-right" >{{rentalCategory.timePlayed}}</td>
+                    <td  class="text-right" >{{rentalCategory.hoursCharged}}</td>
+                    <td  class="text-right" >{{rentalCategory.amountCharged}}</td>
+                  </tr>
+                  <tr data-ng-if ="rental.gameRevenue > 0 && rental.totalOnGame !== rental.gameRevenue">
+                    <td colspan="4" ><strong>Sub-Total</strong></td>
+                    <td class="text-right"><strong>{{rental.gameRevenue}}</strong></td>
+                  </tr>
+                  <tr data-ng-if ="rental.serviceChargeOnGame > 0">
+                    <td colspan="4" ><strong>Service Charge @{{serviceCharge}}%</strong></td>
+                    <td class="text-right"><strong>{{rental.serviceChargeOnGame}}</strong></td>
+                  </tr>
+                  <tr data-ng-if ="rental.cgstOnGame > 0">
+                    <td colspan="4" ><strong>CGST On Game @{{gameCgstTaxParameter}}%</strong></td>
+                    <td class="text-right"><strong>{{rental.cgstOnGame}}</strong></td>
+                  </tr>
+                  <tr data-ng-if ="rental.sgstOnGame > 0">
+                    <td colspan="4" ><strong>SGST On Game @{{gameSgstTaxParameter}}%</strong></td>
+                    <td class="text-right"><strong>{{rental.sgstOnGame}}</strong></td>
+                  </tr>
+                  <tr data-ng-if ="rental.sgstOnGame > 0">
+                    <td colspan="4" ><strong>Game SAC/HSN Code</strong></td>
+                    <td class="text-right"><strong>{{gameHsnParameter}}</strong></td>
+                  </tr>
+<!--                   <tr data-ng-if ="rental.serviceTaxOnGame > 0">
+                    <td colspan="4" ><strong>Service Tax @{{serviceTaxParameter}}%</strong></td>
+                    <td class="text-right"><strong>{{rental.serviceTaxOnGame}}</strong></td>
+                  </tr> -->
+                  <tr data-ng-if ="rental.totalOnGame > 0">
+                    <td colspan="4" ><strong>Total</strong></td>
+                    <td class="text-right"><strong>{{rental.totalOnGame}}</strong></td>
+                  </tr>
+                </table>
+                </div>
+              </div>
+
+                <div>
+                  <table width="100%">
+                    <tr data-ng-if="rental.deposit>0">
+                      <td colspan="4" align="right"><strong>Customer sub Total</strong></td>
+                      <td align="right"><strong>{{rental.subTotalAmountForCustomer}}</strong></td>
+                    </tr>
+                    <tr data-ng-if="rental.deposit>0">
+                      <td colspan="4" align="right"><strong>Deposit</strong></td>
+                      <td align="right"><strong>{{rental.deposit}}</strong></td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" align="right"><strong>Customer Payable</strong></td>
+                      <td align="right"><strong><label>{{currencySymbol}}</label>{{rental.totalAmountForCustomer}}</strong></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            <div>
+              <div class="hidden-print" layout="row" layout-wrap>
+                <div flex="50">
+                  <md-input-container class="md-block" flex>
+                    <label for= "description">Description for Extra Charge</label>
+                    <textarea name="description" id="description" name="description" data-ng-model="rentbill.descriptionForExtraCharge" data-ng-focus="focusSerial()" rows="1" cols="20"></textarea>
+                  </md-input-container>
+                </div>
+                <div flex="50" layout="row" layout-align="end center">
+                  <md-input-container class="md-icon-float md-icon-right md-block" flex="80">
+                    <label>Extra Charge </label>
+                    <input type = "number" min = "0" id="extraCharge" name="extraCharge" data-ng-model="rentbill.extraCharge" data-ng-keypress="checkNumberOnly($event);" data-ng-change="updateTotal();">
+                    <md-icon>{{currencySymbol}}</md-icon>
+                  </md-input-container>
+                </div>
+                <div flex="100">
+                  <md-input-container class="md-block" flex>
+                    <label for= "description">Description for Bill </label>
+                    <textarea name="description" id="description" name="description" data-ng-model="rentbill.descriptionForBill" data-ng-focus="focusSerial()" rows="1" cols="20"></textarea>
+                  </md-input-container>
+                </div>
+                <div flex="100" layout="row">
+                  <div flex="40" layout="row" layout-align="end center">
+                    <md-input-container class="md-block" flex>
+                      <label for= "description">Description for Discount </label>
+                      <textarea name="discount" id="discount" name="discount" data-ng-model="rentbill.descriptionForDiscount" data-ng-focus="focusSerial()" rows="1" cols="20"></textarea>
+                    </md-input-container>
+                  </div>
+                  <div flex="60" layout="row" layout-align="end center">
+                    <md-input-container class="md-block" flex>
+                      <label flex for= "discount"><strong>Discount : in-</strong>&#37</label>
+                        <input type = "number" min = "0" style = "width:120px" id="discountInpercent" name="discountInpercent" data-ng-model="rentbill.discountInpercent" data-ng-keypress="checkNumberOnly($event);" data-ng-change="updateTotalForDiscountInPercent()">
+                      </md-input-container>
+                      <md-input-container class="md-block" flex>
+                        <label for= "discount"><strong> in value-</strong>{{currencySymbol}}</label>
+                        <input type = "number" min = "0" style = "width:120px" id="discountInValue" name="discountInValue" data-ng-model="rentbill.discountInValue" data-ng-keypress="checkNumberOnly($event);" data-ng-change="updateTotalForDiscountInValue();">
+                      </md-input-container>
+                    </div>
+                  </div>
+                  <div flex="100" layout="row" layout-align="end center" data-ng-if="bill.rounding!=0">
+                    <label for= "rounding">Rounding : {{rentbill.rounding}}</label>
+                  </div>
+                  <div flex="100" layout="row" layout-align="end center">
+                    <div flex layout="row" layout-align="end center">
+                      <label for= "totalOfBill"><font size="5"><strong>Total of Bill : <label>{{currencySymbol}}</label>{{rentbill.totalOfBill}}</strong></font></label>
+                    </div>
+                  </div>
+                  <div class="visible-print-block">
+                    <table width="100%">
+                      <tr data-ng-if="rentbill.extraCharge>0">
+                        <td colspan="5" align="left"><strong>Extra Charge Description :{{rentbill.descriptionForExtraCharge}}</strong></td>
+                        <td align="right"><strong>{{rentbill.extraChargewithDecimal}}</strong></td>
+                      </tr>
+                      <tr data-ng-if="rentbill.discountInValue>0">
+                        <td colspan="5" align="left"><strong>Discount @{{rentbill.discountInpercent}}% :{{rentbill.descriptionForDiscount}}</strong></td>
+                        <td align="right"><strong>{{rentbill.discountInValueWithDecimal}}</strong></td>
+                      </tr>
+                      <tr data-ng-if="rentbill.rounding!=0">
+                        <td colspan="5" align="right"><strong>Rounding : </strong></td>
+                        <td align="right"><strong>{{rentbill.rounding}}</strong></td>
+                      </tr>
+                      <tr>
+                        <td colspan="5" align="right"><font size="5"><strong>Total of Bill :  </strong></font></td>
+                        <td align="right"><font size="5"><strong>{{rentbill.totalOfBill}}</strong></font></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="modal-footer hidden-print">
+              <button class="btn btn-success" ng-click="createBill()">Submit</button>
+              <button class="btn btn-warning" ng-click="cancelBill()">Cancel</button>
+              <button class="btn btn-primary" ng-click="printDiv()" data-ng-show="printMode">Print</button>
+
+            </div> -->
+          </div>
+          <div>
+            {{errorResponse.data}}
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions id="hideB" layout="row">
+        <span flex></span>
+        <md-button class="" ng-click="createBill()">
+          Submit
+        </md-button>
+        <md-button class="md-warn" ng-click="cancelBill()">
+          Cancel
+        </md-button>
+        <md-button class="md-primary" ng-click="printDiv()"  data-ng-show="printMode">
+          Print
+        </md-button>
+      </md-dialog-actions>
+      <!-- </form> -->
+    </md-dialog>
+
+    <!-- </section> -->
